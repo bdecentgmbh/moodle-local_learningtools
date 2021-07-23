@@ -1,0 +1,27 @@
+{{#ltbookmark}}
+<div class="ltbookmarksinfo" id="ltbookmarkinfo">
+<form action="{{toolurl}}" method="{{post}}" id={{id}}> 
+    <input type="hidden" name="user" value="{{user}}">
+    <input type="hidden" name="course" value="{{course}}">
+    <input type="hidden" name="pageurl" value="{{pageurl}}">
+    <input type="hidden" name="pagetype" value="{{pagetype}}">
+    <input type="hidden" name="contextlevel" value="{{contextlevel}}">
+    <input type="hidden" name="contextid" value="{{contextid}}">
+    <input type="hidden" name="sesskey" value="{{sesskey}}">
+    <input type="hidden" name="learningtools" value="1">
+        <button type="submit">
+            <i class="{{icon}}"></i>
+            <p> {{name}} </p>
+        </button>
+</form>
+</div>
+{{/ltbookmark}}
+
+{{#ltnote}} 
+    <div class="ltnoteinfo" id="ltnoteinfo">
+        <button type="submit" id="ltnote-action">
+             <i class="{{icon}}"></i>
+            <p> {{name}} </p>
+        </button>
+    </div>
+{{/ltnote}}

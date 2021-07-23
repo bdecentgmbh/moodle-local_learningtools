@@ -1,0 +1,104 @@
+
+{{#ltnotes}}
+
+	<div class="top-block">
+		{{#coursefilter}}
+			<div class="ltnote-coursefilter" id="ltnote-coursefilter">
+<!-- 				<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdowncoursesortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				{{#str}}allcourses, local_learningtools {{/str}}
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdowncoursesortButton">
+					<a class="dropdown-item" href="{{pageurl}}"> {{#str}}allcourses, local_learningtools {{/str}} </a>
+					{{#courses}}
+					<a class="dropdown-item" href="{{url}}">{{name}}</a>
+					{{/courses}}
+
+				</div>
+				</div> -->
+
+				<div class="ltnote-coursefilter" id="ltnote-coursefilter">
+					<select class="form-control" name="ltcoursesort" id="ltcoursesort" onchange="location = this.value;">
+						<option value="{{pageurl}}"> 
+							{{#str}} allcourses, local_learningtools {{/str}} </a>
+						</option>
+						{{#courses}}
+							<option value="{{url}}" {{selected}}>
+								{{name}}
+							</option>
+						{{/courses}}
+					</select>
+				</div>
+			</div>
+		{{/coursefilter}}
+
+		{{#enableactivityfilter}}
+
+			<div class="ltnote-activityfilter" id="ltnote-activityfilter">
+				<select class="form-control" id="activityfilter" name="activityfilter" onchange="location = this.value;">
+					<option value="{{coursefilterurl}}"> {{#str}}allactiviies, local_learningtools {{/str}} </option>
+					{{#activityfilter}}
+						<option value="{{filterurl}}" {{selected}}> {{mod}} </option>
+					{{/activityfilter}}
+				</select>
+			</div>
+		{{/enableactivityfilter}}
+		
+
+		{{#sortfilter}} 
+
+			<div class="ltnote-sortfilter" id="ltnote-sortfilter">
+				<i class="fa fa-sort-amount-down"></i>
+				<select class="form-control" id="sortfilter" name="sortfilter" onchange="location = this.value;">
+					<option value="{{datesort}}" {{dateselect}}> {{#str}}sortbydate, local_learningtools {{/str}} </option>
+					{{#coursesort}}
+						<option value="{{coursesort}}" {{courseselect}}>{{#str}}sortbycourse, local_learningtools{{/str}}</option>
+					{{/coursesort}}
+					{{#activitysort}}
+						<option value="{{activitysort}}" {{activityselect}}> {{#str}}sortbyactivity, local_learningtools{{/str}} </option>
+					{{/activitysort}}
+
+				</select>
+
+			</div>
+
+		{{/sortfilter}}
+
+	</div>
+
+	<div class="ltnotes-mainbody" id="accordion"> 
+		{{#records}} 
+			<div class="card">
+		      <div class="card-header" id="headingOne">
+		        <h5 class="mb-0">
+		          <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{range}}" aria-expanded="true" aria-controls="collapse-{{range}}">
+		            {{title}}
+		          </button>
+		        </h5>
+		      </div>
+
+		      <div id="collapse-{{range}}" class="collapse {{#active}}show{{/active}}" aria-labelledby="headingOne" data-parent="#accordion">
+		      	{{#notes}}
+		        <div class="card-body">
+		          <div class="content-block">
+		            <div class="title-block">
+		              <h4>{{base}}</h4>
+		              <div class="details-block">
+		                <span class="calendar-block">{{time}}</span>
+		                <span class="edit-block"> {{{edit}}} </span>
+		                <span class="delete-block">{{{delete}}}</span>
+		                <div class="btn-block">
+		                  {{{viewurl}}}
+		                </div>
+		              </div>
+		            </div>
+		            <p> {{{note}}}</p>
+		          </div>
+		        </div>
+		        {{/notes}}
+		      </div>
+		    </div>
+		{{/records}}
+	</div>
+
+{{/ltnotes}}

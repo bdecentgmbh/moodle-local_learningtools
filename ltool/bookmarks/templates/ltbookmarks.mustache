@@ -1,0 +1,20 @@
+{{#coursefilter}}
+<div class="top-block">
+	<div class="ltbookmarks-coursefilter" id="ltbookmarks-coursefilter">
+		<select class="form-control" name="coursesort" id="coursesort" onchange="location = this.value;">
+			<option value="{{pageurl}}"> 
+				{{#str}} allcourses, local_learningtools {{/str}} </a>
+			</option>
+			{{#courses}}
+				<option value="{{url}}" {{selected}}>
+					{{name}}
+				</option>
+			{{/courses}}
+		</select>
+	</div>
+</div>
+{{/coursefilter}}
+
+
+
+

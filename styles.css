@@ -1,0 +1,433 @@
+/*.block_learningtools.card {
+
+	width: 0;
+
+    height: 0;
+
+	border: 0;
+
+    background: no-repeat;
+
+    margin: 0 !important;
+
+    
+
+}
+
+.card-body {
+
+	padding: 0 !important;
+
+}
+
+.card-body h5.card-title {
+
+	display: none !important;
+
+}
+
+.card-body .card-title {
+
+	margin-top: 0 !important;
+
+}
+
+.card-body .card-text .floating-button > button {
+
+	width: 50px;
+
+	height: 50px;
+
+	line-height: 45px;
+
+	border: 0;
+
+	border-radius: 50%;
+
+	background: #0f6fc5;
+
+	margin-bottom: 5px;
+
+	position: relative;
+
+}
+
+.card-body .card-text .floating-button > button:hover {
+
+	box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.5);
+
+}
+
+.card-body .card-text .floating-button > button:focus {
+
+    border: 0;
+
+    box-shadow: none;
+
+    outline: none;
+
+}
+
+.card-body .card-text .floating-button  > button i {
+
+	font-size: 20px;
+
+	color: #fff;
+
+}*/
+
+.floating-button {
+
+	position: fixed;
+
+    bottom: 20px;
+
+    right: 20px;
+
+    z-index: 1;
+
+}
+
+.floating-button > button {
+
+	width: 50px;
+
+	height: 50px;
+
+	line-height: 40px;
+
+	border: 0;
+
+	border-radius: 50%;
+
+	background: #0f6fc5;
+
+	margin-bottom: 5px;
+
+	position: relative;
+
+}
+
+.floating-button > button:focus {
+
+    border: 0;
+
+    box-shadow: none;
+
+    outline: none;
+
+}
+
+|.floating-button  > button i {
+
+	font-size: 20px;
+
+	color: #fff;
+
+}
+
+.floating-button > button:hover {
+
+	box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.5);
+
+}
+
+.floating-button .list-learningtools {
+
+	display: none;
+
+}
+
+.floating-button .list-learningtools.show {
+
+	display: block;
+
+}
+
+.floating-button .list-learningtools > div {
+
+	margin-bottom: 5px;
+
+	position: relative;
+
+}
+
+.floating-button .list-learningtools > div button {
+
+	width: 50px;
+
+	height: 50px;
+
+	line-height: 50px;
+
+	border: 0;
+
+	border-radius: 50%;
+
+	background: #e83e8c;
+
+}
+
+.floating-button .list-learningtools > div button:hover {
+
+	box-shadow: 2px 5px 5px rgb(0, 0, 0,.2);
+
+}
+
+.floating-button .list-learningtools > div button:focus {
+
+    border: 0;
+
+    box-shadow: none;
+
+    outline: none;
+
+}
+
+.floating-button .list-learningtools > div:nth-child(2) button {
+
+	background: #fd7e14;
+
+}
+
+.floating-button .list-learningtools > div:nth-child(3) button {
+
+	background: #17a2b8;
+
+}
+
+.floating-button .list-learningtools > div:nth-child(4) button {
+
+	background: #dc3545;
+
+}
+
+.floating-button .list-learningtools > div:nth-child(5) button {
+
+	background: #28a745;
+
+}
+
+.floating-button .list-learningtools > div button i {
+
+	font-size: 20px;
+
+	color: #fff;
+
+}
+
+.floating-button .list-learningtools > div button p {
+
+	position: absolute;
+
+	top: 0;
+
+	right: 60px;
+
+	display: none;
+
+}
+
+.floating-button .list-learningtools > div button:hover p {
+
+	display: block;
+
+}
+
+
+
+
+
+/*Notes page*/
+
+.top-block {
+
+	text-align: right;
+	margin-bottom: 20px;
+
+}
+
+.top-block #ltnote-coursefilter, .top-block .ltnote-activityfilter {
+	display: inline-block;
+}
+
+.top-block .ltnote-sortfilter {
+	float: right;
+}
+/*.top-block > div:first-child {
+
+	float: left;
+
+}*/
+
+.top-block > div:last-child {
+
+	display: inline-block;
+
+}
+.top-block > div.ltbookmarks-coursefilter {
+	text-align: left;
+	float: none;
+	display: block;
+}
+.top-block > div:last-child i {
+
+	display: none;
+
+}
+
+.top-block > div select {
+
+	min-width: 250px;
+
+	width: auto;
+
+	text-align: left;
+
+	border: 1px solid #ccc;
+
+	border-radius: 5px;
+
+    background: none;
+
+    padding: 5px;
+}
+
+.top-block > div select:after {
+
+	float: right;
+
+	margin-top: 10px;
+
+}
+
+/* #page-local-learningtools-ltool-note-ltnote_list .top-block > div .dropdown .dropdown-menu {
+
+	border-radius: 5px;
+
+	right: 0;
+
+} */
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody {
+
+	margin-top: 20px;
+
+}
+
+
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card {
+
+	border: 0;
+
+	margin-bottom: 20px;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-header {
+
+	padding: 0;
+
+	border: 0;
+
+	background: none;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-header h5 button {
+
+	width: 100%;
+
+	color: #000;
+
+	font-size: 20px;
+
+    text-align: left;
+
+    text-decoration: none;
+
+	display: block;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-header h5 button:after {
+
+	content: '\f103';
+
+	font-family: 'fontawesome';
+
+	float: right;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-header h5 button.collapsed:after {
+
+	content: '\f102';
+
+	font-family: 'fontawesome';
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-body {
+
+	border: 1px solid #eee;
+
+	margin-bottom: 20px;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-body .content-block .title-block {
+
+	text-align: right;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-body .content-block .title-block h4 {
+
+	font-size: 15px;
+
+    font-weight: bold;
+
+    margin-top: 5px;
+
+    float: left;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-body .content-block .title-block .details-block {
+
+	display: inline-block;
+
+}
+
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-body .content-block .title-block .details-block .calendar-block {
+	margin-right: 5px;
+}
+#page-local-learningtools-ltool-note-ltnote_list .ltnotes-mainbody .card .card-body .content-block .title-block .details-block .btn-block {
+
+	width: auto;
+
+	display: inline-block;
+}
+
+.modal .modal-dialog .modal-header h5.modal-title {
+	width: 100%;
+}
+.modal .modal-dialog .modal-header h5.modal-title #popout-action {
+	float: right;
+    display: flex;
+}
+.modal .modal-dialog .modal-header h5.modal-title #popout-action p {
+	font-size: 13px;
+	color: #000;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.modal .modal-dialog .modal-header h5.modal-title #popout-action p {
+	font-size: 13px;
+	line-height: 24px;
+	color: #000;
+    display: inline-block;
+}
