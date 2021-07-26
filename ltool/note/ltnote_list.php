@@ -1,7 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__).'/../../../../config.php');
+require_once($CFG->dirroot. '/local/learningtools/lib.php');
 require_login();
+require_note_status();
 
 $context = context_system::instance();
 
@@ -17,18 +19,32 @@ $delete = optional_param('delete', 0, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $childid = optional_param('userid', 0, PARAM_INT);
-
+$teacher = optional_param('teacher', 0, PARAM_INT);
 $urlparams = [];
+if ($courseid) {
+    $selectcourse = $courseid;
+}
 
 if ($courseid && !$childid) {
-    $selectcourse = $courseid;
+
     $coursecontext = context_course::instance($courseid);
     $urlparams['courseid'] = $courseid;
     require_capability('ltool/note:viewnote', $coursecontext);
+
 } else if ($childid) {
-    $usercontext = context_user::instance($childid);
-    $urlparams['userid'] = $childid;  
-    require_capability('ltool/note:viewnote', $usercontext, $USER->id);  
+    
+    if ($teacher) {
+        $urlparams['courseid'] = $courseid;
+        $urlparams['userid'] = $childid;
+        $urlparams['teacher'] = true;
+        $coursecontext = context_course::instance($courseid);
+        require_capability('ltool/note:viewnote', $coursecontext);  
+    } else {
+        $urlparams['userid'] = $childid;
+        $usercontext = context_user::instance($childid);
+        require_capability('ltool/note:viewnote', $usercontext, $USER->id);
+    }
+
 } else {
     require_capability('ltool/note:viewownnote', $context);
 }
@@ -95,7 +111,7 @@ if (file_exists($CFG->dirroot.'/local/learningtools/lib.php')) {
 
     $blockinstance = new \ltool_note\notetool_filter($USER->id);
     //echo $blockinstance->get_course_selector();
-    echo $blockinstance->get_main_body($selectcourse, $sort, $activity, $courseid, $childid);
+    echo $blockinstance->get_main_body($selectcourse, $sort, $activity, $courseid, $childid, $teacher, $urlparams);
 }
 
 echo $OUTPUT->footer();

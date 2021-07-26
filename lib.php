@@ -53,9 +53,20 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
     $disappertimenotify = get_config('local_learningtools', 'notificationdisapper');
     $PAGE->requires->data_for_js('disappertimenotify', $disappertimenotify);
     //$PAGE->requires->js(new moodle_url('/local/learningtools/javascript/learningtools.js'));
-    $viewbookmarks = has_capability('ltool/bookmarks:viewownbookmarks', $context);
-    $viewnote = has_capability('ltool/note:viewownnote', $context);
+    $viewbookmarks = false;
+    if (has_capability('ltool/bookmarks:viewownbookmarks', $context) && is_bookmarks_status()) {
+        $viewbookmarks = true;
+    }
+
+    $viewnote = false;
+    if (has_capability('ltool/note:viewownnote', $context) && is_note_status()) {
+        $viewnote = true;
+    }
+
     $viewcapability = array('viewbookmarks' => $viewbookmarks, 'viewnote' => $viewnote);
+    /* print_object($viewcapability);
+     exit;*/
+     
     $PAGE->requires->js_call_amd('local_learningtools/learningtools', 'init', $viewcapability);
 
     if (file_exists($CFG->dirroot.'/local/learningtools/ltool/note/lib.php')) {
@@ -382,4 +393,48 @@ function has_viewtool_capability_role($assignedroles, string $capability) {
     $roleshascaps =  get_roles_with_capability($capability);
     $result = array_intersect($roles, array_keys($roleshascaps));
     return !empty($result) ? true : false;
+}
+
+
+/**
+ * Check the bookmarks status
+ * @return bool 
+ */
+function is_bookmarks_status() {
+    global $DB;
+    $bookmarksrecord = $DB->get_record('learningtools_products', array('shortname' => 'bookmarks'));
+    if ($bookmarksrecord->status) {
+        return true;
+    }
+    return false;
+}
+
+function require_bookmarks_status() {
+    if (!is_bookmarks_status()) {
+        $url = new moodle_url('/my');
+        redirect($url);       
+    }   
+    return true;
+}
+
+/**
+ * Check the note status
+ * @return bool 
+ */
+function is_note_status() {
+    global $DB;
+    $noterecord = $DB->get_record('learningtools_products', array('shortname' => 'note'));
+    if ($noterecord->status) {
+        return true;
+    }
+    return false;
+}
+
+
+function require_note_status() {
+    if (!is_note_status()) {
+        $url = new moodle_url('/my');
+        redirect($url);       
+    }   
+    return true;
 }

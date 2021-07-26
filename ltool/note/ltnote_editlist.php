@@ -14,16 +14,31 @@ $PAGE->set_title($title);
 $PAGE->set_heading($SITE->fullname);
 $edit = optional_param('edit', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
+$childid = optional_param('userid', 0, PARAM_INT);
+$teacher = optional_param('teacher', 0, PARAM_INT);
 
 $urlparams = [];
-if ($courseid) {
+if ($courseid && !$childid) {
     $urlparams['courseid'] = $courseid;
     $coursecontext = context_course::instance($courseid);
     require_capability('ltool/note:managenote', $coursecontext);
+} else if($childid) {
+    $urlparams['userid'] = $childid;
+    if ($teacher) {
+        $urlparams['courseid'] = $courseid;
+        $urlparams['teacher'] = true;
+        $coursecontext = context_course::instance($courseid);
+        require_capability('ltool/note:managenote', $coursecontext); 
+    } else {
+        $usercontext = context_user::instance($childid);
+        require_capability('ltool/note:managenote', $usercontext, $USER->id);
+    }
 } else {
     require_capability('ltool/note:manageownnote', $context);
 }
+
 $returnurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $urlparams);
+$pageurl = new moodle_url('/local/learningtools/ltool/note/ltnote_editlist.php', $urlparams);
 
 // If user is logged in, then use profile navigation in breadcrumbs.
 if ($profilenode = $PAGE->settingsnav->find('myprofile', null)) {
@@ -36,7 +51,7 @@ if($edit && confirm_sesskey()) {
 
     $params['id'] = $edit;
     $params['courseid'] = $courseid;
-    $editorform = new edit_noteinfo(null, $params);
+    $editorform = new edit_noteinfo($pageurl->out(false), $params);
     if ($editorform->is_cancelled()) {
         redirect($returnurl);
     } else if($fromdata = $editorform->get_data())  {
@@ -54,7 +69,6 @@ if($edit && confirm_sesskey()) {
         }
         redirect($returnurl);
     }  else {
-
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('editnote', 'local_learningtools'));
         $editorform->display();

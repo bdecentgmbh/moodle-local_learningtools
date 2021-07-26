@@ -414,18 +414,20 @@
 .modal .modal-dialog .modal-header h5.modal-title {
 	width: 100%;
 }
-.modal .modal-dialog .modal-header h5.modal-title #popout-action {
+.modal .modal-dialog .modal-header h5.modal-title .popout-block {
 	float: right;
     display: flex;
 }
-.modal .modal-dialog .modal-header h5.modal-title #popout-action p {
+.modal .modal-dialog .modal-header h5.modal-title .popout-block #popout-action {
 	font-size: 13px;
 	color: #000;
-    margin-right: 10px;
+    margin-right: 5px;
     display: inline-block;
     vertical-align: middle;
+    border: 0;
+    background: none;
 }
-.modal .modal-dialog .modal-header h5.modal-title #popout-action p {
+.modal .modal-dialog .modal-header h5.modal-title .popout-block i {
 	font-size: 13px;
 	line-height: 24px;
 	color: #000;

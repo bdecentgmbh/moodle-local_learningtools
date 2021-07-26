@@ -25,47 +25,51 @@ use core_user\output\myprofile\tree;
 
 defined('MOODLE_INTERNAL') || die();
 
-function is_parent() {
-
-}
+require_once($CFG->dirroot. '/local/learningtools/lib.php');
 
 function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser, $course) {
 	 global $PAGE, $USER;
     //  exit;
     $context = context_system::instance();
-    if ($iscurrentuser) {
-        if (!empty($course)) {
-            $coursecontext = context_course::instance($course->id);
-            if (has_capability('ltool/bookmarks:viewbookmarks', $coursecontext)) {
-                $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/ltbookmarks_list.php', array('courseid' =>  $course->id)); 
+    if (is_bookmarks_status()) {
+        if ($iscurrentuser) {
+            if (!empty($course)) {
+
+                $coursecontext = context_course::instance($course->id);
+                if (has_capability('ltool/bookmarks:viewbookmarks', $coursecontext)) {
+                    $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/bookmarksstudents.php', array('courseid' =>  $course->id)); 
+                    $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
+                    get_string('bookmarks', 'local_learningtools'), null, $bookmarksurl);
+                    $tree->add_node($bookmarksnode);
+                }
+
+            } else {
+                if (has_capability('ltool/bookmarks:viewownbookmarks', $context)) {
+                    $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/ltbookmarks_list.php');
+                    $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
+                        get_string('bookmarks', 'local_learningtools'), null, $bookmarksurl);
+                    $tree->add_node($bookmarksnode);
+                }
+            }
+        } else {
+            if (is_parentforchild($user->id, 'ltool/bookmarks:viewbookmarks')) {
+                $params = ['userid' => $user->id];
+                if (!empty($course)) {
+                    $params['selectcourse'] = $course->id;
+                }
+
+                $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/ltbookmarks_list.php', $params); 
                 $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
                 get_string('bookmarks', 'local_learningtools'), null, $bookmarksurl);
                 $tree->add_node($bookmarksnode);
+                // exit;
+                return true;
             }
-        } else {
-            if (has_capability('ltool/bookmarks:viewownbookmarks', $context)) {
-                $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/ltbookmarks_list.php');
-                $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
-                    get_string('bookmarks', 'local_learningtools'), null, $bookmarksurl);
-                $tree->add_node($bookmarksnode);
-            }
-        }
-    } else {
-        if (is_parentforchild($user->id, 'ltool/bookmarks:viewbookmarks')) {
-            $params = ['userid' => $user->id];
-            if (!empty($course)) {
-                $params['selectcourse'] = $course->id;
-            }
-
-            $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/ltbookmarks_list.php', $params); 
-            $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
-            get_string('bookmarks', 'local_learningtools'), null, $bookmarksurl);
-            $tree->add_node($bookmarksnode);
-            // exit;
-            return true;
         }
     }
     return true;
 }
+
+
 
 

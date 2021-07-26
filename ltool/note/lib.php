@@ -35,6 +35,8 @@ class editorform extends moodleform {
         $pagetype = $this->_customdata['pagetype'];
         $pageurl = $this->_customdata['pageurl'];
         $user = $this->_customdata['user'];
+        $popoutaction = isset($this->_customdata['popoutaction']) ? 
+        $this->_customdata['popoutaction']: '';
         
         $mform->addElement('editor', 'ltnoteeditor', get_string('note', 'local_learningtools'), array('autosave' => false));
 
@@ -57,6 +59,11 @@ class editorform extends moodleform {
         $mform->addElement('hidden', 'user');
         $mform->setDefault('user', $user);
         $mform->setType('user', PARAM_INT);
+
+        if ($popoutaction) {
+           $this->add_action_buttons();
+        }
+
     }
 }
 
@@ -92,43 +99,47 @@ class edit_noteinfo extends moodleform {
 }
 
 function ltool_note_myprofile_navigation(tree $tree, $user, $iscurrentuser, $course) {
-    global $PAGE, $USER;
+    global $PAGE, $USER, $DB;
 
     $context = context_system::instance();
-   if ($iscurrentuser) {
-       if(!empty($course)) {
-            $coursecontext = context_course::instance($course->id);
-            if (has_capability('ltool/note:viewnote', $coursecontext)) {
-                $noteurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', array('courseid' => $course->id));
-                $notenode = new core_user\output\myprofile\node('learningtools', 'note',
-                    get_string('note', 'local_learningtools'), null, $noteurl);
-                $tree->add_node($notenode);
+    if (is_note_status()) {
+        if ($iscurrentuser) {
+            if(!empty($course)) {
+                $coursecontext = context_course::instance($course->id);
+                if (has_capability('ltool/note:viewnote', $coursecontext)) {
+                    $noteurl = new moodle_url('/local/learningtools/ltool/note/notestudents.php', array('courseid' => $course->id));
+                    $notenode = new core_user\output\myprofile\node('learningtools', 'note',
+                        get_string('note', 'local_learningtools'), null, $noteurl);
+                    $tree->add_node($notenode);
+                }
+            } else {
+                if (has_capability('ltool/note:viewownnote', $context)) {
+                    $noteurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php');
+                    $notenode = new core_user\output\myprofile\node('learningtools', 'note',
+                        get_string('note', 'local_learningtools'), null, $noteurl);
+                    $tree->add_node($notenode);
+                }
             }
-       } else {
-            if (has_capability('ltool/note:viewownnote', $context)) {
-                $noteurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php');
-                $notenode = new core_user\output\myprofile\node('learningtools', 'note',
-                    get_string('note', 'local_learningtools'), null, $noteurl);
-                $tree->add_node($notenode);
-            }
-        }
-    } else {
-        if (is_parentforchild($user->id, 'ltool/note:viewnote')) {
-            $params = ['userid' => $user->id];
-            if (!empty($course)) {
-                $params['selectcourse'] = $course->id;
-            }
+        } else {
 
-            $noteurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $params);
-            $notenode = new core_user\output\myprofile\node('learningtools', 'note',
-                get_string('note', 'local_learningtools'), null, $noteurl);
-            $tree->add_node($notenode);
-            // exit;
-            return true;
+            if (is_parentforchild($user->id, 'ltool/note:viewnote')) {
+                $params = ['userid' => $user->id];
+                if (!empty($course)) {
+                    $params['selectcourse'] = $course->id;
+                }
+
+                $noteurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $params);
+                $notenode = new core_user\output\myprofile\node('learningtools', 'note',
+                    get_string('note', 'local_learningtools'), null, $noteurl);
+                $tree->add_node($notenode);
+                // exit;
+                return true;
+            }
         }
     }
    return true;
 }
+
 
 function ltool_note_output_fragment_get_note_form($args) {
 
@@ -201,6 +212,5 @@ function check_note_instanceof_block($record) {
     }
     return $data;
 }
-
 
 

@@ -33,6 +33,7 @@ $string['learningtoolsltool'] = "Manage learning ltools";
 $string['notificationdisappertitle'] = "Notification disapper";
 $string['notificationdisapperdesc'] = "Use this option to set the notification disapper time between each learningtools save the notification. Value is in milliseconds (i.e 1 second = 1000 milliseconds)";
 $string['popout'] = "Pop Out";
+$string['viewreports'] = "View reports";
 
 // bookmarks strings
 $string['bookmarks'] = "Bookmarks";

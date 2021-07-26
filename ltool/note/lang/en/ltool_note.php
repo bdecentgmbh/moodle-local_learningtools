@@ -27,5 +27,5 @@ $string['pluginname'] = "Learning Tools Note";
 $string['note:createnote'] = "Create the note tool.";
 $string['note:viewownnote'] = "View the own note tool.";
 $string['note:manageownnote'] = "Manage the own note tool.";
-$string['note:viewnote'] = "View the others bookmarks.";
-$string['note:managenote'] = "Manage the others boomarks.";
+$string['note:viewnote'] = "View the others notes.";
+$string['note:managenote'] = "Manage the others notes.";

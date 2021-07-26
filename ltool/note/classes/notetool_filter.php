@@ -22,10 +22,15 @@ class notetool_filter {
 		$userparams = [];
 
 		if ($courseid) {
-			$students = get_students_incourse($courseid);
-			if (!empty($students)) {
-				list($studentsql, $userparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-				$usersql .= 'user '. $studentsql;
+			if (!$childid) {
+				$students = get_students_incourse($courseid);
+				if (!empty($students)) {
+					list($studentsql, $userparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
+					$usersql .= 'user '. $studentsql;
+				}
+			} else {
+				$usersql = 'user = :userid';
+				$userparams = ['userid' => $childid];
 			}
 		} elseif($childid) {
 			$usersql = 'user = :userid';
@@ -45,11 +50,11 @@ class notetool_filter {
 		$usercondition = $this->get_user_sql($courseid, $childid);
 		$usersql = $usercondition['sql'];
 		$userparams = $usercondition['params'];
-		$records = $DB->get_records_sql("SELECT * FROM {learningtools_bookmarks} WHERE $usersql", $userparams);
+		$records = $DB->get_records_sql("SELECT * FROM {learningtools_note} WHERE $usersql", $userparams);
 		if (!empty($records)) {
 			foreach($records as $record) {
 				$instanceblock = check_note_instanceof_block($record);
-				if (isset($instanceblock->instance) && $instanceblock->instance == 'course') {
+				if (isset($instanceblock->instance) && $instanceblock->instance == 'course' || $instanceblock->instance == 'mod') {
 					$courses[] = $instanceblock->courseid;
 				}
 			}
@@ -73,7 +78,7 @@ class notetool_filter {
 	}
 
 	
-	public function get_activity_selector($course, $activity, $courseid, $childid) {
+	public function get_activity_selector($course, $activity, $courseid, $childid, $teacher) {
 		global $DB, $OUTPUT;
 
 		$usercondition = $this->get_user_sql($courseid, $childid);
@@ -103,6 +108,9 @@ class notetool_filter {
 				if ($courseid) {
 					$urlparams['courseid'] = $courseid;
 				}
+				if ($teacher) {
+					$urlparams['teacher'] = $teacher;
+				}
 				
 				$filterurl = new moodle_url("/local/learningtools/ltool/note/ltnote_list.php", $urlparams);
 				$list['filterurl'] = $filterurl->out(false);
@@ -118,7 +126,7 @@ class notetool_filter {
 		return $data;
 	}
 
-	public function get_sort_instance($activity, $course, $sort, $childid, $courseid) {
+	public function get_sort_instance($activity, $course, $sort, $childid, $courseid, $teacher) {
 
 		global $OUTPUT;
 		$template = [];
@@ -160,6 +168,12 @@ class notetool_filter {
 			$activitysortparams['courseid'] = $courseid;
 		}
 
+		if ($teacher) {
+			$datesortparams['teacher'] = $teacher;
+			$coursesortparams['teacher'] = $teacher;
+			$activitysortparams['teacher'] = $teacher;
+		}
+
 		$coursesort = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $coursesortparams);
 		$datesort = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $datesortparams);
 		$activitysort = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $activitysortparams);
@@ -186,10 +200,15 @@ class notetool_filter {
 		$usersql = '';
 
 		if ($courseid) {
-			$students = get_students_incourse($courseid);
-			if (!empty($students)) {
-				list($studentsql, $params) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-				$usersql .= 'user '. $studentsql;
+			if (!$childid) {
+				$students = get_students_incourse($courseid);
+				if (!empty($students)) {
+					list($studentsql, $params) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
+					$usersql .= 'user '. $studentsql;
+				}
+			} elseif($childid) {
+				$usersql = 'user = :userid';
+				$params = ['userid' => $childid];
 			}
 		} elseif($childid) {
 			$usersql = 'user = :userid';
@@ -223,12 +242,11 @@ class notetool_filter {
 		$sql = "SELECT  $select GROUP_CONCAT(id) AS notesgroup  
 			FROM {learningtools_note} WHERE $usersql $coursesql 
 			$sortsql";	
-
 		$records = $DB->get_records_sql($sql, $params);
 		return $records;
 	}
 
-	public function get_main_body($course, $sort, $activity, $courseid, $childid) {	
+	public function get_main_body($course, $sort, $activity, $courseid, $childid, $teacher, $urlparams) {	
 	
 		global $OUTPUT, $DB;
 	
@@ -264,7 +282,7 @@ class notetool_filter {
 			foreach ($reports as $report) {
 				$info = [];
 				if (isset($report['notes'])) {
-					$notes = $this->get_speater_plug($report['notes'], $courseid, $childid);
+					$notes = $this->get_speater_plug($report['notes'], $courseid, $childid, $teacher, $urlparams);
 					$info['notes'] =  $notes;
 					$info['title'] = isset($report['title']) ? $report['title'] : '';
 					$info['range'] = $cnt.'-block';
@@ -280,11 +298,12 @@ class notetool_filter {
 		$template['ltnotes'] = true;
 
 		if (!$activity) {
-			$template['sortfilter'] = $this->get_sort_instance($activity, $course, $sort, $childid, $courseid);
+			$template['sortfilter'] = $this->get_sort_instance($activity, $course, $sort, $childid, $courseid, $teacher);
 		}
 		if (!$courseid) {
 			$template['coursefilter'] = $this->get_course_selector($course, $courseid, $childid);
 		}
+
 		$template['enableactivityfilter'] = !empty($course) ? true : false;
 		
 
@@ -293,16 +312,23 @@ class notetool_filter {
 			if ($childid) {
 				$coursefilterparams['userid'] = $childid;
 			}
+			if ($teacher) {
+				$coursefilterparams['teacher'] = $teacher;
+			}
+			if ($courseid) {
+				$coursefilterparams['courseid'] = $courseid;
+			}
+
 			$coursefilterurl = new moodle_url('/local/learningtools/ltool/note/ltnote_list.php', $coursefilterparams);
 			$template['coursefilterurl'] = $coursefilterurl->out(false);
-			$template['activityfilter'] = $this->get_activity_selector($course, $activity, $courseid, $childid);
+			$template['activityfilter'] = $this->get_activity_selector($course, $activity, $courseid, $childid, $teacher);
 		}
 		
 		return $OUTPUT->render_from_template('ltool_note/ltnote', $template);
 
 	}
 
-	public function get_speater_plug($records, $courseid, $childid) {
+	public function get_speater_plug($records, $courseid, $childid, $teacher, $urlparams) {
 		global $USER;
 
 		$report = [];
@@ -316,31 +342,44 @@ class notetool_filter {
 				$list['note'] = !empty($record->note) ? $record->note : '';
 				$list['time'] = userdate($record->timecreated, '%B %d, %Y, %I:%M', '', false);
 				$list['viewurl'] = $this->get_view_url($record);
-				if (!empty($courseid)) {
+
+				if (!empty($courseid) && !$childid) {
 					$coursecontext = context_course::instance($courseid);
 					if (has_capability('ltool/note:managenote', $coursecontext)) {
-						$list['delete'] = $this->delete_note_info($record, $courseid);
-						$list['edit'] = $this->edit_note_info($record, $courseid);
+						$list['delete'] = $this->delete_note_info($record, $urlparams, $courseid);
+						$list['edit'] = $this->edit_note_info($record, $urlparams, $courseid);
 					}
+
 				} else if ($childid) {
-					$usercontext = context_user::instance($childid);
-					if (has_capability('ltool/note:managenote', $usercontext, $USER->id)) {
-						$list['delete'] = $this->delete_note_info($record);
-						$list['edit'] = $this->edit_note_info($record);
+					if ($teacher) {
+						$coursecontext = context_course::instance($courseid);
+						if (has_capability('ltool/note:managenote', $coursecontext)) {
+							$list['delete'] = $this->delete_note_info($record, $urlparams, $courseid);
+							$list['edit'] = $this->edit_note_info($record, $urlparams, $courseid);
+						}
+
+					} else {
+						$usercontext = context_user::instance($childid);
+						if (has_capability('ltool/note:managenote', $usercontext, $USER->id)) {
+							$list['delete'] = $this->delete_note_info($record, $urlparams);
+							$list['edit'] = $this->edit_note_info($record, $urlparams);
+						}
 					}
+
 				} else {
 					if (has_capability('ltool/note:manageownnote', $context)) {
-						$list['delete'] = $this->delete_note_info($record);
-						$list['edit'] = $this->edit_note_info($record);
+						$list['delete'] = $this->delete_note_info($record, $urlparams);
+						$list['edit'] = $this->edit_note_info($record, $urlparams);
 					}
 				}
+
 				$report[] = $list;
 			}
 		}
 		return $report;
 	}
 
-	public function edit_note_info($row, $courseid = 0) {
+	public function edit_note_info($row, $urlparams, $courseid = 0) {
 		global $OUTPUT;
 		$stredit = get_string('edit'); 
     	$buttons = [];
@@ -349,6 +388,7 @@ class notetool_filter {
 		if ($courseid) {
 			$optionyes['courseid'] = $courseid;
 		}
+		$optionyes = array_merge($optionyes, $urlparams);
     	$url = new moodle_url($returnurl,$optionyes);
         $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
         $buttonhtml = implode(' ', $buttons);
@@ -356,7 +396,7 @@ class notetool_filter {
 
 	}
 
-	public function delete_note_info($row, $courseid = 0) {
+	public function delete_note_info($row, $urlparams, $courseid = 0) {
 		global $OUTPUT;
 
     	$strdelete = get_string('delete');
@@ -366,6 +406,7 @@ class notetool_filter {
 		if ($courseid) {
 			$optionyes['courseid'] = $courseid;
 		}
+		$optionyes = array_merge($optionyes, $urlparams);
     	$url = new moodle_url($returnurl, $optionyes);
         $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
         $buttonhtml = implode(' ', $buttons);

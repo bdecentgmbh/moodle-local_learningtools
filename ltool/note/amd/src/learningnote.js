@@ -13,33 +13,48 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
             $.when(newnote).done(function(localizedEditString) {
 
                 ModalFactory.create({
-                    title: localizedEditString + get_popout_action(),
+                    title: localizedEditString + get_popout_action(params),
                     type: ModalFactory.types.SAVE_CANCEL,
                     body: getnoteaction(contextid, params),
                     large: true
                 }).then(function(modal){
+
                     modal.show();
+
                     modal.getRoot().on(ModalEvents.hidden, function() {
                         modal.destroy();
                     });
         
-                    modal.getRoot().on( ModalEvents.save, function(e) { 				
+                    modal.getRoot().on( ModalEvents.save, function(e) { 
+
                         e.preventDefault();
                         submitForm(modal);
-                    } );
-        
-                    modal.getRoot().delegate('form', 'submit', function(e) {
-                        e.preventDefault();	
-                        submitFormData(modal, contextid, params) 			
                     });
+
+                    modal.getRoot().delegate('#popout-action', 'click', function(e) {
+
+                        var url = M.cfg.wwwroot+"/local/learningtools/ltool/note/popoutaction.php?contextid="+
+                        params.contextid+"&pagetype="+params.pagetype+"&contextlevel="+params.contextlevel+
+                        "&course="+params.course+"&user="+params.user+"&pageurl="+params.pageurl;
+                        modal.hide();
+                        window.open(url, '_blank');
+                    });
+
+                    modal.getRoot().delegate('form', 'submit', function(e) {
+                        e.preventDefault(); 
+                        submitFormData(modal, contextid, params)            
+                    });
+
+
                 });
             });
 
         });
     }
 
-    function get_popout_action() {
-        return '<a href = "' + M.cfg.wwwroot + '/local/learningtools/ltool/note/ltnote_list.php" id="popout-action" target="_blank"><p> Pop Out </p><i class="fa fa-window-restore"></i></a>';  
+    function get_popout_action(params) {
+        var popouthtml = "<div class='popout-block'><button type='submit' id='popout-action' name='popoutsubmit'>Pop out</button><i class='fa fa-window-restore'></i></div>";
+        return popouthtml;
     }
 
     function submitForm(modal) {

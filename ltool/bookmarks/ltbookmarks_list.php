@@ -1,7 +1,9 @@
 <?php
 
 require_once(dirname(__FILE__).'/../../../../config.php');
+require_once($CFG->dirroot. '/local/learningtools/lib.php');
 require_login();
+require_bookmarks_status();
 $context = context_system::instance();
 
 $title = get_string('bookmarks', 'local_learningtools');
@@ -17,7 +19,7 @@ $page = optional_param('page', 0, PARAM_INT);
 $perpage = optional_param('perpage', 10, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $childid = optional_param('userid', 0, PARAM_INT);
-
+$teacher = optional_param('teacher', 0, PARAM_INT);
 // If user is logged in, then use profile navigation in breadcrumbs.
 if ($profilenode = $PAGE->settingsnav->find('myprofile', null)) {
     $profilenode->make_active();
@@ -27,7 +29,7 @@ $PAGE->navbar->add($title);
 $urlparams = [];
 
 if ($courseid) {
-    $selectcourse = $courseid;
+   $selectcourse = $courseid; 
 }
 
 if ($courseid && !$childid) {
@@ -35,8 +37,18 @@ if ($courseid && !$childid) {
     $coursecontext = context_course::instance($courseid);
     require_capability('ltool/bookmarks:viewbookmarks', $coursecontext);  
 } else if ($childid) {
-    $usercontext = context_user::instance($childid);
-    require_capability('ltool/bookmarks:viewbookmarks', $usercontext, $USER->id);  
+    
+    if ($teacher) {
+        $urlparams['courseid'] = $courseid;
+        $urlparams['teacher'] = true;
+        $urlparams['userid'] = $childid;
+        $coursecontext = context_course::instance($courseid);
+        require_capability('ltool/bookmarks:viewbookmarks', $coursecontext);  
+    } else {
+        $urlparams['userid'] = $childid;
+        $usercontext = context_user::instance($childid);
+        require_capability('ltool/bookmarks:viewbookmarks', $usercontext, $USER->id);
+    }
 }else {
     require_capability('ltool/bookmarks:viewownbookmarks', $context);
 }
@@ -54,14 +66,7 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
         $optionsyes = array('delete'=>$delete, 'confirm'=>md5($delete), 'sesskey'=>sesskey());
-
-        if ($selectcourse) {
-            $optionsyes['selectcourse'] = $selectcourse;
-        }
-        if ($courseid) {
-            $optionsyes['courseid'] = $courseid;
-        }
-
+        $optionsyes = array_merge($optionsyes, $urlparams);
         $deleteurl = new moodle_url('/local/learningtools/ltool/bookmarks/ltbookmarks_list.php', $optionsyes);
         $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
 
@@ -84,6 +89,7 @@ if ($delete && confirm_sesskey()) {
         }
     }
 }
+
 $coursetitle = get_string('coursebookmarks', 'local_learningtools');
 $heading = empty($selectcourse) ? $title : $coursetitle;
 echo $OUTPUT->header();
@@ -107,18 +113,12 @@ if (file_exists($CFG->dirroot.'/local/learningtools/lib.php')) {
     } elseif ($childid) {
         $sqlconditions .= 'user = :childid';
         $sqlparams['childid'] = $childid;
-        /* // $childusers = get_childuser_info();
-        if (!empty($childusers)) {
-            // list($childuserscondition, $sqlparams) = $DB->get_in_or_equal($childusers);
-            // $sqlconditions .= 'user '. $childuserscondition;
-        } */
     } else {
         $sqlconditions .= 'user = :userid';
         $sqlparams['userid'] = $USER->id;
     }
     if (!$courseid) {
          echo $blockinstance->get_course_selector($selectcourse, $sqlconditions, $sqlparams, $childid);
-        // echo $blockinstance->get_parent_child_selector($child);
      }
 
     if ($selectcourse) {
@@ -127,9 +127,7 @@ if (file_exists($CFG->dirroot.'/local/learningtools/lib.php')) {
     	$sqlconditions .= $courseconditions;
     	$sqlparams = array_merge($sqlparams, $courseparams);
     }
-
-
-    $table = new \ltool_bookmarks\bookmarkstool_table('datatable-bookmarktool', $courseid, $childid);
+    $table = new \ltool_bookmarks\bookmarkstool_table('datatable-bookmarktool', $courseid, $childid, $teacher, $urlparams);
     $dbfields = 'id, user, course, contextlevel, contextid,pagetype, pageurl, timecreated';
     $table->set_sql($dbfields,'{learningtools_bookmarks}', $sqlconditions, $sqlparams);
     $table->define_baseurl($baseurl);
