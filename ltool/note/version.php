@@ -15,14 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *  tool plugin "Learning Tools Note" - Version file
+ * tool plugin "Learning Tools Note" - Version file.
  *
- * @package    ltool_note
- * @copyright  2021 lmsace
+ * @package   ltool_note
+ * @copyright bdecent GmbH 2021
+ * @category  autoloading
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_note';
 $plugin->version = 2021260700;
 $plugin->requires = 2020061501;
+

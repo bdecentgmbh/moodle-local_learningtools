@@ -17,8 +17,9 @@
 /**
  * Class used to fetch participants based on a filterset.
  *
- * @package    core_user
- * @copyright  2020 Michael Hawkins <michaelh@moodle.com>
+ * @package    local_learningtools
+ * @copyright  bdecent GmbH 2021
+ * @category   table
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,11 +40,8 @@ require_once($CFG->dirroot . '/user/lib.php');
 
 /**
  * Class used to fetch participants based on a filterset.
- *
- * @package    core_user
- * @copyright  2020 Michael Hawkins <michaelh@moodle.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class courseparticipants_search extends \core_user\table\participants_search {
 
 
@@ -93,7 +91,7 @@ class courseparticipants_search extends \core_user\table\participants_search {
 
         // Get the fields for all contexts because there is a special case later where it allows
         // matches of fields you can't access if they are on your own account.
-         if (class_exists('\core_user\fields')) {
+        if (class_exists('\core_user\fields')) {
             $userfields = fields::for_identity(null)->with_userpic();
             ['selects' => $userfieldssql, 'joins' => $userfieldsjoin, 'params' => $userfieldsparams, 'mappings' => $mappings] =
                     (array)$userfields->get_sql('u', true);
@@ -143,7 +141,7 @@ class courseparticipants_search extends \core_user\table\participants_search {
         $outerselect .= $ccselect;
         $outerjoins[] = $ccjoin;
 
-        // only students
+        // Only students.
         $outerjoins[] = "JOIN (SELECT DISTINCT userid, rle.shortname as roleshortname, roleid
                         FROM {role_assignments}
                         JOIN {role} rle ON rle.id = roleid

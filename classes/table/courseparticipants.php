@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -17,7 +16,8 @@
 
 /**
  * @package   local_learningtools
- * @copyright 2021, lmsace
+ * @category  table
+ * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -25,23 +25,26 @@ namespace local_learningtools\table;
 
 use moodle_url;
 
-class courseparticipants extends \core_user\table\participants {
+/**
+ * List of course participants table.
+ */
 
-	/**
+class courseparticipants extends \core_user\table\participants {
+    /**
      * Fetch completions users list.
      *
-     * @param  mixed $tableid
+     * @param mixed $tableid
      * @return void
      */
-	public function __construct($tableid) {
-		$expuniqueid = explode('-', $tableid);
+    public function __construct($tableid) {
+        $expuniqueid = explode('-', $tableid);
         $ltool = (string) end($expuniqueid);
-       	$this->ltool = $ltool;
-		parent::__construct($tableid);
-	}
+        $this->ltool = $ltool;
+        parent::__construct($tableid);
+    }
 
-	/**
-     * Table header and columns definition.
+    /**
+     * Print the course participants students table.
      *
      * @param  mixed $pagesize
      * @param  mixed $useinitialsbar
@@ -50,14 +53,14 @@ class courseparticipants extends \core_user\table\participants {
      */
     public function out($pagesize, $useinitialsbar, $downloadhelpbutton = '') {
 
-    	 // Define the headers and columns.
+        // Define the headers and columns.
         $headers = [];
         $columns = [];
 
         $headers[] = get_string('fullname');
         $columns[] = 'fullname';
 
-       	$headers[] = get_string('email');
+        $headers[] = get_string('email');
         $columns[] = 'email';
 
         $headers[] = get_string('reports');
@@ -112,19 +115,23 @@ class courseparticipants extends \core_user\table\participants {
         return $viewreportbutton;
     }
 
+    /**
+     * Bookmarks instance view url.
+     * @param int userid
+     */
     public function get_viewreport_url($userid) {
-    	global $OUTPUT;
+        global $OUTPUT;
 
-    	if ($this->ltool == 'bookmarks')  {
-    		$url = '/local/learningtools/ltool/bookmarks/ltbookmarks_list.php';
-    	} else if ($this->ltool == 'note') {
-            $url = '/local/learningtools/ltool/note/ltnote_list.php';
+        if ($this->ltool == 'bookmarks') {
+            $url = '/local/learningtools/ltool/bookmarks/list.php';
+        } else if ($this->ltool == 'note') {
+            $url = '/local/learningtools/ltool/note/list.php';
         }
-    	$viewreporturl = new moodle_url($url, array('userid' => $userid, 'courseid' => $this->course->id, 'teacher' => true));
-    	$viewreportbutton = $OUTPUT->single_button($viewreporturl, get_string('viewreports', 'local_learningtools'),'get');
-    	return $viewreportbutton;
+        $viewreporturl = new moodle_url($url, array('userid' => $userid, 'courseid' => $this->course->id, 'teacher' => true));
+        $viewreportbutton = $OUTPUT->single_button($viewreporturl, get_string('viewreports', 'local_learningtools'), 'get');
+        return $viewreportbutton;
     }
-   
+
     /**
      * Query the database for results to display in the table.
      *
@@ -164,5 +171,4 @@ class courseparticipants extends \core_user\table\participants {
             $this->initialbars(true);
         }
     }
-
 }

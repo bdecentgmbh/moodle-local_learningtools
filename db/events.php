@@ -15,19 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Ltool plugin "bookmarks Tools" - string file.
+ * Define plugin events.
  *
- * @package   ltool_bookmarks
+ * @package   local_learningtools
+ * @category  event
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
- defined("MOODLE_INTERNAL") || die();
-
-$string['pluginname'] = "Learning Tools Bookmarks";
-$string['bookmarks:createbookmarks'] = "Create the bookmarks.";
-$string['bookmarks:viewownbookmarks'] = "View the  own bookmarks.";
-$string['bookmarks:manageownbookmarks'] = "Manage the own bookmarks.";
-$string['bookmarks:viewbookmarks'] = "View the others bookmarks.";
-$string['bookmarks:managebookmarks'] = "Manage the others boomarks.";
-$string['bookmarks'] = "Bookmarks";
+$observers = array(
+    array(
+    'eventname' => 'core\event\course_deleted',
+    'callback' => '\local_learningtools\event_observer::learningtools_coursedata_deleteaction',
+    ),
+    array(
+    'eventname' => 'core\event\course_module_deleted',
+    'callback' => '\local_learningtools\event_observer::learningtools_moduledata_deleteaction',
+    )
+);

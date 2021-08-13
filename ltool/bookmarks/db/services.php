@@ -15,19 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Ltool plugin "bookmarks Tools" - string file.
+ * Define plugin services.
  *
  * @package   ltool_bookmarks
+ * @category  Services
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined("MOODLE_INTERNAL") || die();
+defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = "Learning Tools Bookmarks";
-$string['bookmarks:createbookmarks'] = "Create the bookmarks.";
-$string['bookmarks:viewownbookmarks'] = "View the  own bookmarks.";
-$string['bookmarks:manageownbookmarks'] = "Manage the own bookmarks.";
-$string['bookmarks:viewbookmarks'] = "View the others bookmarks.";
-$string['bookmarks:managebookmarks'] = "Manage the others boomarks.";
-$string['bookmarks'] = "Bookmarks";
+$functions = array(
+    'ltool_bookmarks_save_userbookmarks' => array(
+        'classname'   => 'ltool_bookmarks\external',
+        'methodname'  => 'save_userbookmarks',
+        'description' => 'Save the user Bookmarks',
+        'type'        => 'write',
+        'ajax'          => true,
+        'loginrequired' => true,
+    ),
+);

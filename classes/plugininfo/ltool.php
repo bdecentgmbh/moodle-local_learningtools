@@ -17,8 +17,9 @@
 /**
  * Subplugin info class.
  *
- * @package   mod_assignment
- * @copyright 2013 Petr Skoda {@link http://skodak.org}
+ * @package   local_learningtools
+ * @copyright bdecent GmbH 2021
+ * @category  autoloading
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace local_learningtools\plugininfo;
@@ -27,7 +28,9 @@ use core\plugininfo\base;
 
 defined('MOODLE_INTERNAL') || die();
 
-
+/**
+ * Ltools subplugin define classes.
+ */
 class ltool extends base {
     /**
      * Returns the information about plugin availability

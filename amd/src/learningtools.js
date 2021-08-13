@@ -1,9 +1,16 @@
 define(['jquery', 'core/str'], function($, str) {
+    /**
+     * Controls learningtools action.
+     * @param {bool} viewbookmarks 
+     * @param {bool} viewnote 
+     * 
+     */
+    function learning_tools_action(viewbookmarks, viewnote, loggedin) {
+        // Add fab button.
+        if (loggedin) {
+            $(fabbuttonhtml).insertBefore("footer");
+        }
 
-    function learning_tools_action(viewbookmarks, viewnote) {
-
-        //add fab button
-        $(fabbuttonhtml).insertBefore("footer");
         $(".floating-button #tool-action-button").on('click', function(){
             if ($(".list-learningtools").hasClass('show')) {
                 $(".list-learningtools").removeClass('show');
@@ -11,43 +18,83 @@ define(['jquery', 'core/str'], function($, str) {
                 $(".list-learningtools").addClass('show');
             }
         });
+
+        $(".sort-block i#bookmarkssorttype").on('click', function() {
+            var sorttype = $(this).attr('data-type');
+            sort_action_page(sorttype);
+
+        });
+
+
+         $(".ltnote-sortfilter i#notessorttype").on('click', function() {
+            var sorttype = $(this).attr('data-type');
+            sort_action_page(sorttype);
+        });
+
+        if (ltools.pagebookmarks) {
+            $(".ltbookmarksinfo i").addClass('marked');
+        } else {
+            $(".ltbookmarksinfo i").removeClass('marked');
+        }
+
+        // trigger button
+
+        if (ltools.notestrigger == 'trigger') {
+            setTimeout(function(){ 
+                 $('#ltnoteinfo #ltnote-action').trigger('click');
+            }, 3000);
+        }
     
-        if (disappertimenotify != 0) {
-            setTimeout(function () {
-                $("span.notifications").empty();
-            }, disappertimenotify);
-        } 
-        /*<a href="http://localhost/moodle/moodle-311/grade/report/overview/index.php" class="dropdown-item menu-action" role="menuitem" data-title="grades,grades" aria-labelledby="actionmenuaction-3">
-                                <i class="icon fa fa-table fa-fw " aria-hidden="true"></i>
-                                <span class="menu-action-text" id="actionmenuaction-3">Grades</span>
-                        </a>*/
-        var bookmarkstring = str.get_string('bookmarks', 'local_learningtools');
-        $.when(bookmarkstring).done(function(bookmarkstr) {
-            var bookmarkhtml = '<a href="' + M.cfg.wwwroot + '/local/learningtools/ltool/bookmarks/ltbookmarks_list.php" class="dropdown-item menu-action"'+ 
-            'role="menuitem" data-title="bookmark,bookmarks" aria-labelledby="actionmenuaction-custom" >' + 
-            '<i class="icon fa fa-bookmark" aria-hidden="true"></i> <span class="menu-action-text" id="actionmenuaction-custom">'+ bookmarkstr +'</span>';
-            if (viewbookmarks) {
-                 $(bookmarkhtml).insertAfter(".usermenu .dropdown-menu a:nth-child(4)");
+    }
+
+    function removeURLParameter(url, parameter) {
+        //prefer to use l.search if you have a location/link object
+        var urlparts= url.split('?');
+        if (urlparts.length>=2) {
+
+            var prefix= encodeURIComponent(parameter)+'=';
+            var pars= urlparts[1].split(/[&;]/g);
+
+            //reverse iteration as may be destructive
+            for (var i= pars.length; i-- > 0;) {
+                //idiom for string.startsWith
+                if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+                    pars.splice(i, 1);
+                }
             }
-        });
 
-        var notestring = str.get_string('note', 'local_learningtools');
-        $.when(notestring).done(function(notestr) {
+            // alert(parameter);
+            url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+            return url;
+        } else {
+            return url;
+        }
+    }
 
-            var notehtml = '<a href="' + M.cfg.wwwroot + '/local/learningtools/ltool/note/ltnote_list.php" class="dropdown-item menu-action"'+
-            'role="menuitem" data-title="note,notes" aria-labelledby="actionmenuaction-custom" >' + 
-            '<i class="icon fa fa-sticky-note" aria-hidden="true"></i> <span class="menu-action-text" id="actionmenuaction-custom">'+ notestr +'</span>';
+    function sort_action_page(sorttype) {
 
-            if (viewnote) {
-                $(notehtml).insertAfter(".usermenu .dropdown-menu a:nth-child(5)");
-            }
-        });
-        //console.log(val);
+        var pageurl = window.location.href;
+        pageurl = removeURLParameter(pageurl, 'sorttype');
+
+        if(sorttype == 'asc') {
+            sorttype = 'desc';
+        } else if (sorttype == 'desc') {
+            sorttype = 'asc';
+        }
+        
+        if (pageurl.indexOf('?') > -1) {
+            var para = '&';
+        } else {
+            var para = '?';
+        }
+
+        pageurl = pageurl+para+'sorttype='+ sorttype;
+        window.open(pageurl, '_self');
     }
 
     return {
-        init: function(viewbookmarks, viewnote) {
-            learning_tools_action(viewbookmarks, viewnote);
+        init: function(viewbookmarks, viewnote, loggedin) {
+            learning_tools_action(viewbookmarks, viewnote, loggedin);
         }
     };
 });

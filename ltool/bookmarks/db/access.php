@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Learning Tool Bookmarks
+ * Define plugin capabilities.
  *
- * @package   tool
- * @package  tool__bookmarks
- * @copyright 2021 lmsace
- * 
+ * @package   ltool_bookmarks
+ * @category  DB
+ * @copyright bdecent GmbH 2021
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+defined('MOODLE_INTERNAL') || die();
 $capabilities = array(
-    
+
     'ltool/bookmarks:createbookmarks' => array(
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,10 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The ltool_bookmarks viewed event.
+ * Viewing the ltool_bookmarks creates the event.
  *
- * @package    ltool_bookmarks
- * @copyright  lmsace 2021
+ * @package   ltool_bookmarks
+ * @copyright bdecent GmbH 2021
+ * @category  event
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace ltool_bookmarks\event;
@@ -28,11 +29,10 @@ defined('MOODLE_INTERNAL') || die();
 
 class ltbookmarks_viewed extends \core\event\base {
 
-	/**
+    /**
      * Init method.
      */
     protected function init() {
-
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
     }
@@ -43,7 +43,6 @@ class ltbookmarks_viewed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-
         return get_string('eventltbookmarksviewed', 'local_learningtools');
     }
 

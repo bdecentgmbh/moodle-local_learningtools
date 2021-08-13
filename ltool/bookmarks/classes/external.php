@@ -17,23 +17,24 @@
 /**
  * External functions definition and returns.
  *
- * @package   ltool_note
+ * @package   ltool_bookmarks
  * @copyright bdecent GmbH 2021
  * @category  event
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace ltool_note;
+namespace ltool_bookmarks;
 
 defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->libdir.'/externallib.php');
 
 class external extends \external_api {
     /**
-     * Parameters defintion to get added user note.
+     * Parameters defintion to get added user bookmarks.
      *
      * @return array list of option parameters
      */
-    public static function save_usernote_parameters() {
+    public static function save_userbookmarks_parameters() {
 
         return new \external_function_parameters(
             array(
@@ -44,23 +45,30 @@ class external extends \external_api {
     }
 
     /**
-     * Save the user notes.
+     * Save the user bookmarks.
      * @param int context id
      * @param mixed user data
-     * @return int page user notes details.
+     * @return array Bookmarks save info details.
      */
-    public static function save_usernote($contextid, $formdata) {
+    public static function save_userbookmarks($contextid, $formdata) {
         global $CFG;
-        require_once($CFG->dirroot.'/local/learningtools/ltool/note/lib.php');
+        require_once($CFG->dirroot.'/local/learningtools/ltool/bookmarks/lib.php');
         // Parse serialize form data.
         parse_str($formdata, $data);
-        return user_save_notes($contextid, $data);
+        return user_save_bookmarks($contextid, $data);
     }
 
     /**
-     * Return parameters define for save notes status.
+     * Return parameters define for save bookmars status.
      */
-    public static function save_usernote_returns() {
-        return new \external_value(PARAM_INT, 'Count of Page user notes');
+    public static function save_userbookmarks_returns() {
+
+        return new \external_single_structure(
+            array(
+                'bookmarksstatus' => new \external_value(PARAM_BOOL, 'save bookmarks status'),
+                'bookmarksmsg' => new \external_value(PARAM_TEXT, 'bookmarks message'),
+                'notificationtype' => new \external_value(PARAM_TEXT, 'Notification type')
+            )
+        );
     }
 }

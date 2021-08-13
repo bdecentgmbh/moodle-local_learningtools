@@ -32,12 +32,23 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                     });
 
                     modal.getRoot().delegate('#popout-action', 'click', function(e) {
+/*                        var url = params.pageurl;
+                        if (url.indexOf('?') > -1) {
+                            var para = '&';
+                        } else {
+                            var para = '?';
+                        }
+                        url = url+para+"notes=trigger";*/
+                        console.log(params);
 
-                        var url = M.cfg.wwwroot+"/local/learningtools/ltool/note/popoutaction.php?contextid="+
+                        var url = M.cfg.wwwroot+"/local/learningtools/ltool/note/popout.php?contextid="+
                         params.contextid+"&pagetype="+params.pagetype+"&contextlevel="+params.contextlevel+
-                        "&course="+params.course+"&user="+params.user+"&pageurl="+params.pageurl;
+                        "&course="+params.course+"&user="+params.user+"&pageurl="+params.pageurl+"&title="+params.title
+                        +"&heading="+params.heading; 
+
                         modal.hide();
                         window.open(url, '_blank');
+                        //$(page).find(".ltnoteinfo button").trigger('click');
                     });
 
                     modal.getRoot().delegate('form', 'submit', function(e) {
@@ -68,6 +79,15 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
 			methodname: 'ltool_note_save_usernote',
 			args: {contextid: contextid, formdata: formData},
 			done: function(response) {
+                // insert data into notes badge
+                if (response) {
+                    
+                    if ($(".ltnoteinfo span").hasClass('ticked') != true) {
+                        $(".ltnoteinfo span").addClass('ticked');
+                    }
+                    $(".ltnoteinfo span").empty();
+                    $(".ltnoteinfo span").append(response);
+                }
 
 				modal.hide();
 			   // window.location.reload();
@@ -76,13 +96,13 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                         message: localizedEditString,
                         type: "success"
                     });
-                });
+                }); 
 
-                if (disappertimenotify != 0) {
+                if (ltools.disappertimenotify != 0) {
                     setTimeout(function () {
                         $("span.notifications").empty();
-                    }, disappertimenotify);
-                }   
+                    }, ltools.disappertimenotify);
+                }  
 			},
 			fail: handleFailedResponse()
 		}]);  
@@ -93,6 +113,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
     }
 
     function getnoteaction(contextid, params) {
+        params.contextid = contextid;
         return Fragment.loadFragment('ltool_note', 'get_note_form', contextid, params);
     }
 

@@ -15,9 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Define uninstall function
+ * @category   Uninstall
  * @package    lttool_bookmarks
- * @copyright  2015 onwards LMSACE Dev Team (http://www.lmsace.com)
- * @authors    LMSACE Dev Team
+ * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -33,7 +34,6 @@ function xmldb_ltool_bookmarks_uninstall() {
     global $DB;
 
     $plugin = 'bookmarks';
-    $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
     if ($DB->record_exists('learningtools_products', array('shortname' => $plugin)) ) {
         $DB->delete_records('learningtools_products', array('shortname' => $plugin));
     }

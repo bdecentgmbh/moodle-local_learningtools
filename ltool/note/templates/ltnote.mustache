@@ -1,22 +1,10 @@
-
+{{! Note list info block }}
 {{#ltnotes}}
-
+	{{! Top block }}
 	<div class="top-block">
+		{{! Course fitler block }}
 		{{#coursefilter}}
 			<div class="ltnote-coursefilter" id="ltnote-coursefilter">
-<!-- 				<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdowncoursesortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				{{#str}}allcourses, local_learningtools {{/str}}
-				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdowncoursesortButton">
-					<a class="dropdown-item" href="{{pageurl}}"> {{#str}}allcourses, local_learningtools {{/str}} </a>
-					{{#courses}}
-					<a class="dropdown-item" href="{{url}}">{{name}}</a>
-					{{/courses}}
-
-				</div>
-				</div> -->
-
 				<div class="ltnote-coursefilter" id="ltnote-coursefilter">
 					<select class="form-control" name="ltcoursesort" id="ltcoursesort" onchange="location = this.value;">
 						<option value="{{pageurl}}"> 
@@ -31,7 +19,9 @@
 				</div>
 			</div>
 		{{/coursefilter}}
+		{{! End of Course fitler block }}
 
+		{{! Course activity block }}
 		{{#enableactivityfilter}}
 
 			<div class="ltnote-activityfilter" id="ltnote-activityfilter">
@@ -43,12 +33,13 @@
 				</select>
 			</div>
 		{{/enableactivityfilter}}
+		{{! End of Course activity block }}
 		
 
 		{{#sortfilter}} 
-
+			{{! Filter block }}
 			<div class="ltnote-sortfilter" id="ltnote-sortfilter">
-				<i class="fa fa-sort-amount-down"></i>
+				<i class="{{iclass}}" id="notessorttype" data-type={{sorttype}}></i>
 				<select class="form-control" id="sortfilter" name="sortfilter" onchange="location = this.value;">
 					<option value="{{datesort}}" {{dateselect}}> {{#str}}sortbydate, local_learningtools {{/str}} </option>
 					{{#coursesort}}
@@ -57,48 +48,55 @@
 					{{#activitysort}}
 						<option value="{{activitysort}}" {{activityselect}}> {{#str}}sortbyactivity, local_learningtools{{/str}} </option>
 					{{/activitysort}}
-
 				</select>
-
 			</div>
-
 		{{/sortfilter}}
-
+		{{! End of Filter block }}
 	</div>
 
+	{{! Notes block main content }}
+	{{{pageingbar}}}
 	<div class="ltnotes-mainbody" id="accordion"> 
 		{{#records}} 
 			<div class="card">
-		      <div class="card-header" id="headingOne">
-		        <h5 class="mb-0">
-		          <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{range}}" aria-expanded="true" aria-controls="collapse-{{range}}">
-		            {{title}}
-		          </button>
-		        </h5>
-		      </div>
+				{{! Card header }}
+		      	<div class="card-header" id="headingOne">
+		        	<h5 class="mb-0">
+		          		<button class="btn btn-link" data-toggle="collapse" data-target="#collapse-{{range}}" aria-expanded="true" aria-controls="collapse-{{range}}">
+		            		{{title}}
+		          		</button>
+		        	</h5>
+			    </div>
+			    {{! End of Card header }}
 
-		      <div id="collapse-{{range}}" class="collapse {{#active}}show{{/active}}" aria-labelledby="headingOne" data-parent="#accordion">
-		      	{{#notes}}
-		        <div class="card-body">
-		          <div class="content-block">
-		            <div class="title-block">
-		              <h4>{{base}}</h4>
-		              <div class="details-block">
-		                <span class="calendar-block">{{time}}</span>
-		                <span class="edit-block"> {{{edit}}} </span>
-		                <span class="delete-block">{{{delete}}}</span>
-		                <div class="btn-block">
-		                  {{{viewurl}}}
-		                </div>
-		              </div>
-		            </div>
-		            <p> {{{note}}}</p>
-		          </div>
-		        </div>
-		        {{/notes}}
-		      </div>
+		      	<div id="collapse-{{range}}" class="collapse {{#active}}show{{/active}}" aria-labelledby="headingOne" data-parent="#accordion">
+		      		{{! Card body }}
+			      	{{#notes}}
+				        <div class="card-body">
+				        	{{! Content block }}
+				          	<div class="content-block">
+					          	{{! Title block }}
+					            <div class="title-block">
+					              	<h4>{{base}}</h4> {{! Title heading }}
+					              	<div class="details-block">
+						                <span class="calendar-block">{{time}}</span> {{! Calendar & Time }}
+						                <span class="edit-block"> {{{edit}}} </span> {{! Edit icon }}
+						                <span class="delete-block">{{{delete}}}</span> {{! Delete icon }}
+						                <div class="btn-block"> {{! button block }}
+						                  {{{viewurl}}}
+						                </div>
+					              	</div>
+					            </div>
+				            	<p> {{{note}}}</p>{{! Description block }}
+				          	</div>
+				        </div>
+			        {{/notes}}
+			        {{! End of Card body }}
+		      	</div>
 		    </div>
 		{{/records}}
 	</div>
-
+	{{{pageingbar}}}
+	{{! Notes block main content }}
 {{/ltnotes}}
+

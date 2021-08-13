@@ -15,9 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Define install function
+ * @category   Install
  * @package    lttool_note
- * @copyright  2015 onwards LMSACE Dev Team (http://www.lmsace.com)
- * @authors    LMSACE Dev Team
+ * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -36,7 +37,7 @@ function xmldb_ltool_note_install() {
     $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
     if (!$DB->record_exists('learningtools_products', array('shortname' => $plugin)) ) {
         $lasttool = $DB->get_record_sql(' SELECT id FROM {learningtools_products} ORDER BY id DESC LIMIT 1', null);
-        $record =  new stdClass;
+        $record = new stdClass;
         $record->shortname = $plugin;
         $record->name = $strpluginname;
         $record->status = 1;

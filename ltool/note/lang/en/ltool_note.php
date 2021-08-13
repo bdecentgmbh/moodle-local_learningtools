@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * tool plugin "Learning Tools Note" - Version file
+ * Ltool plugin "note Tools" - string file.
  *
- * @package    tool_ltnote
- * @copyright  2021 lmsace
+ * @package   ltool_note
+ * @copyright bdecent GmbH 2021
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined("MOODLE_INTERNAL") || die();
+defined("MOODLE_INTERNAL") || die();
 
 $string['pluginname'] = "Learning Tools Note";
 $string['note:createnote'] = "Create the note tool.";
@@ -29,3 +30,4 @@ $string['note:viewownnote'] = "View the own note tool.";
 $string['note:manageownnote'] = "Manage the own note tool.";
 $string['note:viewnote'] = "View the others notes.";
 $string['note:managenote'] = "Manage the others notes.";
+$string['notes'] = "Notes";

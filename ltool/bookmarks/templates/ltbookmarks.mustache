@@ -1,19 +1,85 @@
-{{#coursefilter}}
-<div class="top-block">
-	<div class="ltbookmarks-coursefilter" id="ltbookmarks-coursefilter">
-		<select class="form-control" name="coursesort" id="coursesort" onchange="location = this.value;">
-			<option value="{{pageurl}}"> 
-				{{#str}} allcourses, local_learningtools {{/str}} </a>
-			</option>
-			{{#courses}}
-				<option value="{{url}}" {{selected}}>
-					{{name}}
-				</option>
-			{{/courses}}
-		</select>
+{{! Bookmarks list info block }}
+
+{{#showbookmarks}}
+<div class="bookmarks-list-info"> 
+	<div class="activity-block">
+		{{! Top block }}
+		<div class="top-block">
+
+			{{! Course fitler block }}
+			{{#coursefilter}}
+			<div class="course-block">
+				<select class="form-control" id="course-select" onchange="location = this.value;">
+					<option value="{{pageurl}}"> 
+						{{#str}} allcourses, local_learningtools {{/str}}
+					</option>
+					{{#courses}}
+						<option value="{{url}}" {{selected}}>
+							{{name}}
+						</option>
+					{{/courses}}
+		        </select>
+			</div>
+			{{/coursefilter}}{{! End of Course fitler block }}
+
+			{{! Sort filter block }}
+			{{#sortfilter}} 
+			<div class="sort-block">
+				<i class="{{iclass}}" id="bookmarkssorttype" data-type={{sorttype}}></i>
+				<select class="form-control" id="sort-select" onchange="location = this.value;">
+					<option value="{{datesort}}" {{dateselect}}> 
+						{{#str}} sortbydate, local_learningtools {{/str}}
+					</option>
+					{{#coursesort}}
+						<option value="{{coursesort}}" {{courseselect}}> 
+							{{#str}} sortbycourse, local_learningtools {{/str}}
+						</option>
+					{{/coursesort}}
+		        </select>
+			</div>
+			{{/sortfilter}}
+			{{! End of Sort filter block }}
+		</div>
+
+		{{! Course listing block }}
+		{{{pageingbar}}}
+		<div class="course-element">
+			{{#bookmarks}}
+			<div class="course-list {{#courseinstance}} category-block {{/courseinstance}}">
+				{{! Course item block }}
+	            <div class="course-item">
+	                <i class="fa fa-bookmark"></i>
+	                <p> {{instance}} </p>
+	            </div>
+	            {{! Course category block }}
+	            <div class="category-item">
+	                <p> {{instanceinfo}} </p>
+	            </div>
+	            <div class="right-block">
+	            	{{! Calendar block }}
+	                <div class="calendar-block">
+	                <p> {{time}} </p>
+	                </div>
+	                {{! Delete link icon }}
+	                <div class="delete-block">
+	                    {{{delete}}}
+	                </div>
+	                {{! view button block }}
+	                <div class="button-block">
+	                    {{{view}}}
+	                </div>
+	            </div>
+	        </div>
+	        {{/bookmarks}}
+		</div>	
+		{{{pageingbar}}}
+		{{! End of Course listing block }}
 	</div>
 </div>
-{{/coursefilter}}
+{{/showbookmarks}}
+
+
+
 
 
 

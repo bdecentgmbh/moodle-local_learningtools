@@ -15,13 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Learning Tool Note
+ * Define plugin capabilities.
  *
- * @package   tool
- * @package  tool__note
- * @copyright 2021 lmsace
- * 
+ * @package   ltool_notes
+ * @category  DB
+ * @copyright bdecent GmbH 2021
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
     'ltool/note:createnote' => array(

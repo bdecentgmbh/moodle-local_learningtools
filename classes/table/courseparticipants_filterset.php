@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Participants table filterset.
+ * Course participants table filterset.
  *
  * @package    core
  * @category   table
- * @copyright  2020 Andrew Nicols <andrew@nicols.co.uk>
+ * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,13 +31,6 @@ use core_table\local\filter\filterset;
 use core_table\local\filter\integer_filter;
 use core_table\local\filter\string_filter;
 
-/**
- * Participants table filterset.
- *
- * @package    core
- * @copyright  2020 Andrew Nicols <andrew@nicols.co.uk>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 class courseparticipants_filterset extends filterset {
     /**
      * Get the required filters.

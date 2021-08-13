@@ -15,15 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *  tool plugin "Learning Tools Bookmarks" - Version file
+ * tool plugin "Learning Tools Bookmarks" - Version file.
  *
- * @package    ltool_bookmarks
- * @copyright  2021 lmsace
+ * @package   ltool_bookmarks
+ * @copyright bdecent GmbH 2021
+ * @category  autoloading
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_bookmarks';
-$plugin->version = 2021260700;
+$plugin->version = 2021260701;
 $plugin->requires = 2020061501;
+
 

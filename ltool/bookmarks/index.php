@@ -15,19 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Ltool plugin "bookmarks Tools" - string file.
+ * The class defines the Bookmarks ltool.
  *
  * @package   ltool_bookmarks
  * @copyright bdecent GmbH 2021
+ * @category  defined
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined("MOODLE_INTERNAL") || die();
+require_once(dirname(__FILE__) . '/../../../../config.php');
+require_once($CFG->dirroot.'/local/learningtools/learningtools.php');
+require_login();
 
-$string['pluginname'] = "Learning Tools Bookmarks";
-$string['bookmarks:createbookmarks'] = "Create the bookmarks.";
-$string['bookmarks:viewownbookmarks'] = "View the  own bookmarks.";
-$string['bookmarks:manageownbookmarks'] = "Manage the own bookmarks.";
-$string['bookmarks:viewbookmarks'] = "View the others bookmarks.";
-$string['bookmarks:managebookmarks'] = "Manage the others boomarks.";
-$string['bookmarks'] = "Bookmarks";
+/**
+ *  The class defines the Bookmarks ltool
+ */
+class bookmarks extends learningtools {
+
+    /**
+     * Bookmarks name
+     * @return string name
+     *
+     */
+    public function get_tool_name() {
+        return get_string('bookmarks', 'local_learningtools');
+    }
+
+    /**
+     * Bookmarks icon
+     */
+    public function get_tool_icon() {
+
+        return 'fa fa-bookmark';
+    }
+
+}
