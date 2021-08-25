@@ -17,8 +17,7 @@
 /**
  * Define plugin capabilities.
  *
- * @package   ltool_notes
- * @category  DB
+ * @package   ltool_note
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

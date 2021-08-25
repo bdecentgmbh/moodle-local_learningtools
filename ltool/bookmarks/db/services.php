@@ -18,7 +18,6 @@
  * Define plugin services.
  *
  * @package   ltool_bookmarks
- * @category  Services
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

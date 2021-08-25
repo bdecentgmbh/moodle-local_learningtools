@@ -16,8 +16,7 @@
 
 /**
  * Define uninstall function
- * @category   Uninstall
- * @package    lttool_note
+ * @package    ltool_note
  * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * lttool_note uninstall function.
+ * ltool_note uninstall function.
  *
  * @return void
  */
@@ -33,7 +32,15 @@ function xmldb_ltool_note_uninstall() {
     global $DB;
 
     $plugin = 'note';
-    if ($DB->record_exists('learningtools_products', array('shortname' => $plugin)) ) {
-        $DB->delete_records('learningtools_products', array('shortname' => $plugin));
+    if ($DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
+        $DB->delete_records('local_learningtools_products', array('shortname' => $plugin));
     }
+    // Delete the table.
+    $table = "learningtools_note";
+    $dbman = $DB->get_manager();
+    if ($dbman->table_exists($table)) {
+        $droptable = new xmldb_table($table);
+        $dbman->drop_table($droptable);
+    }
+
 }

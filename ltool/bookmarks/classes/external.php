@@ -28,6 +28,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/externallib.php');
 
+/**
+ * define external class.
+ */
 class external extends \external_api {
     /**
      * Parameters defintion to get added user bookmarks.
@@ -46,15 +49,16 @@ class external extends \external_api {
 
     /**
      * Save the user bookmarks.
-     * @param int context id
-     * @param mixed user data
+     * @param int $contextid contextid
+     * @param mixed $formdata user data
      * @return array Bookmarks save info details.
      */
     public static function save_userbookmarks($contextid, $formdata) {
         global $CFG;
         require_once($CFG->dirroot.'/local/learningtools/ltool/bookmarks/lib.php');
         // Parse serialize form data.
-        parse_str($formdata, $data);
+        $data = json_decode($formdata);
+        $data = (array) $data;
         return user_save_bookmarks($contextid, $data);
     }
 

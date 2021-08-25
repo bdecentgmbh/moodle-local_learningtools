@@ -16,8 +16,7 @@
 
 /**
  * Define install function
- * @category   Install
- * @package    lttool_bookmarks
+ * @package    ltool_bookmarks
  * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,20 +28,19 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @return void
  */
-
 function xmldb_ltool_bookmarks_install() {
     global $DB;
 
     $plugin = 'bookmarks';
     $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
-    if (!$DB->record_exists('learningtools_products', array('shortname' => $plugin)) ) {
-        $lasttool = $DB->get_record_sql(' SELECT id FROM {learningtools_products} ORDER BY id DESC LIMIT 1', null);
+    if (!$DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
+        $lasttool = $DB->get_record_sql(' SELECT id FROM {local_learningtools_products} ORDER BY id DESC LIMIT 1', null);
         $record = new stdClass;
         $record->shortname = $plugin;
         $record->name = $strpluginname;
         $record->status = 1;
         $record->sort = (!empty($lasttool)) ? $lasttool->id + 1 : 1;
         $record->timecreated = time();
-        $DB->insert_record('learningtools_products', $record);
+        $DB->insert_record('local_learningtools_products', $record);
     }
 }

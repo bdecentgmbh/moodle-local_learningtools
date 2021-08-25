@@ -27,12 +27,16 @@ namespace ltool_note\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Notes tool call to create the notes event.
+ */
 class ltnote_created extends \core\event\base {
 
     /**
      * Init method.
      */
     protected function init() {
+        $this->data['objecttable'] = 'learningtools_note';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
     }
@@ -52,6 +56,20 @@ class ltnote_created extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' created the note for the ltnote.";
+        return "The user with id '$this->userid' has noted for the course with id '$this->courseid'.";
     }
+
+    /**
+     * Custom validation.
+     *
+     * @throws \coding_exception
+     * @return void
+     */
+    protected function validate_data() {
+        parent::validate_data();
+        if (!isset($this->other['pagetype'])) {
+            throw new \coding_exception('The \'pagetype\' value must be set in other.');
+        }
+    }
+
 }

@@ -19,7 +19,6 @@
  *
  * @package   ltool_bookmarks
  * @copyright bdecent GmbH 2021
- * @category  autoloading
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -43,12 +42,12 @@ require_once($CFG->libdir. '/tablelib.php');
 class bookmarkstool_table extends \table_sql {
 
     /**
-     * Fetch bookmarks list
-     * @param mixed $tableid
-     * @param int courseid
-     * @param int userid
-     * @param bool teacher status
-     * @param array url params
+     * Fetch bookmarks list.
+     * @param mixed $tableid idendifiy unique table id
+     * @param int $courseid courseid
+     * @param int $child userid
+     * @param bool $teacher teacher status
+     * @param array $urlparams url params
      * @return void
      */
     public function __construct($tableid, $courseid, $child, $teacher, $urlparams) {
@@ -89,8 +88,8 @@ class bookmarkstool_table extends \table_sql {
 
     /**
      * The icon column displays in the list of the bookmarks.
-     * @param mixed $row
-     * @return string result
+     * @param \stdclass $row
+     * @return string icon of bookmarks tool
      */
     public function col_icon(stdclass $row) {
         return '<i class="fa fa-bookmark">';
@@ -98,17 +97,16 @@ class bookmarkstool_table extends \table_sql {
 
     /**
      * The instance name column displays in the list of the bookmarks.
-     * @param  mixed $row
-     * @return string result
+     * @param \stdclass $row
+     * @return string instance bookmark
      */
     public function col_course(stdclass $row) {
-
         $data = check_instanceof_block($row);
         return $this->get_instance_bookmark($data);
     }
     /**
      * List of the bookmarks get the instance name column.
-     * @param  mixed $row
+     * @param object $data instance of bookmark data
      * @return string result
      */
     public function get_instance_bookmark($data) {
@@ -129,8 +127,8 @@ class bookmarkstool_table extends \table_sql {
 
     /**
      * The instance info column displays in the list of the bookmarks.
-     * @param  mixed $row
-     * @return string result
+     * @param \stdclass $row
+     * @return string display the bookmark instance info
      */
     public function col_bookmarkinfo(stdclass $row) {
         $data = check_instanceof_block($row);
@@ -138,8 +136,7 @@ class bookmarkstool_table extends \table_sql {
     }
     /**
      * Get the instance info details.
-     * @param object instance data
-     * @param string instance info
+     * @param object $data instance data
      */
     public function get_instance_bookmarkinfo($data) {
          $bookmarkinfo = '';
@@ -158,8 +155,8 @@ class bookmarkstool_table extends \table_sql {
     }
     /**
      * The started time column displays in the list of the bookmarks.
-     * @param mixed $row
-     * @return mixed result
+     * @param \stdclass $row
+     * @return mixed display the bookmarks date
      */
     public function col_timecreated(stdclass $row) {
         return userdate($row->timecreated, '%B %d, %Y, %I:%M %p', '', false);
@@ -167,10 +164,9 @@ class bookmarkstool_table extends \table_sql {
 
     /**
      * The delete action column displays in the list of the bookmarks.
-     * @param  mixed $row
-     * @return string result
+     * @param \stdclass $row
+     * @return string Display the delete action bookmarks
      */
-
     public function col_delete(stdclass $row) {
         global $OUTPUT, $USER;
         $context = context_system::instance();
@@ -222,27 +218,10 @@ class bookmarkstool_table extends \table_sql {
 
     /**
      * The view action column displays in the list of the bookmarks.
-     * @param mixed $row
-     * @return mixed result
+     * @param \stdclass $row
+     * @return string view the bookmarks url
      */
     public function col_view(stdclass $row) {
-        global $OUTPUT;
-        $data = check_instanceof_block($row);
-        $viewurl = '';
-        if ($data->instance == 'course') {
-            $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
-            $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
-        } else if ($data->instance == 'user') {
-            $viewurl = 'user';
-        } else if ($data->instance == 'mod') {
-            $modname = get_module_name($data, true);
-            $modurl = new moodle_url("/mod/$modname/view.php", array('id' => $data->coursemodule));
-            $viewurl = $OUTPUT->single_button($modurl, get_string('viewactivity', 'local_learningtools'), 'get');
-        } else if ($data->instance == 'system') {
-             $viewurl = 'system';
-        } else if ($data->instance == 'block') {
-             $viewurl = 'block';
-        }
-        return $viewurl;
+        return get_instance_tool_view_url($row);
     }
 }

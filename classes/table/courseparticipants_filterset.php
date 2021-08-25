@@ -16,9 +16,6 @@
 
 /**
  * Course participants table filterset.
- *
- * @package    core
- * @category   table
  * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -31,7 +28,15 @@ use core_table\local\filter\filterset;
 use core_table\local\filter\integer_filter;
 use core_table\local\filter\string_filter;
 
+/**
+ * Participants table filterset.
+ *
+ * @package    local_learningtools
+ * @copyright  bdecent GmbH 2021
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class courseparticipants_filterset extends filterset {
+
     /**
      * Get the required filters.
      *

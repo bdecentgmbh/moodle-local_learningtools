@@ -25,12 +25,13 @@
 
 require_once(dirname(__FILE__).'/../../../../config.php');
 require_once($CFG->dirroot. '/local/learningtools/lib.php');
+require_once(dirname(__FILE__).'/lib.php');
 require_login();
 require_note_status();
-
-$context = context_system::instance();
-$title = get_string('note', 'local_learningtools');
+$title = get_string('courseparticipants', 'local_learningtools');
 $courseid = required_param('courseid', PARAM_INT);
+$context = context_course::instance($courseid);
+require_capability('ltool/note:viewnote', $context);
 $PAGE->set_context($context);
 $PAGE->set_url('/local/learningtools/ltool/note/userslist.php');
 $PAGE->set_title($title);

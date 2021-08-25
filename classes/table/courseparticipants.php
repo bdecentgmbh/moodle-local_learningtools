@@ -15,8 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * List of course participants table.
  * @package   local_learningtools
- * @category  table
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,8 +28,8 @@ use moodle_url;
 /**
  * List of course participants table.
  */
-
 class courseparticipants extends \core_user\table\participants {
+
     /**
      * Fetch completions users list.
      *
@@ -117,7 +117,8 @@ class courseparticipants extends \core_user\table\participants {
 
     /**
      * Bookmarks instance view url.
-     * @param int userid
+     * @param int $userid user id
+     * @return string HTML fragment
      */
     public function get_viewreport_url($userid) {
         global $OUTPUT;

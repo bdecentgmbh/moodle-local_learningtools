@@ -26,7 +26,9 @@
 namespace ltool_bookmarks\event;
 
 defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Bookmarks tool call to view event.
+ */
 class ltbookmarks_viewed extends \core\event\base {
 
     /**
@@ -52,6 +54,10 @@ class ltbookmarks_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed the bookmarks for the ltbookmarks.";
+
+        if ($this->relateduserid) {
+            return "The related user with id '$this->relateduserid' has viewed the user with id '$this->userid' bookmarks.";
+        }
+        return "The user with id '$this->userid' has viewed the bookmarks.";
     }
 }

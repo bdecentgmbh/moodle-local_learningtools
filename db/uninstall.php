@@ -15,38 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Notes ltool defined class.
- *
- * @package   ltool_note
- * @copyright bdecent GmbH 2021
- * @category  defined
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Define uninstall function
+ * @package    local_learningtools
+ * @copyright  bdecent GmbH 2021
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__) . '/../../../../config.php');
-require_once($CFG->dirroot.'/local/learningtools/learningtools.php');
-require_login();
+defined('MOODLE_INTERNAL') || die();
 
 /**
- *  Note ltool define class
+ * local_learningtools uninstall function.
+ *
+ * @return void
  */
-class note extends learningtools {
-
-    /**
-     * Note name
-     * @return string name
-     *
-     */
-    public function get_tool_name() {
-        return get_string('note', 'local_learningtools');
+function xmldb_local_learningtools_uninstall() {
+    global $DB;
+    $table = "local_learningtools_products";
+    $dbman = $DB->get_manager();
+    if ($dbman->table_exists($table)) {
+        $droptable = new xmldb_table($table);
+        $dbman->drop_table($droptable);
     }
-    /**
-     * Note icon
-     * @return string icon
-     */
-    public function get_tool_icon() {
-
-        return 'fa fa-pencil';
-    }
-
 }

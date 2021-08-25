@@ -19,7 +19,6 @@
  *
  * @package   ltool_bookmarks
  * @copyright bdecent GmbH 2021
- * @category  filter
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace ltool_bookmarks;
@@ -33,13 +32,15 @@ require_once($CFG->dirroot.'/local/learningtools/lib.php');
  * List of the user bookmarks filter action.
  */
 class bookmarkstool_filter {
+
     /**
-     * @param int current user id
-     * @param int course id
-     * @param int other user id
-     * @param int teacher view stauts
-     * @param array page url parameters
-     * @param string base url
+     * Loads bookmarks tools info.
+     * @param int $userid current userid
+     * @param int $courseid course id
+     * @param int $childid child user or other user
+     * @param int $teacher teacher view stauts
+     * @param array $urlparams page url parameters
+     * @param string $baseurl base url
      */
     public function __construct($userid, $courseid, $childid, $teacher, $urlparams, $baseurl) {
         $this->userid = $userid;
@@ -65,9 +66,9 @@ class bookmarkstool_filter {
 
     /**
      * Displays the course selector info.
-     * @param int select course id.
-     * @param string user select sql
-     * @param array user params
+     * @param int $selectcourse select course id.
+     * @param string $usercondition user select sql
+     * @param array $userparams user params
      * @return string course selector html.
      */
     public function get_course_selector($selectcourse, $usercondition, $userparams) {
@@ -145,14 +146,14 @@ class bookmarkstool_filter {
 
     /**
      * bookmarks filter main function
-     * @param string record condition sql
-     * @param array record conditon params
-     * @param string sort type
-     * @param int current records page count
-     * @param int display perpage info
+     * @param string $sqlconditions condition query
+     * @param array $sqlparams record conditon params
+     * @param string $sort sort order
+     * @param int $sorttype sort type
+     * @param int $page current records page count
+     * @param int $perpage display perpage info
      * @return array available records to display bookmarks list data.
      */
-
     public function get_main_body($sqlconditions, $sqlparams, $sort, $sorttype, $page, $perpage) {
         global $DB, $OUTPUT;
 
@@ -197,7 +198,7 @@ class bookmarkstool_filter {
 
     /**
      * List of the bookmarks get the instance name column.
-     * @param mixed $row
+     * @param object $data
      * @return string result
      */
     public function get_instance_bookmark($data) {
@@ -218,7 +219,7 @@ class bookmarkstool_filter {
 
     /**
      * List of the bookmarks get info column.
-     * @param  mixed $row
+     * @param \stdclass $data instance data
      * @return string result
      */
     public function get_instance_bookmarkinfo($data) {
@@ -239,8 +240,8 @@ class bookmarkstool_filter {
 
     /**
      * List of the bookmarks get the started time.
-     * @param  mixed $row
-     * @return mixed result
+     * @param \stdclass $record
+     * @return string result
      */
     public function get_bookmark_time($record) {
         return userdate($record->timecreated, '%B %d, %Y, %I:%M %p', '', false);
@@ -248,10 +249,9 @@ class bookmarkstool_filter {
 
     /**
      * List of the bookmarks get the delete action.
-     * @param  mixed $row
+     * @param  stdclass $row
      * @return string result
      */
-
     public function get_bookmark_deleteinfo($row) {
         global $OUTPUT, $USER;
         $context = \context_system::instance();
@@ -278,13 +278,13 @@ class bookmarkstool_filter {
             }
 
             if (has_capability($capability, $context, $particularuser)) {
-                $strdelete = get_string('delete');
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
                 $deleteparams = array('delete' => $row->id, 'sesskey' => sesskey(),
-                    'courseid' => $this->courseid);
+                'courseid' => $this->courseid);
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
                 $url = new moodle_url($returnurl, $deleteparams);
+                $strdelete = get_string('delete');
                 $buttons[] = \html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
                 $buttonhtml = implode(' ', $buttons);
                 return $buttonhtml;
@@ -292,12 +292,12 @@ class bookmarkstool_filter {
 
         } else {
             if (has_capability('ltool/bookmarks:manageownbookmarks', $context)) {
-                $strdelete = get_string('delete');
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
                 $deleteparams = array('delete' => $row->id, 'sesskey' => sesskey());
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
                 $url = new moodle_url($returnurl, $deleteparams);;
+                $strdelete = get_string('delete');
                 $buttons[] = \html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
                 $buttonhtml = implode(' ', $buttons);
                 return $buttonhtml;
@@ -311,26 +311,9 @@ class bookmarkstool_filter {
      * @param  mixed $row
      * @return mixed result
      */
-
     public function get_bookmark_viewinfo($row) {
-        global $OUTPUT;
-        $data = check_instanceof_block($row);
-        $viewurl = '';
-        if ($data->instance == 'course') {
-            $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
-            $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
-        } else if ($data->instance == 'user') {
-            $viewurl = 'user';
-        } else if ($data->instance == 'mod') {
-            $modname = get_module_name($data, true);
-            $modurl = new moodle_url("/mod/$modname/view.php", array('id' => $data->coursemodule));
-            $viewurl = $OUTPUT->single_button($modurl, get_string('viewactivity', 'local_learningtools'), 'get');
-        } else if ($data->instance == 'system') {
-            $viewurl = 'system';
-        } else if ($data->instance == 'block') {
-            $viewurl = 'block';
-        }
-        return $viewurl;
+
+        return get_instance_tool_view_url($row);
     }
 
 }

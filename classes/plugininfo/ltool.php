@@ -19,7 +19,6 @@
  *
  * @package   local_learningtools
  * @copyright bdecent GmbH 2021
- * @category  autoloading
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace local_learningtools\plugininfo;
@@ -32,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * Ltools subplugin define classes.
  */
 class ltool extends base {
+
     /**
      * Returns the information about plugin availability
      *

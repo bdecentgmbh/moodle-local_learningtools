@@ -51,19 +51,19 @@ $strname      = get_string('name');
 // Show/hide tools.
 if (!empty($action) && !empty($tool)) {
     if ($action == 'disable') {
-        $DB->set_field('learningtools_products', 'status', 0, array('shortname' => $tool));
+        $DB->set_field('local_learningtools_products', 'status', 0, array('shortname' => $tool));
     } else if ($action == 'enable') {
-        $DB->set_field('learningtools_products', 'status', 1, array('shortname' => $tool));
+        $DB->set_field('local_learningtools_products', 'status', 1, array('shortname' => $tool));
     } else if ($action == 'up') {
-        $curtool = $DB->get_record('learningtools_products', array('shortname' => $tool));
-        $prevtool = $DB->get_record('learningtools_products', array('sort' => $curtool->sort - 1));
-        $DB->set_field('learningtools_products', 'sort', $prevtool->sort, array('shortname' => $curtool->shortname));
-        $DB->set_field('learningtools_products', 'sort', $curtool->sort, array('shortname' => $prevtool->shortname));
+        $curtool = $DB->get_record('local_learningtools_products', array('shortname' => $tool));
+        $prevtool = $DB->get_record('local_learningtools_products', array('sort' => $curtool->sort - 1));
+        $DB->set_field('local_learningtools_products', 'sort', $prevtool->sort, array('shortname' => $curtool->shortname));
+        $DB->set_field('local_learningtools_products', 'sort', $curtool->sort, array('shortname' => $prevtool->shortname));
     } else if ($action = "down") {
-        $basetool = $DB->get_record('learningtools_products', array('shortname' => $tool));
-        $nexttool = $DB->get_record('learningtools_products', array('sort' => $basetool->sort + 1));
-        $DB->set_field('learningtools_products', 'sort', $nexttool->sort, array('shortname' => $basetool->shortname));
-        $DB->set_field('learningtools_products', 'sort', $basetool->sort, array('shortname' => $nexttool->shortname));
+        $basetool = $DB->get_record('local_learningtools_products', array('shortname' => $tool));
+        $nexttool = $DB->get_record('local_learningtools_products', array('sort' => $basetool->sort + 1));
+        $DB->set_field('local_learningtools_products', 'sort', $nexttool->sort, array('shortname' => $basetool->shortname));
+        $DB->set_field('local_learningtools_products', 'sort', $basetool->sort, array('shortname' => $nexttool->shortname));
     }
     redirect($pageurl);
 }
@@ -71,7 +71,7 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('learningtools', 'local_learningtools'));
 
 // Print the table of all installed ltools plugins.
-$table = new flexible_table('learningtools_products_info');
+$table = new flexible_table('learningtool_products_info');
 $table->define_columns(array('name', 'version', 'status', 'updown', 'uninstall'));
 $table->define_headers(array($strname, $strversion, $strenable.'/'.$strdisable,
 $strup.'/'.$strdown, $uninstallplug));
@@ -85,7 +85,7 @@ $pluginman = core_plugin_manager::instance();
 
 $spacer = $OUTPUT->pix_icon('spacer', '', 'moodle', array('class' => 'iconsmall'));
 $cnt = 0;
-$learningtools = $DB->get_records('learningtools_products', null, 'sort');
+$learningtools = $DB->get_records('local_learningtools_products', null, 'sort');
 
 foreach ($learningtools as $tool) {
     $plugin = $tool->shortname;
@@ -103,9 +103,9 @@ foreach ($learningtools as $tool) {
 
     // Plugin enable/disable.
     $status = '-';
-    $lttool = $DB->get_record('learningtools_products', array('shortname' => $plugin));
+    $lttool = $DB->get_record('local_learningtools_products', array('shortname' => $plugin));
     if ($lttool->status) {
-        $aurl = new moodle_url($PAGE->url, array('action ' => 'disable', 'tool' => $plugin));
+        $aurl = new moodle_url($PAGE->url, array('action' => 'disable', 'tool' => $plugin));
         $status = "<a href=\"$aurl\">";
         $status .= $OUTPUT->pix_icon('t/hide', $strdisable) . '</a>';
         $enabled = true;

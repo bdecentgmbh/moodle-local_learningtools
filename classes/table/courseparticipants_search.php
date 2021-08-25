@@ -19,7 +19,6 @@
  *
  * @package    local_learningtools
  * @copyright  bdecent GmbH 2021
- * @category   table
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -41,7 +40,6 @@ require_once($CFG->dirroot . '/user/lib.php');
 /**
  * Class used to fetch participants based on a filterset.
  */
-
 class courseparticipants_search extends \core_user\table\participants_search {
 
 

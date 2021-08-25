@@ -24,6 +24,8 @@
 
 require_once(dirname(__FILE__).'/../../../../config.php');
 require_once($CFG->dirroot. '/local/learningtools/lib.php');
+require_once(dirname(__FILE__).'/lib.php');
+
 require_login();
 require_note_status();
 
@@ -76,7 +78,9 @@ if ($coursebase) {
     $setcontext = context_user::instance($USER->id);
     $title = get_string('note', 'local_learningtools');
 }
+
 $PAGE->set_context($setcontext);
+$PAGE->set_pagelayout('base');
 $PAGE->set_url('/local/learningtools/ltool/note/list.php');
 $PAGE->set_title($title);
 
@@ -149,13 +153,23 @@ if ($delete && confirm_sesskey()) {
         die;
 
     } else if (data_submitted()) {
-
+        $deleterecord = $DB->get_record('learningtools_note', array('id' => $delete));
+        $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
         if ($DB->delete_records('learningtools_note', ['id' => $delete])) {
 
+            $deleteeventparams = [
+                'objectid' => $deleterecord->id,
+                'courseid' => $deleterecord->course,
+                'context' => $deleteeventcontext,
+                'other' => [
+                    'pagetype' => $deleterecord->pagetype,
+                ]
+            ];
+            if ($childid) {
+                $deleteeventparams = array_merge($deleteeventparams, ['relateduserid' => $childid]);
+            }
             // Add event to user delete the bookmark.
-            $event = \ltool_note\event\ltnote_deleted::create([
-                'context' => $context,
-            ]);
+            $event = \ltool_note\event\ltnote_deleted::create($deleteeventparams);
             $event->trigger();
 
             \core\session\manager::gc(); // Remove stale sessions.
@@ -193,8 +207,13 @@ $blockinstance = new \ltool_note\notetool_filter($USER->id, $selectcourse,
 echo $blockinstance->get_main_body();
 echo $OUTPUT->footer();
 
-// Add event to user view the note.
-$event = \ltool_note\event\ltnote_viewed::create([
+$createeventparams = [
     'context' => $context,
-]);
+];
+
+if ($childid) {
+    $createeventparams = array_merge($createeventparams, ['relateduserid' => $childid]);
+}
+// Add event to user view the note.
+$event = \ltool_note\event\ltnote_viewed::create($createeventparams);
 $event->trigger();

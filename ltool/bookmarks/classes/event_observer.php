@@ -17,40 +17,39 @@
 /**
  * Event observer function  definition and returns.
  *
- * @package   local_learningtools
+ * @package   ltool_bookmarks
  * @copyright bdecent GmbH 2021
- * @category  event observer
+ * @category  event
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace local_learningtools;
+namespace ltool_bookmarks;
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
+require_once(dirname(__DIR__).'/lib.php');
 
+/**
+ * Event observer class define.
+ */
 class event_observer {
 
     /**
      * Callback function will delete the course in the table.
-     * @params object event data
-     * @return void
+     * @param object $event event data
+     * @return void course notes deleted records action.
      */
-    public static function learningtools_coursedata_deleteaction($event) {
+    public static function bookmarks_coursedata_deleteaction($event) {
         $eventdata = $event->get_data();
         $courseid = $eventdata['objectid'];
-        // Delete the bookmarks and notes in the course.
         delete_course_bookmarks($courseid);
-        delete_course_notes($courseid);
     }
 
     /**
      * Callback function will delete the course module in the table.
-     * @params object event data
+     * @param object $event event data
      * @return void
      */
-    public static function learningtools_moduledata_deleteaction($event) {
+    public static function bookmarks_moduledata_deleteaction($event) {
         $eventdata = $event->get_data();
         $coursemodule = $eventdata['objectid'];
-        // Delete the bookmarks and notes in the course.
         delete_module_bookmarks($coursemodule);
-        delete_module_notes($coursemodule);
     }
 }

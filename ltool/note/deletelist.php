@@ -52,23 +52,31 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
 
-        $optionsyes = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey());
-        $optionsyes = array_merge($optionsyes, ['returnurl' => $returnurl]);
-        $deleteurl = new moodle_url($pageurl, $optionsyes);
-        $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
+        $deleteoptions = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey());
+        $deleteoptions = array_merge($deleteoptions, ['returnurl' => $returnurl]);
+        $deletenoteurl = new moodle_url($pageurl, $deleteoptions);
+        $deletenotebutton = new single_button($deletenoteurl, get_string('delete'), 'post');
 
-        echo $OUTPUT->confirm(get_string('deletemsgcheckfull', 'local_learningtools'), $deletebutton, $pageurl);
+        echo $OUTPUT->confirm(get_string('deletemsgcheckfull', 'local_learningtools'), $deletenotebutton, $pageurl);
         echo $OUTPUT->footer();
         die;
 
     } else if (data_submitted()) {
 
+        $deleterecord = $DB->get_record('learningtools_note', array('id' => $delete));
+        $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
         if ($DB->delete_records('learningtools_note', ['id' => $delete])) {
+            $deleteeventparams = [
+                'objectid' => $deleterecord->id,
+                'courseid' => $deleterecord->course,
+                'context' => $deleteeventcontext,
+                'other' => [
+                    'pagetype' => $deleterecord->pagetype,
+                ]
+            ];
 
             // Add event to user delete the bookmark.
-            $event = \ltool_note\event\ltnote_deleted::create([
-                'context' => $context,
-            ]);
+            $event = \ltool_note\event\ltnote_deleted::create($deleteeventparams);
             $event->trigger();
 
             \core\session\manager::gc(); // Remove stale sessions.

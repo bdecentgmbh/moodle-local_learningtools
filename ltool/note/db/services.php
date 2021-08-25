@@ -17,8 +17,7 @@
 /**
  * Define plugin services.
  *
- * @package   ltool_notes
- * @category  Services
+ * @package   ltool_note
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -19,12 +19,11 @@
  *
  * @package   ltool_note
  * @copyright bdecent GmbH 2021
- * @category  autoloading
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_note';
-$plugin->version = 2021260700;
+$plugin->version = 2021082500;
 $plugin->requires = 2020061501;
 

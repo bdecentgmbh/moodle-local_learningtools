@@ -84,10 +84,21 @@ if ($edit && confirm_sesskey()) {
             if ($usernote != $exitnote->note) {
                     $DB->set_field('learningtools_note', 'note', $usernote, array('id' => $edit));
                     $DB->set_field('learningtools_note', 'timemodified', time(), array('id' => $edit));
+                    $editeventcontext = context::instance_by_id($exitnote->contextid, MUST_EXIST);
                     // Add event to user edit the note.
-                    $event = \ltool_note\event\ltnote_edited::create([
-                        'context' => $context,
-                    ]);
+                    $editeventparams = [
+                        'objectid' => $exitnote->id,
+                        'courseid' => $exitnote->course,
+                        'context' => $editeventcontext,
+                        'other' => [
+                            'pagetype' => $exitnote->pagetype,
+                        ]
+                    ];
+
+                    if ($childid) {
+                        $editeventparams = array_merge($editeventparams, ['relateduserid' => $childid]);
+                    }
+                    $event = \ltool_note\event\ltnote_edited::create($editeventparams);
                     $event->trigger();
                     redirect($baseurl, get_string('successeditnote', 'local_learningtools'),
                         null, \core\output\notification::NOTIFY_SUCCESS);

@@ -15,38 +15,44 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The class defines the Bookmarks ltool.
+ * Ltool overwrite a tools info.
  *
- * @package   ltool_bookmarks
+ * @package   local_learningtools
  * @copyright bdecent GmbH 2021
- * @category  defined
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-require_once(dirname(__FILE__) . '/../../../../config.php');
-require_once($CFG->dirroot.'/local/learningtools/learningtools.php');
-require_login();
+namespace local_learningtools;
 
 /**
- *  The class defines the Bookmarks ltool
+ * Define learningtools abstract base class to extend by the tools subplugins..
  */
-class bookmarks extends learningtools {
+abstract class learningtools {
 
     /**
-     * Bookmarks name
-     * @return string name
+     * Tool Name.
+     */
+    abstract public function get_tool_name();
+
+    /**
+     * Tool icon.
+     */
+    abstract public function get_tool_icon();
+
+    /**
+     * Get the available data records for the ltool.
+     */
+    abstract public function get_tool_records();
+
+    /**
+     * Fetch available tool data from subplugin. By default it returns the tool icon and name.
      *
+     * @return array tool info
      */
-    public function get_tool_name() {
-        return get_string('bookmarks', 'local_learningtools');
+    public function get_tool_info() {
+        global $OUTPUT;
+        $data = [];
+        $data['name'] = $this->get_tool_name();
+        $data['icon'] = $this->get_tool_icon();
+        return $data;
     }
-
-    /**
-     * Bookmarks icon
-     */
-    public function get_tool_icon() {
-
-        return 'fa fa-bookmark';
-    }
-
 }

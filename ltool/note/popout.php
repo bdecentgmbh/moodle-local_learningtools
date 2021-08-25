@@ -24,7 +24,7 @@
 
 require_once(dirname(__FILE__).'/../../../../config.php');
 require_once($CFG->dirroot. '/local/learningtools/ltool/note/lib.php');
-
+require_once(dirname(__FILE__).'/lib.php');
 require_login();
 require_note_status();
 

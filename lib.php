@@ -49,64 +49,44 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
     }
     return true;
 }
+
 /**
  * Adds ltools action in each page to the given navigation node if caps are met.
  *
- * @param navigation_node $navigationnode The navigation node to add the question branch to
- * @param object $context
+ * @param object $settingnav navigation node
+ * @param object $context context
  * @return navigation_node Returns the question branch that was added
  */
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
 
-    global $PAGE, $CFG, $USER, $COURSE;
+    global $PAGE, $USER;
     $context = context_system::instance();
     $ltoolsjs = array();
+    // Content of fab button html.
     $fabbuttonhtml = get_learningtools_info();
     $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
-    $ltoolsjs['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $PAGE->pagetype, $USER->id);
-    $ltoolsjs['notestrigger'] = optional_param('notes', '', PARAM_TEXT);
-    $PAGE->requires->data_for_js('fabbuttonhtml', $fabbuttonhtml);
     $PAGE->requires->data_for_js('ltools', $ltoolsjs);
-    $viewbookmarks = false;
-    $viewnote = false;
-    if (has_capability('ltool/bookmarks:viewownbookmarks', $context) && is_bookmarks_status()) {
-        $viewbookmarks = true;
-    }
-    if (has_capability('ltool/note:viewownnote', $context) && is_note_status()) {
-        $viewnote = true;
-    }
-
     $loggedin = false;
     if (isloggedin() && !isguestuser()) {
         $loggedin = true;
     }
-    $viewcapability = array('viewbookmarks' => $viewbookmarks, 'viewnote' => $viewnote, 'loggedin' => $loggedin);
+    $viewcapability = array('loggedin' => $loggedin, 'fabbuttonhtml' => $fabbuttonhtml);
     $PAGE->requires->js_call_amd('local_learningtools/learningtools', 'init', $viewcapability);
-
-    $params['course'] = $COURSE->id;
-    $params['contextlevel'] = $PAGE->context->contextlevel;
-    $params['pagetype'] = $PAGE->pagetype;
-    $params['pageurl'] = $PAGE->url->out(false);
-    $params['user'] = $USER->id;
-    $params['contextid'] = $PAGE->context->id;
-    $params['title'] = $PAGE->title;
-    $params['heading'] = $PAGE->heading;
-
-    if (file_exists($CFG->dirroot.'/local/learningtools/ltool/note/lib.php')) {
-        $PAGE->requires->js_call_amd('ltool_note/learningnote', 'init', array($PAGE->context->id, $params));
+    // List of subplugins.
+    // Load available subplugins javascript.
+    $subplugins = local_learningtools_get_subplugins();
+    foreach ($subplugins as $shortname => $plugin) {
+        if (method_exists($plugin, 'load_js')) {
+            $plugin->load_js();
+        }
     }
-    if (file_exists($CFG->dirroot.'/local/learningtools/ltool/bookmarks/lib.php')) {
-        $PAGE->requires->js_call_amd('ltool_bookmarks/learningbookmarks', 'init', array($PAGE->context->id));
-    }
-
 }
 
 /**
  * Get the type of instance.
- * @param object list of the page info.
+ * @param object $record list of the page info.
  * @return object instance object.
  */
-
 function check_instanceof_block($record) {
 
     $data = new stdClass;
@@ -132,8 +112,8 @@ function check_instanceof_block($record) {
 }
 /**
  * Get the course module id.
- * @param int context id
- * @parma int context level
+ * @param int $contextid context id
+ * @param int $contextlevel context level
  * @return int course module id
  */
 function get_moduleid($contextid, $contextlevel) {
@@ -149,7 +129,7 @@ function get_moduleid($contextid, $contextlevel) {
 
 /**
  * Get the course module Id.
- * @param array list of the page info.
+ * @param array $record list of the page info.
  * @return int course module id.
  */
 function get_coursemodule_id($record) {
@@ -160,11 +140,11 @@ function get_coursemodule_id($record) {
 }
 /**
  * Get the courses name.
- * @param array course ids
- * @param string pageurl
- * @param int course selected
- * @param int userid
- * @param int courseid
+ * @param array $courses courseids
+ * @param string $url page url
+ * @param int $selectcourse selected course id
+ * @param int $userid user id.
+ * @param int $usercourseid  course id.
  * @return array list of the course info.
  */
 function get_courses_name($courses, $url = '', $selectcourse = 0, $userid= 0, $usercourseid = 0) {
@@ -205,8 +185,8 @@ function get_courses_name($courses, $url = '', $selectcourse = 0, $userid= 0, $u
 
 /**
  * Get the course name.
- * @param int course id.
- * @param string course name.
+ * @param int $courseid course id
+ * @return string course name
  */
 function get_course_name($courseid) {
 
@@ -217,8 +197,8 @@ function get_course_name($courseid) {
 
 /**
  * Get the course category name.
- * @param int course id.
- * @param string category name.
+ * @param int $courseid course id.
+ * @return string category name.
  */
 function get_course_categoryname($courseid) {
 
@@ -229,9 +209,9 @@ function get_course_categoryname($courseid) {
 
 /**
  * Get the course module name
- * @param object instance of the page.
- * @param bool return which type of name.
- * @param string modulename | instance name
+ * @param object $data instance data
+ * @param bool $mod return which type of name
+ * @return string modulename | instance name
  */
 function get_module_name($data, $mod = false) {
     global $DB;
@@ -247,11 +227,11 @@ function get_module_name($data, $mod = false) {
 
 /**
  * Get the course module include with section.
- * @param object instance of the page.
- * @param string ltool type.
+ * @param object $data instance of the page.
+ * @param string $type ltool type.
  * @return string instance of coursemodule name.
  */
-function get_module_coursesection($data, $type = 'bookmark') {
+function get_module_coursesection($data, $type = '') {
     $coursename = get_course_name($data->courseid);
     $section = get_mod_section($data->courseid, $data->coursemodule);
     if ($type == 'note') {
@@ -263,8 +243,8 @@ function get_module_coursesection($data, $type = 'bookmark') {
 
 /**
  * Get the course module current section.
- * @param int course id.
- * @param int coursemodule id.
+ * @param int $courseid course id
+ * @param int $modid coursemodule id
  * @return string|bool section name.
  */
 function get_mod_section($courseid, $modid) {
@@ -305,37 +285,51 @@ function get_mod_section($courseid, $modid) {
     return '';
 }
 
+
+/**
+ * Get list of available sub plugins.
+ *
+ * @return array $plugins List of available subplugins.
+ */
+function local_learningtools_get_subplugins() {
+    global $DB;
+    $context = context_system::instance();
+    $learningtools = $DB->get_records('local_learningtools_products', array('status' => 1), 'sort');
+    if (!empty($learningtools)) {
+        foreach ($learningtools as $tool) {
+            $capability = 'ltool/'.$tool->shortname.':create'. $tool->shortname;
+            if (has_capability($capability, $context)) {
+                $plugin = 'ltool_'.$tool->shortname;
+                $classname = "\\$plugin\\$tool->shortname";
+                if (class_exists($classname)) {
+                    $plugins[$tool->shortname] = new $classname();
+                }
+            }
+        }
+        return isset($plugins) ? $plugins : [];
+    }
+    return [];
+}
+
+
 /**
  * Display fab button html.
  * @return string fab button html content.
  */
 function get_learningtools_info() {
-
-    global $DB, $CFG;
-    $context = context_system::instance();
     $content = '';
 
     $content .= html_writer::start_tag('div', array('class' => 'floating-button'));
     $content .= html_writer::start_tag('div', array('class' => 'list-learningtools'));
-    $learningtools = $DB->get_records('learningtools_products', array('status' => 1), 'sort');
 
-    if (!empty($learningtools)) {
-        foreach ($learningtools as $tool) {
-            $capability = 'ltool/'.$tool->shortname.':create'. $tool->shortname;
-            if (has_capability($capability, $context)) {
-                $location = "$CFG->dirroot/local/learningtools/ltool/$tool->shortname";
-                $class = "$tool->shortname";
-                if (file_exists("$location/index.php")) {
-                    include_once("$location/index.php");
-                    if (class_exists($class)) {
-                        $function  = "get_{$tool->shortname}_info";
-                        $toolobj = new $class();
-                        $content .= $function($toolobj, $tool);
-                    }
-                }
-            }
+    // Get list of ltool sub plugins.
+    $subplugins = local_learningtools_get_subplugins();
+    if (!empty($subplugins)) {
+        foreach ($subplugins as $shortname => $toolobj) {
+            $content .= $toolobj->render_template();
         }
     }
+
     $content .= html_writer::end_tag('div');
             $content .= html_writer::start_tag('button', array("class" => "btn btn-primary", 'id' => 'tool-action-button') );
     $content .= html_writer::start_tag('i', array('class' => 'fa fa-magic'));
@@ -346,90 +340,8 @@ function get_learningtools_info() {
 }
 
 /**
- * Get the bookmarks content.
- * @param object tool info
- * @param object bookmarks plugin info
- * @return string display tool bookmarks plugin html.
- */
-function get_bookmarks_info($toolobj, $tool) {
-    global $CFG, $USER, $COURSE, $PAGE;
-    $data = $toolobj->get_tool_info();
-    $data['toolurl'] = "$CFG->wwwroot/local/learningtools/ltool/$tool->shortname/$tool->shortname"."_info.php";
-    $data['id'] = $tool->shortname;
-    $data['user'] = $USER->id;
-    $data['course'] = $COURSE->id;
-    $data['pageurl'] = $PAGE->url->out(false);
-    $data['pagetype'] = $PAGE->pagetype;
-    $data['coursemodule'] = get_moduleid($PAGE->context->id, $PAGE->context->contextlevel);
-    $data['contextlevel'] = $PAGE->context->contextlevel;
-    $data['contextid'] = $PAGE->context->id;
-    $data['sesskey'] = sesskey();
-    $data['ltbookmark'] = true;
-    $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
-    $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $PAGE->pagetype, $USER->id);
-    return learningtools_render_template($data);
-}
-/**
- * Check the page bookmarks exists or not.
- * @param int page context id
- * @param string page type
- * @param int userid
- * @return bool page bookmarks status
- */
-function check_page_bookmarks_exist($contextid, $pagetype, $userid) {
-    global $DB;
-
-    $pagebookmarks = false;
-    if ($DB->record_exists('learningtools_bookmarks', array('contextid' => $contextid,
-        'pagetype' => $pagetype, 'user' => $userid))) {
-        $pagebookmarks = true;
-    }
-    return $pagebookmarks;
-}
-
-/**
- * Get the notes content.
- * @param object tool info
- * @param object note plugin info
- * @return string display tool note plugin html
- */
-function get_note_info($toolobj, $tool) {
-    global $DB, $PAGE, $USER;
-
-    $args = [];
-    $args['contextid'] = $PAGE->context->id;
-    $args['pagetype'] = $PAGE->pagetype;
-    $args['user'] = $USER->id;
-    $data = $toolobj->get_tool_info();
-    $data['ltnote'] = true;
-    $data['pagenotes'] = get_userpage_countnotes($args);
-    $data['notehovername'] = get_string('createnote', 'local_learningtools');
-    return learningtools_render_template($data);
-}
-/**
- * Get the user pagenotes
- * @param array page info
- * @return int page user notes.
- */
-function get_userpage_countnotes($args) {
-    global $DB;
-    return $DB->count_records('learningtools_note', array('contextid' => $args['contextid'],
-        'pagetype' => $args['pagetype'], 'user' => $args['user']));
-
-}
-
-/**
- * Learning tools template function.
- * @param array template content
- * @param string display html content.
- */
-function learningtools_render_template($data) {
-    global $OUTPUT;
-    return $OUTPUT->render_from_template('local_learningtools/learningtools', $data);
-}
-/**
  * Get the students in course.
- * @param int course id
+ * @param int $courseid course id
  * @return array students user ids.
  */
 function get_students_incourse($courseid) {
@@ -450,8 +362,8 @@ function get_students_incourse($courseid) {
 
 /**
  * Find the logged in user is assigned into any relative roles to the shared user.
- *
- * @param  mixed $childuserid
+ * @param int $childuserid userid
+ * @param string $capability
  * @return object|bool
  */
 function is_parentforchild(int $childuserid, string $capability='') {
@@ -466,8 +378,8 @@ function is_parentforchild(int $childuserid, string $capability='') {
 
 /**
  * Check the tool capability for parents.
- * @param array assign roles.
- * @param string capability
+ * @param array $assignedroles list of the roles.
+ * @param string $capability acces capability.
  * @return bool stauts
  */
 function has_viewtool_capability_role($assignedroles, string $capability) {
@@ -483,101 +395,28 @@ function has_viewtool_capability_role($assignedroles, string $capability) {
     return !empty($result) ? true : false;
 }
 
-
 /**
- * Check the bookmarks status.
- * @return bool
+ * Get the tool instance view url.
+ * @param object $row list of the tool record
+ * @return string view html
  */
-function is_bookmarks_status() {
-    global $DB;
-    $bookmarksrecord = $DB->get_record('learningtools_products', array('shortname' => 'bookmarks'));
-    if (isset($bookmarksrecord->status) && !empty($bookmarksrecord->status)) {
-        return true;
+function get_instance_tool_view_url($row) {
+    global $OUTPUT;
+    $data = check_instanceof_block($row);
+    $viewurl = '';
+    if ($data->instance == 'course') {
+        $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
+        $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
+    } else if ($data->instance == 'user') {
+        $viewurl = 'user';
+    } else if ($data->instance == 'mod') {
+        $modname = get_module_name($data, true);
+        $modurl = new moodle_url("/mod/$modname/view.php", array('id' => $data->coursemodule));
+        $viewurl = $OUTPUT->single_button($modurl, get_string('viewactivity', 'local_learningtools'), 'get');
+    } else if ($data->instance == 'system') {
+        $viewurl = 'system';
+    } else if ($data->instance == 'block') {
+        $viewurl = 'block';
     }
-    return false;
+    return $viewurl;
 }
-
-/**
- * Check the bookmarks view capability
- * @return bool|redirect status
- */
-function require_bookmarks_status() {
-    if (!is_bookmarks_status()) {
-        $url = new moodle_url('/my');
-        redirect($url);
-    }
-    return true;
-}
-
-/**
- * Check the note status.
- * @return bool
- */
-function is_note_status() {
-    global $DB;
-    $noterecord = $DB->get_record('learningtools_products', array('shortname' => 'note'));
-    if (isset($noterecord->status) && !empty($noterecord->status)) {
-        return true;
-    }
-    return false;
-}
-/**
- * Check the note view capability.
- * @return bool|redirect status
- */
-function require_note_status() {
-    if (!is_note_status()) {
-        $url = new moodle_url('/my');
-        redirect($url);
-    }
-    return true;
-}
-
-/**
- * Delete the course bookmarks
- * @param int courseid
- */
-function delete_course_bookmarks($courseid) {
-    global $DB;
-    if ($DB->record_exists('learningtools_bookmarks', array('course' => $courseid))) {
-        $DB->delete_records('learningtools_bookmarks', array('course' => $courseid));
-    }
-}
-
-/**
- * Delete the course notes.
- * @param int courseid
- */
-function delete_course_notes($courseid) {
-    global $DB;
-    if ($DB->record_exists('learningtools_note', array('course' => $courseid))) {
-        $DB->delete_records('learningtools_note', array('course' => $courseid));
-    }
-}
-
-
-/**
- * Delete the course bookmarks.
- * @param int courseid
- */
-function delete_module_bookmarks($module) {
-    global $DB;
-
-    if ($DB->record_exists('learningtools_bookmarks', array('coursemodule' => $module))) {
-        $DB->delete_records('learningtools_bookmarks', array('coursemodule' => $module));
-    }
-}
-
-/**
- * Delete the course notes.
- * @param int courseid
- */
-function delete_module_notes($module) {
-    global $DB;
-
-    if ($DB->record_exists('learningtools_note', array('coursemodule' => $module))) {
-        $DB->delete_records('learningtools_note', array('coursemodule' => $module));
-    }
-}
-
-

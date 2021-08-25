@@ -19,12 +19,12 @@
  *
  * @package   ltool_bookmarks
  * @copyright bdecent GmbH 2021
- * @category  autoloading
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(dirname(__FILE__).'/../../../../config.php');
 require_once($CFG->dirroot. '/local/learningtools/lib.php');
+require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->dirroot. '/course/classes/list_element.php');
 require_login();
 require_bookmarks_status();
@@ -142,11 +142,24 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {
+        $deleterecord = $DB->get_record('learningtools_bookmarks', ['id' => $delete]);
+        $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
         if ($DB->delete_records('learningtools_bookmarks', ['id' => $delete])) {
+
+            $deleteeventparams = [
+                'objectid' => $deleterecord->id,
+                'courseid' => $deleterecord->course,
+                'context' => $deleteeventcontext,
+                'other' => [
+                    'pagetype' => $deleterecord->pagetype,
+                ]
+            ];
+            if ($childid) {
+                $deleteeventparams = array_merge($deleteeventparams, ['relateduserid' => $childid]);
+            }
             // Add event to user delete the bookmark.
-            $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
-                'context' => $context,
-            ]);
+            $event = \ltool_bookmarks\event\ltbookmarks_deleted::create($deleteeventparams);
+
             $event->trigger();
             \core\session\manager::gc(); // Remove stale sessions.
             redirect($baseurl, get_string('successdeletemessage', 'local_learningtools'),
@@ -178,13 +191,13 @@ if (!empty($courseid) && !$childid) {
     $students = get_students_incourse($courseid);
     if (!empty($students)) {
         list($studentcondition, $sqlparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-        $sqlconditions .= 'user '. $studentcondition;
+        $sqlconditions .= 'userid '. $studentcondition;
     }
 } else if ($childid) {
-    $sqlconditions .= 'user = :childid';
+    $sqlconditions .= 'userid = :childid';
     $sqlparams['childid'] = $childid;
 } else {
-    $sqlconditions .= 'user = :userid';
+    $sqlconditions .= 'userid = :userid';
     $sqlparams['userid'] = $USER->id;
 }
 
@@ -212,9 +225,14 @@ $templatecontent = array_merge($templatecontent, $maindata);
 echo $OUTPUT->render_from_template('ltool_bookmarks/ltbookmarks', $templatecontent);
 echo $OUTPUT->footer();
 
-// Add event to user view the bookmark.
-$event = \ltool_bookmarks\event\ltbookmarks_viewed::create([
+$createeventparams = [
     'context' => $context,
-]);
+];
+
+if ($childid) {
+    $createeventparams = array_merge($createeventparams, ['relateduserid' => $childid]);
+}
+// Add event to user view the bookmark.
+$event = \ltool_bookmarks\event\ltbookmarks_viewed::create($createeventparams);
 
 $event->trigger();

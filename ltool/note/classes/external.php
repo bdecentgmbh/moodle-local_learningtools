@@ -26,7 +26,9 @@ namespace ltool_note;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/externallib.php');
-
+/**
+ * Define external class.
+ */
 class external extends \external_api {
     /**
      * Parameters defintion to get added user note.
@@ -45,8 +47,8 @@ class external extends \external_api {
 
     /**
      * Save the user notes.
-     * @param int context id
-     * @param mixed user data
+     * @param int $contextid context id
+     * @param mixed $formdata user data
      * @return int page user notes details.
      */
     public static function save_usernote($contextid, $formdata) {

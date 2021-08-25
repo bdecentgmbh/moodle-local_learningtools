@@ -16,8 +16,7 @@
 
 /**
  * Define uninstall function
- * @category   Uninstall
- * @package    lttool_bookmarks
+ * @package    ltool_bookmarks
  * @copyright  bdecent GmbH 2021
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,16 +24,22 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * lttool_bookmarks uninstall function.
+ * ltool_bookmarks uninstall function.
  *
  * @return void
  */
-
 function xmldb_ltool_bookmarks_uninstall() {
     global $DB;
 
     $plugin = 'bookmarks';
-    if ($DB->record_exists('learningtools_products', array('shortname' => $plugin)) ) {
-        $DB->delete_records('learningtools_products', array('shortname' => $plugin));
+    if ($DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
+        $DB->delete_records('local_learningtools_products', array('shortname' => $plugin));
+    }
+
+    $table = "learningtools_bookmarks";
+    $dbman = $DB->get_manager();
+    if ($dbman->table_exists($table)) {
+        $droptable = new xmldb_table($table);
+        $dbman->drop_table($droptable);
     }
 }

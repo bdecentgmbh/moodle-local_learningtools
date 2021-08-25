@@ -1,0 +1,255 @@
+/*Notes page*/
+
+/*Notes page course, category and sort block*/
+.path-local-learningtools-ltool-note .top-block {
+    text-align: right;
+    margin-bottom: 20px;
+}
+.path-local-learningtools-ltool-note .top-block .course-block,
+.path-local-learningtools-ltool-note .top-block #ltnote-coursefilter {
+    float: left;
+    margin-bottom: 20px;
+    margin-right: 15px;
+}
+.path-local-learningtools-ltool-note .top-block #ltnote-coursefilter,
+.path-local-learningtools-ltool-note .top-block .ltnote-activityfilter {
+    display: inline-block;
+    float: left;
+    margin-bottom: 15px;
+}
+.path-local-learningtools-ltool-note .top-block > div:last-child {
+    display: inline-block;
+}
+.path-local-learningtools-ltool-note .top-block > div.ltbookmarks-coursefilter {
+    text-align: left;
+    float: none;
+    display: block;
+}
+.path-local-learningtools-ltool-note .top-block > div.ltnote-sortfilter {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+.path-local-learningtools-ltool-note .top-block > div.ltnote-sortfilter i {
+    margin-right: 5px;
+}
+.path-local-learningtools-ltool-note .top-block > div select {
+    min-width: 250px;
+    width: auto;
+    text-align: left;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: none;
+    padding: 5px;
+    display: inline-block;
+}
+.path-local-learningtools-ltool-note .top-block > div select:after {
+    float: right;
+    margin-top: 10px;
+}
+
+/*sort block*/
+.path-local-learningtools-ltool-note .top-block > div.sort-block {
+    margin-bottom: 20px;
+}
+.path-local-learningtools-ltool-note .top-block > div.sort-block select {
+    border: 0;
+    display: inline-block;
+}
+.path-local-learningtools-ltool-note .top-block > div.sort-block select:focus,
+.path-local-learningtools-ltool-note .top-block > div.sort-block select:active,
+.path-local-learningtools-ltool-note .top-block > div.sort-block select:focus:active {
+    outline: none;
+    box-shadow: none;
+}
+
+/*Notes main body - Accordion block*/
+.ltnotes-mainbody {
+    margin-top: 20px;
+    clear: both;
+}
+.ltnotes-mainbody .card {
+    border: 0;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+.ltnotes-mainbody .card + .card {
+    border-top: 1px solid #ccc;
+}
+
+/*Accordion header content*/
+.ltnotes-mainbody .card .card-header {
+    padding: 0;
+    margin-bottom: 20px;
+    border: 0;
+    background: none;
+}
+.ltnotes-mainbody .card .card-header h5 button {
+    width: 100%;
+    color: #000;
+    font-size: 20px;
+    text-align: left;
+    text-decoration: none;
+    display: block;
+}
+.ltnotes-mainbody .card .card-header h5 button:after {
+    content: '\f103';
+    font-family: 'fontawesome';
+    float: right;
+}
+.ltnotes-mainbody .card .card-header h5 button.collapsed:after {
+    content: '\f102';
+    font-family: 'fontawesome';
+}
+
+/*Accordion body content*/
+.ltnotes-mainbody .card .card-body {
+    border: 1px solid #eee;
+    margin-bottom: 20px;
+}
+.ltnotes-mainbody .card .card-body .content-block .title-block {
+    text-align: right;
+    margin-bottom: 15px;
+}
+.ltnotes-mainbody .card .card-body .content-block .title-block h4 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 5px;
+    float: left;
+    margin-right: 15px;
+}
+.ltnotes-mainbody .card .card-body .content-block .title-block .details-block {
+    display: inline-block;
+}
+.ltnotes-mainbody .card .card-body .content-block .title-block .details-block .calendar-block {
+    margin-right: 10px;
+}
+.ltnotes-mainbody .card .card-body .content-block .title-block .details-block .btn-block {
+    width: auto;
+    display: inline-block;
+}
+
+@media (max-width: 575px) {
+    .ltnotes-mainbody .card .card-body .content-block .title-block h4 {
+        text-align: left;
+        float: none;
+    }
+    .ltnotes-mainbody .card .card-body .content-block .title-block .details-block {
+        display: block;
+    }
+    .ltnotes-mainbody .card .card-body .content-block .title-block .details-block .calendar-block {
+        float: left;
+    }
+}
+
+/*Modal popup css*/
+.learningtool-note .modal .modal-dialog .modal-header h5.modal-title {
+    width: 100%;
+}
+.learningtool-note .modal .modal-dialog .modal-header h5.modal-title .popout-block {
+    float: right;
+    display: flex;
+}
+.learningtool-note .modal .modal-dialog .modal-header h5.modal-title .popout-block #popout-action {
+    font-size: 13px;
+    color: #000;
+    margin-right: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    border: 0;
+    background: none;
+}
+.learningtool-note .modal .modal-dialog .modal-header h5.modal-title .popout-block i {
+    font-size: 13px;
+    line-height: 24px;
+    color: #000;
+    display: inline-block;
+}
+.learningtool-note .modal .modal-body .ltoolusernotes form .editor_atto .editor_atto_content_wrap .editor_atto_content,
+.learningtool-note .modal .modal-body .ltoolusernotes form .editor_atto .editor_atto + textarea {
+    border: 1px solid #ccc;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes h3 {
+    margin-bottom: 20px;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card {
+    margin-bottom: 5px;
+    border: 0;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header {
+    padding: 5px;
+    border-bottom: 0;
+    background: none;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button {
+    width: 100%;
+    color: #000;
+    text-align: left;
+    text-decoration: none;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button:after {
+    content: '\f102';
+    font-family: 'FontAwesome';
+    float: right;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button.collapsed:after {
+    content: '\f103';
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse,
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing {
+    border: 1px solid #ccc;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .card-body,
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .card-body {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .card-body:last-child,
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .card-body:last-child {
+    border-bottom: 0;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .content-block .desc-block,
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .content-block .desc-block {
+    width: 70%;
+    display: inline-block;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .content-block .title-block,
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .content-block .title-block {
+    float: right;
+}
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .content-block .action-block,
+.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .content-block .action-block {
+    float: right;
+    margin-left: 10px;
+}
+.learningtool-note .modal .modal-body .usernotes-mainbody .card .collapse .content-block .action-block .edit-action,
+.learningtool-note .modal .modal-body .usernotes-mainbody .card .collapsing .content-block .action-block .edit-action {
+    display: inline-block;
+}
+.learningtool-note .modal .modal-body .usernotes-mainbody .card .collapse .content-block .action-block .delete-action,
+.learningtool-note .modal .modal-body .usernotes-mainbody .card .collapsing .content-block .action-block .delete-action {
+    display: inline-block;
+}
+.learningtool-note .modal .modal-body .usernotes-mainbody .card .collapse .content-block .desc-block p:empty,
+.learningtool-note .modal .modal-body .usernotes-mainbody .card .collapsing .content-block .desc-block p:empty {
+    display: none;
+}
+
+
+/*floating button*/
+.floating-button .list-learningtools > div.ltnoteinfo button {
+    background: #17a2b8;
+}
+.floating-button .list-learningtools > div.ltnoteinfo button span {
+    display: none;
+}
+.floating-button .list-learningtools > div.ltnoteinfo button span.ticked {
+    display: block;
+}
+.floating-button .list-learningtools > div.ltnoteinfo button:hover p {
+    background: #17a2b8;
+}

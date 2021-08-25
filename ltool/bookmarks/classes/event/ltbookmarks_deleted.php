@@ -35,6 +35,8 @@ class ltbookmarks_deleted extends \core\event\base {
      * Init method.
      */
     protected function init() {
+
+        $this->data['objecttable'] = 'learningtools_bookmarks';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
     }
@@ -54,6 +56,25 @@ class ltbookmarks_deleted extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' deleted the bookmarks for the ltbookmarks.";
+
+        if ($this->relateduserid) {
+            return "The related user with id '$this->relateduserid' has deleted the
+            bookmarks with id '$this->objectid' for the user with id '$this->userid'.";
+        }
+        return "The user with id '$this->userid' has deleted the bookmarks with id '$this->objectid'.";
+    }
+
+    /**
+     * Custom validation.
+     *
+     * @throws \coding_exception
+     * @return void
+     */
+    protected function validate_data() {
+
+        parent::validate_data();
+        if (!isset($this->other['pagetype'])) {
+            throw new \coding_exception('The \'pagetype\' value must be set in other.');
+        }
     }
 }

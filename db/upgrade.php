@@ -15,36 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Ltool overwrite a tools info.
- *
- * @package   local_learningtools
- * @copyright bdecent GmbH 2021
- * @category  autoloading
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Define upgrade function
+ * @package    local_learningtools
+ * @copyright  bdecent GmbH 2021
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../../config.php');
-require_login();
+defined('MOODLE_INTERNAL') || die();
 
-abstract class learningtools {
-    /**
-     * Tool Name.
-     */
-    abstract public function get_tool_name();
-    /**
-     * Tool icon.
-     */
-    abstract public function get_tool_icon();
-
-    /**
-     * Get tool info.
-     */
-    public function get_tool_info() {
-        global $OUTPUT;
-
-        $data = [];
-        $data['name'] = $this->get_tool_name();
-        $data['icon'] = $this->get_tool_icon();
-        return $data;
-    }
+/**
+ * local_learningtools upgrade function.
+ * @param int $oldversion old plugin version
+ * @return bool
+ */
+function xmldb_local_learningtools_upgrade($oldversion) {
+    return true;
 }

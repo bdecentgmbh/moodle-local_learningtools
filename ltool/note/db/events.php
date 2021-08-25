@@ -17,7 +17,7 @@
 /**
  * Define plugin events.
  *
- * @package   local_learningtools
+ * @package   ltool_note
  * @category  event
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,10 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 $observers = array(
     array(
     'eventname' => 'core\event\course_deleted',
-    'callback' => '\local_learningtools\event_observer::learningtools_coursedata_deleteaction',
+    'callback' => '\ltool_note\event_observer::note_coursedata_deleteaction',
     ),
     array(
     'eventname' => 'core\event\course_module_deleted',
-    'callback' => '\local_learningtools\event_observer::learningtools_moduledata_deleteaction',
+    'callback' => '\ltool_note\event_observer::note_moduledata_deleteaction',
     )
 );

@@ -55,15 +55,15 @@ $string['notesusermenu_help'] = "notes,local_learningtools|/local/learningtools/
 $string['bookmarks'] = "Bookmarks";
 $string['managebookmarks'] = "Manage bookmarks access the users";
 
-$string['eventltbookmarkscreated'] = "Learning tool bookmarks created";
-$string['eventltbookmarksviewed'] = "Learning tool bookmarks viewed";
-$string['eventltbookmarksdeleted'] = "Learning tool bookmarks deleted";
+$string['eventltbookmarkscreated'] = "Learning Tools bookmarks created";
+$string['eventltbookmarksviewed'] = "Learning Tools bookmarks viewed";
+$string['eventltbookmarksdeleted'] = "Learning Tools bookmarks deleted";
 
 // Note event strings.
-$string['eventltnotecreated'] = "Learning tool note created";
-$string['eventltnotedeleted'] = "Learning tool note deleted";
-$string['eventltnoteviewed'] = "Learning tool note viewed";
-$string['eventltnoteedited'] = "Learning tool note edited";
+$string['eventltnotecreated'] = "Learning Tools notes created";
+$string['eventltnotedeleted'] = "Learning Tools notes deleted";
+$string['eventltnoteviewed'] = "Learning Tools notes viewed";
+$string['eventltnoteedited'] = "Learning Tools notes edited";
 
 
 $string['bookicon'] = "Icon";
@@ -84,7 +84,7 @@ $string['ltbookmarks:manageltbookmarks'] = "User access the ltbookmarks tool.";
 $string['bookmarkstoolcategory'] = "Tool Bookmarks";
 $string['coursebookmarks'] = "Course Bookmarks";
 $string['successbookmarkmessage'] = "This page bookmarked successfully and you can view the bookmarks under profile / learning tools / bookmarks.";
-$string['removebookmarkmessage'] = "This page bookmarked removed and you can view the bookmarks under profile / learning tools / bookmarks.";
+$string['removebookmarkmessage'] = "This page bookmark removed and you can view the bookmarks under profile / learning tools / bookmarks.";
 
 // Notes strings.
 
@@ -113,3 +113,4 @@ $string['successnotemessage'] = "Notes added successfully and you can view the n
 $string['viewownbookmarks'] = "View Own Bookmarks";
 $string['viewchildbookmarks'] = "View Child Bookmarks";
 $string['pagenotes'] = "Page notes";
+$string['courseparticipants'] = "Course Participants";

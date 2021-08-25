@@ -26,7 +26,9 @@
 namespace ltool_note\event;
 
 defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Notes tool call to notes view event.
+ */
 class ltnote_viewed extends \core\event\base {
 
     /**
@@ -52,6 +54,9 @@ class ltnote_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed the note for the ltnote.";
+        if ($this->relateduserid) {
+            return "The related user with id '$this->relateduserid' has viewed the user with id '$this->userid' notes.";
+        }
+        return "The user with id '$this->userid' has viewed the notes.";
     }
 }
