@@ -74,13 +74,14 @@ class bookmarks extends \local_learningtools\learningtools {
         $data['course'] = $COURSE->id;
         $data['pageurl'] = $PAGE->url->out(false);
         $data['pagetype'] = $PAGE->pagetype;
+        $data['pagetitle'] = $PAGE->title;
         $data['coursemodule'] = get_moduleid($PAGE->context->id, $PAGE->context->contextlevel);
         $data['contextlevel'] = $PAGE->context->contextlevel;
         $data['contextid'] = $PAGE->context->id;
         $data['sesskey'] = sesskey();
         $data['ltbookmark'] = true;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
-        $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $PAGE->pagetype, $USER->id);
+        $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $data['pageurl'], $USER->id);
         return $data;
     }
 

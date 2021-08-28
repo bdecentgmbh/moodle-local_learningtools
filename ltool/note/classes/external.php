@@ -40,7 +40,7 @@ class external extends \external_api {
         return new \external_function_parameters(
             array(
                 'contextid' => new \external_value(PARAM_INT, 'The context id for the course'),
-                'formdata' => new \external_value(PARAM_RAW, 'The data from the user bookmarks')
+                'formdata' => new \external_value(PARAM_RAW, 'The data from the user notes')
             )
         );
     }

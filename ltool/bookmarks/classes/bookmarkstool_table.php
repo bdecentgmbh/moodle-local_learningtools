@@ -145,7 +145,7 @@ class bookmarkstool_table extends \table_sql {
         } else if ($data->instance == 'user') {
             $bookmarkinfo = 'user';
         } else if ($data->instance == 'mod') {
-            $bookmarkinfo = get_module_coursesection($data);
+            $bookmarkinfo = get_bookmarks_module_coursesection($data);
         } else if ($data->instance == 'system') {
              $bookmarkinfo = 'system';
         } else if ($data->instance == 'block') {

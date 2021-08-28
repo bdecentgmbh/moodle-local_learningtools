@@ -122,6 +122,9 @@ define(['core/str', 'core/ajax', 'core/notification'],
      */
     function submitFormdata(contextid, formData) {
 
+        if (formData.pagetitle == "")  {
+            formData.pagetitle = document.querySelector('title').innerHTML;
+        }
         var Formdata = JSON.stringify(formData);
         Ajax.call([{
             methodname: 'ltool_bookmarks_save_userbookmarks',

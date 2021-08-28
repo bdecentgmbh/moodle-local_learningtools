@@ -37,7 +37,8 @@ Feature: Check the Bookmarks ltool add/edit delete and list viewes.
     And I click on "#ltbookmarkinfo" "css_element"
     Then I should see "This page bookmarked successfully"
     # Add second note.
-    When I click on "Site home" "link"
+    When I am on "Course 1" course homepage
+    # When I click on "Site home" "link"
     And I click on FAB button
     And I click on "#ltbookmarkinfo" "css_element"
     Then I should see "This page bookmarked successfully"
@@ -45,7 +46,5 @@ Feature: Check the Bookmarks ltool add/edit delete and list viewes.
     Then I follow "Profile" in the user menu
     And I click on "Bookmarks" "link"
     # Then I click on "#notessorttype" "css_element"
-    Then I should see "user" in the ".category-item" "css_element"
-    And I should see "Top" in the ".course-element" "css_element"
-    When I click on "#bookmarkssorttype" "css_element"
-    Then "user" "text" should appear before "Acceptance test site" "text"
+    Then I should see "Dashboard" in the ".course-item" "css_element"
+    And I should see "Course: Course 1"

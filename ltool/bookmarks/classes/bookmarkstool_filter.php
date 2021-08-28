@@ -165,11 +165,11 @@ class bookmarkstool_filter {
         }
 
         $sql = "SELECT b.*, c.fullname
-            FROM {learningtools_bookmarks} b
-            LEFT JOIN {course} c ON c.id = b.course
-            WHERE $sqlconditions $orderconditions";
-        $records = $DB->get_records_sql($sql, $sqlparams, $page * $perpage, $perpage);
+        FROM {learningtools_bookmarks} b
+        LEFT JOIN {course} c ON c.id = b.course
+        WHERE $sqlconditions $orderconditions";
 
+        $records = $DB->get_records_sql($sql, $sqlparams, $page * $perpage, $perpage);
         $totalbookmarks = $DB->count_records_sql("SELECT count(*) FROM {learningtools_bookmarks}
             WHERE $sqlconditions", $sqlparams);
         $pageingbar = $OUTPUT->paging_bar($totalbookmarks, $page, $perpage, $this->baseurl);
@@ -180,7 +180,7 @@ class bookmarkstool_filter {
             foreach ($records as $row) {
                 $list = [];
                 $data = check_instanceof_block($row);
-                $list['instance'] = $this->get_instance_bookmark($data);
+                $list['instance'] = $row->pagetitle;
                 $list['instanceinfo'] = $this->get_instance_bookmarkinfo($data);
                 $list['courseinstance'] = ($data->instance == 'course') ? true : false;
                 $list['time'] = $this->get_bookmark_time($row);
@@ -190,7 +190,6 @@ class bookmarkstool_filter {
                 $reports[] = $list;
             }
         }
-
         $res['pageingbar'] = $pageingbar;
         $res['bookmarks'] = $reports;
         return $res;
@@ -227,13 +226,13 @@ class bookmarkstool_filter {
         if ($data->instance == 'course') {
             $bookmarkinfo = get_course_categoryname($data->courseid);
         } else if ($data->instance == 'user') {
-            $bookmarkinfo = 'user';
+            $bookmarkinfo = '';
         } else if ($data->instance == 'mod') {
-            $bookmarkinfo = get_module_coursesection($data);
+            $bookmarkinfo = get_bookmarks_module_coursesection($data);
         } else if ($data->instance == 'system') {
-             $bookmarkinfo = 'system';
+             $bookmarkinfo = '';
         } else if ($data->instance == 'block') {
-             $bookmarkinfo = 'block';
+             $bookmarkinfo = '';
         }
         return $bookmarkinfo;
     }
@@ -312,7 +311,6 @@ class bookmarkstool_filter {
      * @return mixed result
      */
     public function get_bookmark_viewinfo($row) {
-
         return get_instance_tool_view_url($row);
     }
 

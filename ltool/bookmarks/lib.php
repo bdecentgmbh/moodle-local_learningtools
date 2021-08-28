@@ -48,21 +48,12 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
         if ($iscurrentuser) {
             if (!empty($course)) {
                 $coursecontext = context_course::instance($course->id);
-                if (has_capability('ltool/bookmarks:viewbookmarks', $coursecontext)) {
-                    $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/userslist.php',
-                        array('courseid' => $course->id));
-                    $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
-                    get_string('coursebookmarks', 'local_learningtools'), null, $bookmarksurl);
-                    $tree->add_node($bookmarksnode);
-                } else {
-                    $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', array('courseid' => $course->id,
-                        'userid' => $userid));
-                    $bookmarksnode = new core_user\output\myprofile\node('learningtools',
-                        'bookmarks', get_string('coursebookmarks', 'local_learningtools'),
-                    null, $bookmarksurl);
-                    $tree->add_node($bookmarksnode);
-                }
-
+                $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', array('courseid' => $course->id,
+                    'userid' => $userid));
+                $bookmarksnode = new core_user\output\myprofile\node('learningtools',
+                    'bookmarks', get_string('coursebookmarks', 'local_learningtools'),
+                null, $bookmarksurl);
+                $tree->add_node($bookmarksnode);
             } else {
                 if (has_capability('ltool/bookmarks:viewownbookmarks', $context)) {
                     $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
@@ -72,7 +63,6 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
                 }
             }
         } else {
-
             if (is_parentforchild($user->id, 'ltool/bookmarks:viewbookmarks')) {
                 $params = ['userid' => $user->id];
                 $title = get_string('bookmarks', 'local_learningtools');
@@ -85,13 +75,17 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
                 $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks', $title, null, $bookmarksurl);
                 $tree->add_node($bookmarksnode);
                 return true;
-            } else if (!empty($course)) {
+            } else if (!empty($course) && !empty($userid)) {
                 $coursecontext = context_course::instance($course->id);
                 if (has_capability('ltool/bookmarks:viewbookmarks', $coursecontext)) {
-                    $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/userslist.php',
-                        array('courseid' => $course->id));
-                    $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
-                    get_string('coursebookmarks', 'local_learningtools'), null, $bookmarksurl);
+
+                    $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', array('courseid' => $course->id,
+                        'userid' => $userid,
+                        'teacher' => 1
+                    ));
+                    $bookmarksnode = new core_user\output\myprofile\node('learningtools',
+                        'bookmarks', get_string('coursebookmarks', 'local_learningtools'),
+                    null, $bookmarksurl);
                     $tree->add_node($bookmarksnode);
                 }
             }
@@ -113,7 +107,7 @@ function user_save_bookmarks($contextid, $data) {
     if (confirm_sesskey()) {
 
         if (!$DB->record_exists('learningtools_bookmarks', array('contextid' =>
-            $contextid, 'pagetype' => $data['pagetype'], 'userid' => $data['user']))) {
+            $contextid, 'pageurl' => $data['pageurl'], 'userid' => $data['user']))) {
 
             $record = new stdclass();
             $record->userid = $data['user'];
@@ -127,13 +121,15 @@ function user_save_bookmarks($contextid, $data) {
                 $record->coursemodule = 0;
             }
             $record->pagetype = $data['pagetype'];
+            $record->pagetitle = $data['pagetitle'];
             $record->pageurl = $data['pageurl'];
             $record->timecreated = time();
             $bookmarksrecord = $DB->insert_record('learningtools_bookmarks', $record);
+            $eventcourseid = get_eventlevel_courseid($context, $data['course']);
             // Add event to user create the bookmark.
             $event = \ltool_bookmarks\event\ltbookmarks_created::create([
                 'objectid' => $bookmarksrecord,
-                'courseid' => $data['course'],
+                'courseid' => $eventcourseid,
                 'context' => $context,
                 'other' => [
                     'pagetype' => $data['pagetype'],
@@ -145,12 +141,15 @@ function user_save_bookmarks($contextid, $data) {
             $bookmarksstatus = !empty($bookmarksrecord) ? true : false;
             $notificationtype = 'success';
         } else {
-            $deleterecord = $DB->get_record('learningtools_bookmarks', array('contextid' => $contextid));
-            $DB->delete_records('learningtools_bookmarks', array('contextid' => $contextid));
+            $deleterecord = $DB->get_record('learningtools_bookmarks',
+                array('contextid' => $contextid, 'pageurl' => $data['pageurl']));
+            $DB->delete_records('learningtools_bookmarks', array('contextid' => $contextid,
+                'pageurl' => $data['pageurl']));
              // Add event to user delete the bookmark.
+            $eventcourseid = get_eventlevel_courseid($context, $data['course']);
             $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
                 'objectid' => $deleterecord->id,
-                'courseid' => $data['course'],
+                'courseid' => $eventcourseid,
                 'context' => $context,
                 'other' => [
                     'pagetype' => $data['pagetype'],
@@ -190,7 +189,7 @@ function check_view_bookmarks() {
  */
 function load_bookmarks_js_config($data) {
     global $PAGE, $USER;
-    $pagebookmarks = check_page_bookmarks_exist($PAGE->context->id, $PAGE->pagetype, $USER->id);
+    $pagebookmarks = $data['pagebookmarks'];
     $PAGE->requires->data_for_js('pagebookmarks', $pagebookmarks, true);
     $PAGE->requires->js_call_amd('ltool_bookmarks/learningbookmarks', 'init', array($PAGE->context->id, $data));
 }
@@ -208,16 +207,16 @@ function ltool_bookmarks_render_template($templatecontent) {
 /**
  * Check the page bookmarks exists or not.
  * @param int $contextid page context id
- * @param string $pagetype page type
+ * @param string $pageurl page url
  * @param int $userid user id
  * @return bool page bookmarks status
  */
-function check_page_bookmarks_exist($contextid, $pagetype, $userid) {
+function check_page_bookmarks_exist($contextid, $pageurl, $userid) {
     global $DB;
 
     $pagebookmarks = false;
     if ($DB->record_exists('learningtools_bookmarks', array('contextid' => $contextid,
-        'pagetype' => $pagetype, 'userid' => $userid))) {
+        'pageurl' => $pageurl, 'userid' => $userid))) {
         $pagebookmarks = true;
     }
     return $pagebookmarks;
@@ -272,4 +271,15 @@ function delete_module_bookmarks($module) {
     if ($DB->record_exists('learningtools_bookmarks', array('coursemodule' => $module))) {
         $DB->delete_records('learningtools_bookmarks', array('coursemodule' => $module));
     }
+}
+
+/**
+ * Get the bookmarks course module include with section.
+ * @param object $data instance of the page.
+ * @return string instance of coursemodule name.
+ */
+function get_bookmarks_module_coursesection($data) {
+    $coursename = get_course_name($data->courseid);
+    $section = get_mod_section($data->courseid, $data->coursemodule);
+    return $coursename.' / '. $section;
 }

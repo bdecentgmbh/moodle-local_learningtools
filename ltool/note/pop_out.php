@@ -34,7 +34,7 @@ $user = optional_param('user', 0, PARAM_INT);
 $contextlevel = optional_param('contextlevel', 0, PARAM_INT);
 $pagetype = optional_param('pagetype', '', PARAM_TEXT);
 $pageurl = optional_param('pageurl', '', PARAM_RAW);
-$pagetitle = optional_param('title', '', PARAM_TEXT);
+$pagetitle = optional_param('pagetitle', '', PARAM_TEXT);
 $pageheading = optional_param('heading' , '', PARAM_TEXT);
 
 $params = [];
@@ -44,11 +44,13 @@ $params['user'] = $user;
 $params['contextlevel'] = $contextlevel;
 $params['pagetype'] = $pagetype;
 $params['pageurl'] = $pageurl;
+$params['pagetitle'] = $pagetitle;
+$params['pageheading'] = $pageheading;
 
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 
-$url = new moodle_url('/local/learningtools/ltool/note/popout.php');
+$url = new moodle_url('/local/learningtools/ltool/note/pop_out.php');
 $pagetitle = !empty($pagetitle) ? $pagetitle : $SITE->shortname;
 $pageheading = !empty($pageheading) ? $pageheading : $SITE->fullname;
 $course = !empty($course) ? $course : $SITE;

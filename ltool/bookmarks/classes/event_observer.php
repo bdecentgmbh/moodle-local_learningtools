@@ -34,7 +34,7 @@ class event_observer {
     /**
      * Callback function will delete the course in the table.
      * @param object $event event data
-     * @return void course notes deleted records action.
+     * @return void course bookmarks deleted records action.
      */
     public static function bookmarks_coursedata_deleteaction($event) {
         $eventdata = $event->get_data();

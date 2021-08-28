@@ -44,6 +44,7 @@ class ltool_note_testcase extends advanced_testcase {
         $page = new \moodle_page();
         $page->set_context($this->context);
         $page->set_course($course);
+        $page->set_title('Course: Course 1');
         $page->set_pagelayout('standard');
         $page->set_pagetype('course-view');
         $page->set_url(new moodle_url('/course/view.php', ['id' => $course->id]));
@@ -105,7 +106,7 @@ class ltool_note_testcase extends advanced_testcase {
     }
 
     /**
-     * Case to test the external method to create/delete bookmarks.
+     * Case to test the external method to create/delete notes.
      *
      * @return void
      */
@@ -141,6 +142,7 @@ class ltool_note_testcase extends advanced_testcase {
         $data['pagetype'] = $this->page->pagetype;
         $data['contextlevel'] = $this->page->context->contextlevel;
         $data['contextid'] = $this->page->context->id;
+        $data['pagetitle'] = $this->page->title;
         $data['user'] = $USER->id;
         $data['ltnote'] = true;
         return $data;

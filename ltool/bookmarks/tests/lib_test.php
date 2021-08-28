@@ -47,6 +47,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $page->set_course($course);
         $page->set_pagelayout('standard');
         $page->set_pagetype('course-view');
+        $page->set_title('Course: Course 1');
         $page->set_url(new moodle_url('/course/view.php', ['id' => $course->id]));
         $this->page = $page;
     }
@@ -69,7 +70,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $bookmarks = ltool_bookmarks\external::save_userbookmarks($this->context->id, $data);
         $events = $sink->get_events();
         $event = reset($events);
-        $exist = check_page_bookmarks_exist($this->context->id, 'course-view', $USER->id);
+        $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
         $bookmarksmsg = get_string('successbookmarkmessage', 'local_learningtools');
         $this->assertEquals($bookmarks['bookmarksmsg'], $bookmarksmsg);
         $this->assertTrue($exist);
@@ -95,7 +96,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $events = $sink->get_events();
         $event = reset($events);
 
-        $exist = check_page_bookmarks_exist($this->context->id, 'course-view', $USER->id);
+        $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
         $this->assertTrue($exist);
         $this->assertInstanceOf('\ltool_bookmarks\event\ltbookmarks_created', $event);
         $this->assertEquals($this->context, $event->get_context());
@@ -105,7 +106,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $events = $sink->get_events();
         $event = reset($events);
 
-        $exist = check_page_bookmarks_exist($this->context->id, 'course-view', $USER->id);
+        $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
         $this->assertFalse($exist);
         $this->assertInstanceOf('\ltool_bookmarks\event\ltbookmarks_deleted', $event);
         $this->assertEquals($this->context, $event->get_context());
@@ -131,6 +132,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $data['contextid'] = $this->page->context->id;
         $data['sesskey'] = sesskey();
         $data['ltbookmark'] = true;
+        $data['pagetitle'] = $this->page->title;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
         $data['pagebookmarks'] = check_page_bookmarks_exist($this->page->context->id, $this->page->pagetype, $USER->id);
         return $data;

@@ -20,7 +20,7 @@
 .path-local-learningtools-ltool-note .top-block > div:last-child {
     display: inline-block;
 }
-.path-local-learningtools-ltool-note .top-block > div.ltbookmarks-coursefilter {
+.path-local-learningtools-ltool-note .top-block > div.ltnote-coursefilter {
     text-align: left;
     float: none;
     display: block;
@@ -252,4 +252,21 @@
 }
 .floating-button .list-learningtools > div.ltnoteinfo button:hover p {
     background: #17a2b8;
+}
+
+#page-local-learningtools-ltool-note-editlist .mform .form-group {
+    margin-right: 1rem;
+}
+
+#page-local-learningtools-ltool-note-editlist .mform .femptylabel .col-form-label {
+    flex: 0;
+}
+
+#page-local-learningtools-ltool-note-editlist .mform .felement {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+#page-local-learningtools-ltool-note-editlist .mform {
+    margin-top: 2rem;
 }

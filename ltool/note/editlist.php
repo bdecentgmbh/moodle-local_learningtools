@@ -85,10 +85,11 @@ if ($edit && confirm_sesskey()) {
                     $DB->set_field('learningtools_note', 'note', $usernote, array('id' => $edit));
                     $DB->set_field('learningtools_note', 'timemodified', time(), array('id' => $edit));
                     $editeventcontext = context::instance_by_id($exitnote->contextid, MUST_EXIST);
+                    $eventcourseid = get_eventlevel_courseid($editeventcontext, $exitnote->course);
                     // Add event to user edit the note.
                     $editeventparams = [
                         'objectid' => $exitnote->id,
-                        'courseid' => $exitnote->course,
+                        'courseid' => $eventcourseid,
                         'context' => $editeventcontext,
                         'other' => [
                             'pagetype' => $exitnote->pagetype,

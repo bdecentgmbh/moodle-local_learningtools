@@ -59,7 +59,8 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
  */
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
 
-    global $PAGE, $USER;
+    global $PAGE, $USER, $COURSE;
+
     $context = context_system::instance();
     $ltoolsjs = array();
     // Content of fab button html.
@@ -225,21 +226,6 @@ function get_module_name($data, $mod = false) {
     return $report->name;
 }
 
-/**
- * Get the course module include with section.
- * @param object $data instance of the page.
- * @param string $type ltool type.
- * @return string instance of coursemodule name.
- */
-function get_module_coursesection($data, $type = '') {
-    $coursename = get_course_name($data->courseid);
-    $section = get_mod_section($data->courseid, $data->coursemodule);
-    if ($type == 'note') {
-        $modulename = get_module_name($data);
-        return $coursename.' / '. $section. ' / '. $modulename;
-    }
-    return $coursename.' / '. $section;
-}
 
 /**
  * Get the course module current section.
@@ -403,20 +389,29 @@ function has_viewtool_capability_role($assignedroles, string $capability) {
 function get_instance_tool_view_url($row) {
     global $OUTPUT;
     $data = check_instanceof_block($row);
-    $viewurl = '';
+
     if ($data->instance == 'course') {
         $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
         $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
-    } else if ($data->instance == 'user') {
-        $viewurl = 'user';
     } else if ($data->instance == 'mod') {
-        $modname = get_module_name($data, true);
-        $modurl = new moodle_url("/mod/$modname/view.php", array('id' => $data->coursemodule));
-        $viewurl = $OUTPUT->single_button($modurl, get_string('viewactivity', 'local_learningtools'), 'get');
-    } else if ($data->instance == 'system') {
-        $viewurl = 'system';
-    } else if ($data->instance == 'block') {
-        $viewurl = 'block';
+        $viewurl = $OUTPUT->single_button($row->pageurl, get_string('viewactivity', 'local_learningtools'), 'get');
+    } else {
+        $viewurl = $OUTPUT->single_button($row->pageurl, get_string('viewpage', 'local_learningtools'), 'get');
     }
     return $viewurl;
+}
+
+/**
+ * Get the event level course id.
+ * @param object $context context object
+ * @param int $courseid related course id
+ * @return string view html
+ */
+function get_eventlevel_courseid($context, $courseid) {
+    $course = 0;
+    if ($context->contextlevel == 50 || $context->contextlevel == 70) {
+        return $courseid;
+    } else {
+        return $course;
+    }
 }

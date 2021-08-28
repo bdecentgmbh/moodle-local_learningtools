@@ -114,3 +114,5 @@ $string['viewownbookmarks'] = "View Own Bookmarks";
 $string['viewchildbookmarks'] = "View Child Bookmarks";
 $string['pagenotes'] = "Page notes";
 $string['courseparticipants'] = "Course Participants";
+$string['viewbookmarks'] = "View Bookmarks";
+$string['viewpage'] = "View Page";
