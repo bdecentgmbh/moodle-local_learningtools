@@ -115,7 +115,9 @@ class notetool_filter {
             foreach ($records as $record) {
                 $instanceblock = check_instanceof_block($record);
                 if (isset($instanceblock->instance) && $instanceblock->instance == 'course' || $instanceblock->instance == 'mod') {
-                    $courses[] = $instanceblock->courseid;
+                    if ($instanceblock->courseid > 1) {
+                        $courses[] = $instanceblock->courseid;
+                    }
                 }
             }
         }
@@ -149,9 +151,8 @@ class notetool_filter {
         $usercondition = $this->get_user_sql($this->courseid, $this->childid);
         $usersql = $usercondition['sql'];
         $userparams = $usercondition['params'];
-
-        $sql = "SELECT * FROM {learningtools_note}
-        WHERE $usersql AND course = :course AND coursemodule != 0 GROUP BY coursemodule";
+        $sql = "SELECT coursemodule, course FROM {learningtools_note}
+        WHERE $usersql AND course = :course AND coursemodule != 0 GROUP BY coursemodule, course";
         $params = [
         'course' => $this->selectcourse,
         ];

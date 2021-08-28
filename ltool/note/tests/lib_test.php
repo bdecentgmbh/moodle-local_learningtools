@@ -96,7 +96,8 @@ class ltool_note_testcase extends advanced_testcase {
         $args = [
             'contextid' => $data['contextid'],
             'pagetype' => $data['pagetype'],
-            'user' => $data['user']
+            'user' => $data['user'],
+            'pageurl' => $data['pageurl']
         ];
         $count = get_userpage_countnotes($args);
         $this->assertEquals(2, $count);

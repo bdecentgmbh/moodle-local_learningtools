@@ -104,22 +104,20 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                     modal.getRoot().on(ModalEvents.save, function(e) {
 
                         e.preventDefault();
-                        submitForm(modal);
+                        submitFormData(modal, contextid, params);
+                        modal.getRoot().submit();
                     });
 
                     document.querySelector("#popout-action").addEventListener('click', function() {
+                        var pageurlobj = params.pageurl.split("&");
+                        var pageurljson = JSON.stringify(pageurlobj);
                         var url = M.cfg.wwwroot+"/local/learningtools/ltool/note/pop_out.php?contextid="+
                         params.contextid+"&pagetype="+params.pagetype+"&contextlevel="+params.contextlevel+
-                        "&course="+params.course+"&user="+params.user+"&pageurl="+params.pageurl+"&pagetitle="+params.pagetitle
+                        "&course="+params.course+"&user="+params.user+"&pageurl="+pageurljson+"&pagetitle="+params.pagetitle
                         +"&heading="+params.heading;
                         modal.hide();
                         window.open(url, '_blank');
                     });
-
-                    document.body.onsubmit = function (e) {
-                        e.preventDefault();
-                        submitFormData(modal, contextid, params)
-                    };
                 });
             });
 

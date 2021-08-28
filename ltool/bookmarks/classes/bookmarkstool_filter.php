@@ -83,7 +83,9 @@ class bookmarkstool_filter {
             foreach ($records as $record) {
                 $instanceblock = check_instanceof_block($record);
                 if (isset($instanceblock->instance) && $instanceblock->instance == 'course' || $instanceblock->instance == 'mod') {
-                    $courses[] = $instanceblock->courseid;
+                    if ($instanceblock->courseid > 1) {
+                        $courses[] = $instanceblock->courseid;
+                    }
                 }
             }
         }

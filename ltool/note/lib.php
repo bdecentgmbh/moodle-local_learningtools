@@ -274,9 +274,13 @@ function get_contextuser_notes($args) {
     $template = [];
     $listrecords = [];
     $sql = "SELECT * FROM {learningtools_note}
-    WHERE userid = :userid AND contextid = :contextid ORDER BY timecreated DESC";
+    WHERE userid = :userid AND contextid = :contextid AND pageurl= :pageurl ORDER BY timecreated DESC";
 
-    $params = ['userid' => $args['user'], 'contextid' => $args['contextid']];
+    $params = [
+        'userid' => $args['user'],
+        'contextid' => $args['contextid'],
+        'pageurl' => $args['pageurl']
+    ];
     $records = $DB->get_records_sql($sql, $params);
     $cnt = 1;
     if (!empty($records)) {
@@ -359,8 +363,8 @@ function user_save_notes($contextid, $data) {
             ]
         ]);
         $event->trigger();
-        $pageusernotes = $DB->count_records('learningtools_note', array('contextid' =>
-            $contextid, 'pagetype' => $data['pagetype'], 'userid' => $data['user']));
+        $pageusernotes = $DB->count_records('learningtools_note', array('pageurl' =>
+            $data['pageurl'], 'pagetype' => $data['pagetype'], 'userid' => $data['user']));
         return $pageusernotes;
     }
 }
@@ -437,7 +441,7 @@ function require_deletenote_cap($id) {
  */
 function get_userpage_countnotes($args) {
     global $DB;
-    return $DB->count_records('learningtools_note', array('contextid' => $args['contextid'],
+    return $DB->count_records('learningtools_note', array('pageurl' => $args['pageurl'],
         'pagetype' => $args['pagetype'], 'userid' => $args['user']));
 
 }
