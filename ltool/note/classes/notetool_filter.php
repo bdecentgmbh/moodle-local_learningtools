@@ -565,6 +565,9 @@ class notetool_filter {
      */
     public function get_instance_note($data) {
         $instance = '';
+        if (!isset($data->instance)) {
+            return $instance;
+        }
         if ($data->instance == 'course') {
             $instance = get_course_name($data->courseid);
         } else if ($data->instance == 'user') {
@@ -586,7 +589,9 @@ class notetool_filter {
      * @return string instance title name
      */
     public function get_title_note($data, $record) {
-
+        if (!isset($data->instance)) {
+            return '';
+        }
         if ($data->instance == 'course') {
             $title = get_course_name($data->courseid);
         } else if ($data->instance == 'mod') {

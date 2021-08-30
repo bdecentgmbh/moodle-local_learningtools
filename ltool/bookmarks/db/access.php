@@ -29,8 +29,6 @@ $capabilities = array(
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes'   => array(
-            'manager'  => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
             'user' => CAP_ALLOW
         )
     ),
@@ -40,8 +38,6 @@ $capabilities = array(
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes'   => array(
-            'manager'  => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
             'user' => CAP_ALLOW
         )
     ),
@@ -50,8 +46,6 @@ $capabilities = array(
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes'   => array(
-            'manager'  => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
             'user' => CAP_ALLOW
         )
     ),
@@ -62,8 +56,6 @@ $capabilities = array(
         'contextlevel' => CONTEXT_COURSE,
         'archetypes'   => array(
             'manager'  => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
         )
     ),
 
@@ -71,11 +63,6 @@ $capabilities = array(
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes'   => array(
-            'manager'  => CAP_ALLOW,
-            'editingteacher' => CAP_ALLOW,
-            'teacher' => CAP_ALLOW,
-        )
     ),
     // Add more capabilities here ...
 );

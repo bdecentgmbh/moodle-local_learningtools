@@ -389,7 +389,9 @@ function has_viewtool_capability_role($assignedroles, string $capability) {
 function get_instance_tool_view_url($row) {
     global $OUTPUT;
     $data = check_instanceof_block($row);
-
+    if (!isset($data->instance)) {
+        return '';
+    }
     if ($data->instance == 'course') {
         $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
         $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');

@@ -22,15 +22,16 @@
  */
 
 define(['core/str', 'core/ajax', 'core/notification'],
-    function(String, Ajax, notification){
+    function(String, Ajax, notification) {
 
+    /* global ltools, pagebookmarks */
 
     /**
      * Controls bookmarks tool action.
-     * @param {int} context id
-     * @param {object} bookmarks info params
+     * @param {int} contextid
+     * @param {object} params
      */
-    function learning_tool_bookmarks_action(contextid, params) {
+    function learningToolBookmarksAction(contextid, params) {
 
         var bookmarkmarked = document.getElementById('bookmarks-marked');
         if (bookmarkmarked) {
@@ -53,7 +54,7 @@ define(['core/str', 'core/ajax', 'core/notification'],
         if (bookmarkssorttype) {
             bookmarkssorttype.addEventListener("click", function() {
                 var sorttype = this.getAttribute("data-type");
-                bookmarks_sort_action_page(sorttype);
+                bookmarksSortActionPage(sorttype);
             });
         }
 
@@ -61,53 +62,54 @@ define(['core/str', 'core/ajax', 'core/notification'],
 
     /**
      * Sort the bookmarks list.
-     * @param {string} sort type
+     * @param {string} sorttype type of sort
      * @return {void}
      */
-    function bookmarks_sort_action_page(sorttype) {
+    function bookmarksSortActionPage(sorttype) {
 
         var pageurl = window.location.href;
+        var para = '';
         pageurl = removeURLParameter(pageurl, 'sorttype');
 
-        if(sorttype == 'asc') {
+        if (sorttype == 'asc') {
             sorttype = 'desc';
         } else if (sorttype == 'desc') {
             sorttype = 'asc';
         }
 
         if (pageurl.indexOf('?') > -1) {
-            var para = '&';
+            para = '&';
         } else {
-            var para = '?';
+            para = '?';
         }
 
-        pageurl = pageurl+para+'sorttype='+ sorttype;
+        pageurl = pageurl + para + 'sorttype=' + sorttype;
         window.open(pageurl, '_self');
     }
 
 
     /**
      * Clean the url parameters.
-     * @param {string} page url.
-     * @param {string} url parameter.
+     * @param {string} url page url.
+     * @param {string} parameter url parameter.
      * @return {url} sort url
      */
     function removeURLParameter(url, parameter) {
-        //prefer to use l.search if you have a location/link object
-        var urlparts= url.split('?');
-        if (urlparts.length>=2) {
+        // Prefer to use l.search if you have a location/link object.
+        var urlparts = url.split('?');
+        if (urlparts.length >= 2) {
 
-            var prefix= encodeURIComponent(parameter)+'=';
-            var pars= urlparts[1].split(/[&;]/g);
+            var prefix = encodeURIComponent(parameter) + '=';
+            var pars = urlparts[1].split(/[&;]/g);
 
-            //reverse iteration as may be destructive
-            for (var i= pars.length; i-- > 0;) {
-                //idiom for string.startsWith
+            // Reverse iteration as may be destructive.
+            for (var i = pars.length; i-- > 0;) {
+                // Idiom for string.startsWith.
                 if (pars[i].lastIndexOf(prefix, 0) !== -1) {
                     pars.splice(i, 1);
                 }
             }
-            url= urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
+            url = urlparts[0] + (pars.length > 0 ? '?' + pars.join('&') : "");
             return url;
         } else {
             return url;
@@ -116,13 +118,13 @@ define(['core/str', 'core/ajax', 'core/notification'],
 
     /**
      * Bookmarks submit the form data.
-     * @param {int} context id.
-     * @param {object} form instance data.
+     * @param {int} contextid context id.
+     * @param {object} formData form instance data.
      * @return {void} ajax response
      */
     function submitFormdata(contextid, formData) {
 
-        if (formData.pagetitle == "")  {
+        if (formData.pagetitle == "") {
             formData.pagetitle = document.querySelector('title').innerHTML;
         }
         var Formdata = JSON.stringify(formData);
@@ -144,23 +146,18 @@ define(['core/str', 'core/ajax', 'core/notification'],
                 }
 
                 if (ltools.disappertimenotify != 0) {
-                    setTimeout(function () {
-                        var notifications = document.querySelector("span.notifications").innerHTML = "";
+                    setTimeout(function() {
+                        document.querySelector("span.notifications").innerHTML = "";
                     }, ltools.disappertimenotify);
                 }
 
             },
-            fail: handleFailedResponse()
         }]);
     }
 
-
-    function handleFailedResponse() {
-
-    }
     return {
         init: function(contextid, params) {
-            learning_tool_bookmarks_action(contextid, params);
+            learningToolBookmarksAction(contextid, params);
         }
     };
 });

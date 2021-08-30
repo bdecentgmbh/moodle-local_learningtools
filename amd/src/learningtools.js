@@ -22,10 +22,15 @@
  */
 define([], function() {
 
-    function learning_tools_action(loggedin, fabbuttonhtml) {
+    /**
+     * Controls Learning Tools action.
+     * @param {bool} loggedin login status
+     * @param {object} fabbuttonhtml display fab button html.
+     */
+    function learningToolsAction(loggedin, fabbuttonhtml) {
         // Add fab button.
         if (loggedin) {
-            var pagewrapper = document.getElementById("page-footer");
+            var pagewrapper = document.querySelector("footer");
             pagewrapper.insertAdjacentHTML("beforebegin", fabbuttonhtml);
         }
 
@@ -43,7 +48,7 @@ define([], function() {
     }
     return {
         init: function(loggedin, fabbuttonhtml) {
-            learning_tools_action(loggedin, fabbuttonhtml);
+            learningToolsAction(loggedin, fabbuttonhtml);
         }
     };
 });
