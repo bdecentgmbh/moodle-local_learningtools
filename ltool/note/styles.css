@@ -163,13 +163,14 @@
     color: #000;
     display: inline-block;
 }
+.learningtool-note .modal .modal-body .ltoolusernotes {
+    width: 100%;
+}
 .learningtool-note .modal .modal-body .ltoolusernotes form .editor_atto .editor_atto_content_wrap .editor_atto_content,
 .learningtool-note .modal .modal-body .ltoolusernotes form .editor_atto .editor_atto + textarea {
     border: 1px solid #ccc;
 }
 .learningtool-note .modal .modal-body .list-context-existnotes {
-    padding: 10px;
-    border: 1px solid #ccc;
     margin-top: 20px;
 }
 .learningtool-note .modal .modal-body .list-context-existnotes h3 {
@@ -177,16 +178,17 @@
 }
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card {
     margin-bottom: 5px;
-    border: 0;
+    border: 1px solid #ccc;
 }
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header {
-    padding: 5px;
+    padding: 0;
     border-bottom: 0;
-    background: none;
+    background: #efefef;
 }
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button {
     width: 100%;
     color: #000;
+    font-weight: bold;
     text-align: left;
     text-decoration: none;
 }
@@ -198,14 +200,10 @@
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button.collapsed:after {
     content: '\f103';
 }
-.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse,
-.learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing {
-    border: 1px solid #ccc;
-}
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .card-body,
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .card-body {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #efefef;
 }
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapse .card-body:last-child,
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .collapsing .card-body:last-child {
