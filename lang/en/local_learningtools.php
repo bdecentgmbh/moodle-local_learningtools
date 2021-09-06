@@ -37,7 +37,7 @@ $string['viewreports'] = "View reports";
 $string['learningtoolssettings'] = "Learning Tools Settings";
 $string['ltoolsusermenu'] = "Display Learning Tools in usermenu bar";
 $string['ltoolusermenu_help'] = "List of menus available to display in the user menu. copy and paste the  below given menu tools path in user menu items. Go to the Appearence->Themes->Theme settings in user menu items. ";
-
+$string['privacy:metadata'] = 'Learning tools parent plugin don\'t store any user-related data, The learning tool sub plugins are stores the users data individually.';
 $string['coursenotes'] = "Course Notes";
 $string['addbookmark'] = "Add bookmark";
 $string['createnote'] = "Create note";

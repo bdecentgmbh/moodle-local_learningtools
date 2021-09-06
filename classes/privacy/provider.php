@@ -15,16 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * Privacy implementation for learning tools parent plugin
  *
  * @package   local_learningtools
- * @copyright bdecent GmbH 2021
+ * @copyright 2021, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_learningtools\privacy;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
-$plugin->version = 2021090600;
-$plugin->release = 'v1.0';
-$plugin->requires = 2020061501;
-$plugin->maturity = MATURITY_STABLE;
+/**
+ * The local_learningtools parent plugin does not store any data. Subplugin stores user data.
+ */
+class provider implements \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+
+        return 'privacy:metadata';
+    }
+}
