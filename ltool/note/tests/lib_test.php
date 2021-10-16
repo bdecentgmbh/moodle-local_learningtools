@@ -37,7 +37,6 @@ class ltool_note_testcase extends advanced_testcase {
     public function setup(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $this->context = \context_course::instance($course->id);
@@ -101,7 +100,6 @@ class ltool_note_testcase extends advanced_testcase {
         ];
         $count = get_userpage_countnotes($args);
         $this->assertEquals(2, $count);
-
         $notes = check_instanceof_block((object) $data);
         $this->assertEquals('course', $notes->instance);
     }
@@ -122,7 +120,6 @@ class ltool_note_testcase extends advanced_testcase {
         $event = reset($events);
         $this->assertInstanceOf('\ltool_note\event\ltnote_created', $event);
         $this->assertEquals($this->context, $event->get_context());
-
         $notecount = ltool_note\external::save_usernote($this->context->id, $data);
         $this->assertEquals(2, $notecount);
     }

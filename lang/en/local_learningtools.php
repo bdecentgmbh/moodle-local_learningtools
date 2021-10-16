@@ -41,12 +41,22 @@ $string['privacy:metadata'] = 'Learning tools parent plugin don\'t store any use
 $string['coursenotes'] = "Course Notes";
 $string['addbookmark'] = "Add bookmark";
 $string['createnote'] = "Create note";
-
+$string['fabiconbackcolor'] = "Learning Tools icon background color";
+$string['fabiconcolor'] = "Learning Tools icon color";
+$string['iconbackcolor'] = '{$a} icon background color';
+$string['iconcolor'] = '{$a} icon color';
+$string['ltoolsettings'] = '{$a} settings';
+$string['everywhere'] = "Everywhere";
+$string['allcourses'] = "All Courses";
+$string['specificcate'] = "Specific Categories";
+$string['visiblelearningtools'] = "Visibility of Learning Tools";
+$string['visiblecategories'] = "Select Visible Categories";
+$string['disablemodules'] = "Select Disable activities to hide Learning Tools";
+$string['enabledisablemodules'] = "Enable Learning Tools to hide activities";
+$string['fabbuttonvisible_desc'] = 'You can decide where the Learning Tools shall be available.';
 
 $string['bookmarksusermenu'] = "Display Bookmarks tool in user menu";
 $string['bookmarksusermenu_help'] = "bookmarks,local_learningtools|/local/learningtools/ltool/bookmarks/list.php|b/bookmark-new";
-
-
 $string['notesusermenu'] = "Display Notes tool in user menu";
 $string['notesusermenu_help'] = "notes,local_learningtools|/local/learningtools/ltool/note/list.php|i/edit";
 
@@ -116,3 +126,49 @@ $string['pagenotes'] = "Page notes";
 $string['courseparticipants'] = "Course Participants";
 $string['viewbookmarks'] = "View Bookmarks";
 $string['viewpage'] = "View Page";
+
+// Invite ltool strings.
+$string['invite'] = "Invite";
+$string['inviteusers'] = "Invite Users";
+$string['usersemail'] = "Users Email";
+$string['invitenow'] = "Invite Now";
+$string['inviteuserslist'] = "List of invite users";
+$string['successinviteusers'] = 'Invite users successfully.';
+$string['donotcreateusers'] = "Do not create users";
+$string['enrolled'] = "Enrolled successfully";
+$string['alredyenrolled'] = "User was already enrolled";
+$string['suspended'] = "User was suspended";
+$string['timeaccess'] = "Time access";
+$string['registerandenrolled'] = "User was registered and enrolled successfully";
+$string['invaildemail'] = "User email not exists";
+$string['invaildemailadderss'] = "Email adderss should be wrong";
+
+// Resume course strings.
+$string['resumecourse'] = "Resume course";
+
+// Email tool strings.
+$string['email'] = "Email";
+$string['sentemailparticipants'] = "Send the email to course participants";
+$string['subject'] = "Subject";
+$string['message'] = "Message";
+$string['subjecterr'] = "Missing Subject";
+$string['messageerr'] = "Missing Message";
+$string['recipients'] = "Recipients";
+$string['recipientserr'] = "Missing Recipient";
+$string['attachments'] = "Attachments";
+$string['msgemailsent'] = "Successfully sent the mail to users";
+$string['sentemailuserslist'] = "Sent the email to users list";
+$string['receivedusers'] = "Received Users";
+$string['listemailreports'] = "List of the sent email reports";
+
+// Force activity.
+
+$string['forceactivity'] = "Force activity";
+$string['courseactivity'] = "Course activity";
+$string['noactivity'] = "No force activiy";
+$string['successforceactivityusers'] = "Successfully added the force activity in the course";
+
+// Information tool.
+
+$string['information'] = "Information";
+$string['courseinfo'] = "Course Information";

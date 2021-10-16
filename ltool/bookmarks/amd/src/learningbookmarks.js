@@ -48,6 +48,14 @@ define(['core/str', 'core/ajax', 'core/notification'],
                 e.preventDefault();
                 submitFormdata(contextid, params);
             });
+            // Hover color.
+            var bookmarkshovercolor = bookmarksform.getAttribute("data-hovercolor");
+            if (bookmarkshovercolor) {
+                bookmarksform.addEventListener("mouseover", function() {
+                    document.querySelector('#ltbookmarks-action p').style.background = bookmarkshovercolor;
+                });
+            }
+
         }
         var bookmarkssorttype = document.getElementById("bookmarkssorttype");
 
@@ -57,7 +65,6 @@ define(['core/str', 'core/ajax', 'core/notification'],
                 bookmarksSortActionPage(sorttype);
             });
         }
-
     }
 
     /**

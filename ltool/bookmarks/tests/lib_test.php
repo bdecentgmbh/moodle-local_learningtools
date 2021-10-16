@@ -36,7 +36,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
      */
     public function setup(): void {
         global $PAGE;
-        $this->resetAfterTest();
+        $this->resetAfterTest(true);
         $this->setAdminUser();
 
         $generator = $this->getDataGenerator();

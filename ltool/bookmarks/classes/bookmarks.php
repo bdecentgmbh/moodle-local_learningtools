@@ -42,6 +42,13 @@ class bookmarks extends \local_learningtools\learningtools {
     public $shortname = 'bookmarks';
 
     /**
+     * Tool context level
+     *
+     * @var string
+     */
+    public $contextlevel = 'system';
+
+    /**
      * Bookmarks name
      * @return string name
      *
@@ -56,6 +63,14 @@ class bookmarks extends \local_learningtools\learningtools {
     public function get_tool_icon() {
 
         return 'fa fa-bookmark';
+    }
+
+    /**
+     * Bookmarks icon background color
+     */
+    public function get_tool_iconbackcolor() {
+
+        return '#343a40';
     }
 
     /**
@@ -82,6 +97,8 @@ class bookmarks extends \local_learningtools\learningtools {
         $data['ltbookmark'] = true;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
         $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $data['pageurl'], $USER->id);
+        $data['iconbackcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconbackcolor");
+        $data['iconcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconcolor");
         return $data;
     }
 

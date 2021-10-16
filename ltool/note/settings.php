@@ -15,16 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
- *
- * @package   local_learningtools
+ * tool plugin "Learning Tools Note" - settings file.
+ * @package   ltool_note
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
-$plugin->version = 2021101602;
-$plugin->release = 'v1.0';
-$plugin->requires = 2020061501;
-$plugin->maturity = MATURITY_STABLE;
+defined('MOODLE_INTERNAL') || die;
+
+if ($hassiteconfig) {
+    // Define icon background color.
+    $name = "ltool_note/noteiconbackcolor";
+    $title = get_string('iconbackcolor', 'local_learningtools', "note");
+    $noteinfo = new \ltool_note\note();
+    $default = $noteinfo->get_tool_iconbackcolor();
+    $setting = new admin_setting_configcolourpicker($name, $title, '', $default);
+    $page->add($setting);
+
+    // Define icon color.
+    $name = "ltool_note/noteiconcolor";
+    $title = get_string('iconcolor', 'local_learningtools', "note");
+    $default = '#fff';
+    $setting = new admin_setting_configcolourpicker($name, $title, '', $default);
+    $page->add($setting);
+}

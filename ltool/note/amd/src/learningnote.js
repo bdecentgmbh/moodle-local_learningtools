@@ -107,7 +107,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                         modal.getRoot().on(ModalEvents.save, function(e) {
 
                             e.preventDefault();
-                            submitFormData(modal, contextid, params);
+                            submitFormData(modal, contextid);
                             modal.getRoot().submit();
                         });
 
@@ -126,6 +126,13 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 });
 
             });
+            // Hover color.
+            var notehovercolor = notesinfo.getAttribute("data-hovercolor");
+            if (notehovercolor) {
+                notesinfo.addEventListener("mouseover", function() {
+                    document.querySelector('#ltnote-action p').style.background = notehovercolor;
+                });
+            }
         }
     }
 

@@ -195,7 +195,7 @@ function load_bookmarks_js_config($data) {
 }
 
 /**
- * Learning tools template function.
+ * Learning tools bookmarks template function.
  * @param array $templatecontent template content
  * @return string display html content.
  */
