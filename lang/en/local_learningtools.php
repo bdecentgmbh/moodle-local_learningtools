@@ -132,7 +132,7 @@ $string['invite'] = "Invite";
 $string['inviteusers'] = "Invite Users";
 $string['usersemail'] = "Users Email";
 $string['invitenow'] = "Invite Now";
-$string['inviteuserslist'] = "List of invite users";
+$string['inviteuserslist'] = "Invite users reports";
 $string['successinviteusers'] = 'Invite users successfully.';
 $string['donotcreateusers'] = "Do not create users";
 $string['enrolled'] = "Enrolled successfully";
@@ -142,6 +142,7 @@ $string['timeaccess'] = "Time access";
 $string['registerandenrolled'] = "User was registered and enrolled successfully";
 $string['invaildemail'] = "User email not exists";
 $string['invaildemailadderss'] = "Email adderss should be wrong";
+$string['invite_maunalenrolerr'] = "Manual enrolments are not available in this course.";
 
 // Resume course strings.
 $string['resumecourse'] = "Resume course";
@@ -159,8 +160,8 @@ $string['attachments'] = "Attachments";
 $string['msgemailsent'] = "Successfully sent the mail to users";
 $string['sentemailuserslist'] = "Sent the email to users list";
 $string['receivedusers'] = "Received Users";
-$string['listemailreports'] = "List of the sent email reports";
-
+$string['listemailreports'] = "Email send reports";
+$string['inviteusers_help'] = "Please add one e-mail per line.";
 // Force activity.
 
 $string['forceactivity'] = "Force activity";

@@ -128,9 +128,11 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
             });
             // Hover color.
             var notehovercolor = notesinfo.getAttribute("data-hovercolor");
-            if (notehovercolor) {
+            var notefontcolor = notesinfo.getAttribute("data-fontcolor");
+            if (notehovercolor && notefontcolor) {
                 notesinfo.addEventListener("mouseover", function() {
                     document.querySelector('#ltnote-action p').style.background = notehovercolor;
+                    document.querySelector('#ltnote-action p').style.color = notefontcolor;
                 });
             }
         }

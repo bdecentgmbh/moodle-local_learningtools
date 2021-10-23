@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_bookmarks';
-$plugin->version = 2021090600;
+$plugin->version = 2021102100;
 $plugin->requires = 2020061501;
 
 

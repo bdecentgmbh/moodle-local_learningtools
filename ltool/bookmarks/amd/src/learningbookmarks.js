@@ -50,9 +50,11 @@ define(['core/str', 'core/ajax', 'core/notification'],
             });
             // Hover color.
             var bookmarkshovercolor = bookmarksform.getAttribute("data-hovercolor");
-            if (bookmarkshovercolor) {
+            var bookmarksfontcolor = bookmarksform.getAttribute("data-fontcolor");
+            if (bookmarkshovercolor && bookmarksfontcolor) {
                 bookmarksform.addEventListener("mouseover", function() {
                     document.querySelector('#ltbookmarks-action p').style.background = bookmarkshovercolor;
+                    document.querySelector('#ltbookmarks-action p').style.color = bookmarksfontcolor;
                 });
             }
 

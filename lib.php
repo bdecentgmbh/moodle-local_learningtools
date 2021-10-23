@@ -113,6 +113,8 @@ function check_instanceof_block($record) {
 
     } else if ($record->contextlevel == 80) { // Context blocklevel.
         $data->instance = 'block';
+    } else {
+        $data->instance = '';
     }
     return $data;
 }
