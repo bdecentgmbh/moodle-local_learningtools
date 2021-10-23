@@ -101,14 +101,13 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
  * @return array bookmarks save info details.
  */
 function user_save_bookmarks($contextid, $data) {
-    global $DB, $PAGE;
+    global $DB, $PAGE, $USER;
     $context = context::instance_by_id($contextid, MUST_EXIST);
     $PAGE->set_context($context);
     if (confirm_sesskey()) {
 
         if (!$DB->record_exists('learningtools_bookmarks', array('contextid' =>
             $contextid, 'pageurl' => $data['pageurl'], 'userid' => $data['user']))) {
-
             $record = new stdclass();
             $record->userid = $data['user'];
             $record->course = $data['course'];
@@ -129,28 +128,31 @@ function user_save_bookmarks($contextid, $data) {
             // Add event to user create the bookmark.
             $event = \ltool_bookmarks\event\ltbookmarks_created::create([
                 'objectid' => $bookmarksrecord,
+                'userid' => $data['user'],
                 'courseid' => $eventcourseid,
                 'context' => $context,
                 'other' => [
                     'pagetype' => $data['pagetype'],
                 ]
             ]);
-
             $event->trigger();
             $bookmarksmsg = get_string('successbookmarkmessage', 'local_learningtools');
             $bookmarksstatus = !empty($bookmarksrecord) ? true : false;
             $notificationtype = 'success';
         } else {
-            $deleterecord = $DB->get_record('learningtools_bookmarks',
-                array('contextid' => $contextid, 'pageurl' => $data['pageurl']));
+            $deleterecord = $DB->get_record('learningtools_bookmarks', array('contextid' => $contextid,
+            'pageurl' => $data['pageurl'], 'userid' => $data['user']));
             $DB->delete_records('learningtools_bookmarks', array('contextid' => $contextid,
-                'pageurl' => $data['pageurl']));
+                'pageurl' => $data['pageurl'], 'userid' => $data['user']));
              // Add event to user delete the bookmark.
+            $relateduserid = ($deleterecord->userid != $USER->id) ? $USER->id : 0;
             $eventcourseid = get_eventlevel_courseid($context, $data['course']);
             $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
                 'objectid' => $deleterecord->id,
+                'userid' => $data['user'],
                 'courseid' => $eventcourseid,
                 'context' => $context,
+                'relateduserid' => $relateduserid,
                 'other' => [
                     'pagetype' => $data['pagetype'],
                 ]
@@ -166,6 +168,7 @@ function user_save_bookmarks($contextid, $data) {
 
     }
 }
+
 /**
  *
  * Check capability to show bookmarks.
@@ -282,4 +285,32 @@ function get_bookmarks_module_coursesection($data) {
     $coursename = get_course_name($data->courseid);
     $section = get_mod_section($data->courseid, $data->coursemodule);
     return $coursename.' / '. $section;
+}
+
+/**
+ * Clean the assignment page userlist id.
+ * @param string $pageurl pageurl
+ * @param object $cm course module id.
+ * @return string pageurl
+ */
+function clean_mod_assign_userlistid($pageurl, $cm) {
+    if (!empty($cm->id)) {
+        $data = new stdClass;
+        $data->coursemodule = $cm->id;
+        $modname = get_module_name($data, true);
+        if ($modname == 'assign') {
+            $parsed = parse_url($pageurl);
+            if (isset($parsed['query'])) {
+                $query = $parsed['query'];
+                parse_str($query, $params);
+                unset($params['useridlistid']);
+            };
+            $url = $parsed['scheme'] . "://" . $parsed['host'] . $parsed['path'];
+            $urlparams = isset($parsed['query']) ? '?' . http_build_query($params, '', '&') : '';
+            $url = $url . $urlparams;
+            return $url;
+        }
+    } else {
+        return $pageurl;
+    }
 }
