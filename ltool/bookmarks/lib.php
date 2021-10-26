@@ -309,6 +309,8 @@ function clean_mod_assign_userlistid($pageurl, $cm) {
             $urlparams = isset($parsed['query']) ? '?' . http_build_query($params, '', '&') : '';
             $url = $url . $urlparams;
             return $url;
+        } else {
+            return $pageurl;
         }
     } else {
         return $pageurl;
