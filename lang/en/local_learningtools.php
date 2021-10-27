@@ -146,6 +146,7 @@ $string['invite_maunalenrolerr'] = "Manual enrolments are not available in this 
 
 // Resume course strings.
 $string['resumecourse'] = "Resume course";
+$string['donotresumecourse'] = "You don't have any pages to resume";
 
 // Email tool strings.
 $string['email'] = "Email";

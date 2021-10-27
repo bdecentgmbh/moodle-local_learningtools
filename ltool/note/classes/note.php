@@ -77,13 +77,13 @@ class note extends \local_learningtools\learningtools {
     public function get_tool_records() {
         global $DB, $PAGE, $USER, $CFG;
         require_once($CFG->dirroot.'/local/learningtools/ltool/note/lib.php');
-
         $args = [];
         $data = [];
         $args['contextid'] = $PAGE->context->id;
         $args['pagetype'] = $PAGE->pagetype;
         $args['user'] = $USER->id;
-        $args['pageurl'] = $PAGE->url->out(false);
+        $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+        $args['pageurl'] = $pageurl;
         $data = [];
         $data['name'] = $this->get_tool_name();
         $data['icon'] = $this->get_tool_icon();

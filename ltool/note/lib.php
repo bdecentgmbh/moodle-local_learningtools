@@ -274,12 +274,14 @@ function get_contextuser_notes($args) {
     $template = [];
     $listrecords = [];
     $sql = "SELECT * FROM {learningtools_note}
-    WHERE userid = :userid AND contextid = :contextid AND pageurl= :pageurl ORDER BY timecreated DESC";
-
+    WHERE userid = ? AND
+    contextid = ? AND ".
+    $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) .
+    "ORDER BY timecreated DESC";
     $params = [
-        'userid' => $args['user'],
-        'contextid' => $args['contextid'],
-        'pageurl' => $args['pageurl']
+        $args['user'],
+        $args['contextid'],
+        $args['pageurl']
     ];
     $records = $DB->get_records_sql($sql, $params);
     $cnt = 1;
@@ -363,8 +365,18 @@ function user_save_notes($contextid, $data) {
             ]
         ]);
         $event->trigger();
-        $pageusernotes = $DB->count_records('learningtools_note', array('pageurl' =>
-            $data['pageurl'], 'pagetype' => $data['pagetype'], 'userid' => $data['user']));
+
+        $sql = "SELECT COUNT(*)
+        FROM {learningtools_note}
+        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
+        AND pagetype = ?
+        AND userid = ?";
+        $params = array(
+            $data['pageurl'],
+            $data['pagetype'],
+            $data['user']
+        );
+        $pageusernotes = $DB->count_records_sql($sql, $params);
         return $pageusernotes;
     }
 }
@@ -441,9 +453,17 @@ function require_deletenote_cap($id) {
  */
 function get_userpage_countnotes($args) {
     global $DB;
-    return $DB->count_records('learningtools_note', array('pageurl' => $args['pageurl'],
-        'pagetype' => $args['pagetype'], 'userid' => $args['user']));
-
+    $sql = "SELECT COUNT(*)
+        FROM {learningtools_note}
+        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
+        AND pagetype = ?
+        AND userid = ?";
+    $params = array(
+        $args['pageurl'],
+        $args['pagetype'],
+        $args['user']
+    );
+    return $DB->count_records_sql($sql, $params);
 }
 
 /**
@@ -469,7 +489,8 @@ function load_notes_js_config() {
     $params['contextlevel'] = $PAGE->context->contextlevel;
     $params['pagetype'] = $PAGE->pagetype;
     $params['pagetitle'] = $PAGE->title;
-    $params['pageurl'] = $PAGE->url->out(false);
+    $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+    $params['pageurl'] = $pageurl;
     $params['user'] = $USER->id;
     $params['contextid'] = $PAGE->context->id;
     $params['title'] = $PAGE->title;

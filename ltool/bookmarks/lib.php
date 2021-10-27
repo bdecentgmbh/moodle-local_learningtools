@@ -105,9 +105,14 @@ function user_save_bookmarks($contextid, $data) {
     $context = context::instance_by_id($contextid, MUST_EXIST);
     $PAGE->set_context($context);
     if (confirm_sesskey()) {
-
-        if (!$DB->record_exists('learningtools_bookmarks', array('contextid' =>
-            $contextid, 'pageurl' => $data['pageurl'], 'userid' => $data['user']))) {
+        $sql = "SELECT *
+            FROM {learningtools_bookmarks}
+            WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
+            AND contextid = ?
+            AND userid = ?";
+        $params = array($data['pageurl'], $contextid, $data['user']);
+        $bookrecord = $DB->get_record_sql($sql, $params);
+        if (empty($bookrecord)) {
             $record = new stdclass();
             $record->userid = $data['user'];
             $record->course = $data['course'];
@@ -140,15 +145,15 @@ function user_save_bookmarks($contextid, $data) {
             $bookmarksstatus = !empty($bookmarksrecord) ? true : false;
             $notificationtype = 'success';
         } else {
-            $deleterecord = $DB->get_record('learningtools_bookmarks', array('contextid' => $contextid,
-            'pageurl' => $data['pageurl'], 'userid' => $data['user']));
-            $DB->delete_records('learningtools_bookmarks', array('contextid' => $contextid,
-                'pageurl' => $data['pageurl'], 'userid' => $data['user']));
+            $selectdelete = $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255).
+                "AND contextid = ? AND userid = ?";
+            $delteparams = [$data['pageurl'], $contextid, $data['user']];
+            $DB->delete_records_select('learningtools_bookmarks', $selectdelete, $delteparams);
              // Add event to user delete the bookmark.
-            $relateduserid = ($deleterecord->userid != $USER->id) ? $USER->id : 0;
+            $relateduserid = ($bookrecord->userid != $USER->id) ? $USER->id : 0;
             $eventcourseid = get_eventlevel_courseid($context, $data['course']);
             $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
-                'objectid' => $deleterecord->id,
+                'objectid' => $bookrecord->id,
                 'userid' => $data['user'],
                 'courseid' => $eventcourseid,
                 'context' => $context,
@@ -216,15 +221,18 @@ function ltool_bookmarks_render_template($templatecontent) {
  */
 function check_page_bookmarks_exist($contextid, $pageurl, $userid) {
     global $DB;
-
     $pagebookmarks = false;
-    if ($DB->record_exists('learningtools_bookmarks', array('contextid' => $contextid,
-        'pageurl' => $pageurl, 'userid' => $userid))) {
+    $sql = "SELECT id
+        FROM {learningtools_bookmarks}
+        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
+        AND contextid = ?
+        AND userid = ?";
+    $params = array($pageurl, $contextid, $userid);
+    if ($DB->record_exists_sql($sql, $params)) {
         $pagebookmarks = true;
     }
     return $pagebookmarks;
 }
-
 
 /**
  * Check the bookmarks status.
@@ -285,34 +293,4 @@ function get_bookmarks_module_coursesection($data) {
     $coursename = get_course_name($data->courseid);
     $section = get_mod_section($data->courseid, $data->coursemodule);
     return $coursename.' / '. $section;
-}
-
-/**
- * Clean the assignment page userlist id.
- * @param string $pageurl pageurl
- * @param object $cm course module id.
- * @return string pageurl
- */
-function clean_mod_assign_userlistid($pageurl, $cm) {
-    if (!empty($cm->id)) {
-        $data = new stdClass;
-        $data->coursemodule = $cm->id;
-        $modname = get_module_name($data, true);
-        if ($modname == 'assign') {
-            $parsed = parse_url($pageurl);
-            if (isset($parsed['query'])) {
-                $query = $parsed['query'];
-                parse_str($query, $params);
-                unset($params['useridlistid']);
-            };
-            $url = $parsed['scheme'] . "://" . $parsed['host'] . $parsed['path'];
-            $urlparams = isset($parsed['query']) ? '?' . http_build_query($params, '', '&') : '';
-            $url = $url . $urlparams;
-            return $url;
-        } else {
-            return $pageurl;
-        }
-    } else {
-        return $pageurl;
-    }
 }

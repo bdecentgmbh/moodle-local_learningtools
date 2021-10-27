@@ -37,5 +37,11 @@ function xmldb_ltool_note_upgrade($oldversion) {
     if (!$dbman->field_exists($table, $field)) {
         $dbman->add_field($table, $field);
     }
+    if ($oldversion < 2021102700) {
+        $pageurlfield = new xmldb_field('pageurl', XMLDB_TYPE_TEXT, null, null, null, null, null,
+                'pagetitle');
+        $dbman->change_field_type($table, $pageurlfield);
+        upgrade_plugin_savepoint(true, 2021102700, 'ltool', 'note');
+    }
     return true;
 }
