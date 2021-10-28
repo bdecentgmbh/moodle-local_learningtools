@@ -6,7 +6,7 @@ body.scrolled #goto-top-link,
 }
 
 /* Usermenu option icon */
-.navbar .navbar-nav li.nav-item .usermenu .action-menu .menubar .dropdown .dropdown-menu a i.icon.iconsize-big {
+.navbar .usermenu .dropdown .dropdown-menu a i.icon.iconsize-big {
     width: 16px;
     height: 16px;
     font-size: 16px;
