@@ -107,3 +107,7 @@ body.scrolled #goto-top-link,
     line-height: 43px;
     color: #fff;
 }
+
+footer .btn-footer-popover {
+    right: 5rem;
+}

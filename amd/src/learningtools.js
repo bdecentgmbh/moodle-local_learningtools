@@ -35,6 +35,13 @@ define([], function() {
             pagewrapper.insertAdjacentHTML("beforebegin", fabbuttonhtml);
         }
 
+        // Add body class
+        var body = document.querySelector('body');
+        if (body) {
+            if (!body.classList.contains('local-learningtools')) {
+                body.classList.add('local-learningtools');
+            }
+        }
         var toolaction = document.getElementById("tool-action-button");
         if (toolaction !== null) {
             toolaction.addEventListener("click", function() {
