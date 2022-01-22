@@ -36,7 +36,7 @@ $edit = optional_param('edit', 0, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $childid = optional_param('userid', 0, PARAM_INT);
 $teacher = optional_param('teacher', 0, PARAM_INT);
-$returnurl = optional_param('returnurl', '', PARAM_RAW);
+$returnurl = optional_param('returnurl', '', PARAM_URL);
 
 $urlparams = [];
 if ($courseid && !$childid) {

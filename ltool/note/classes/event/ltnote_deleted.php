@@ -24,8 +24,6 @@
  */
 
 namespace ltool_note\event;
-
-defined('MOODLE_INTERNAL') || die();
 /**
  * Notes tool call to delete the notes event.
  */

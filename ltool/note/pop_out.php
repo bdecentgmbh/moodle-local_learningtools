@@ -33,11 +33,10 @@ $courseid = optional_param('course', 0, PARAM_INT);
 $user = optional_param('user', 0, PARAM_INT);
 $contextlevel = optional_param('contextlevel', 0, PARAM_INT);
 $pagetype = optional_param('pagetype', '', PARAM_TEXT);
-$urlparams = optional_param('pageurl', '', PARAM_RAW);
+$urlparams = optional_param('pageurl', '', PARAM_TEXT);
 $pagetitle = optional_param('pagetitle', '', PARAM_TEXT);
 $pageheading = optional_param('heading' , '', PARAM_TEXT);
 $jsonurlparams = json_decode($urlparams);
-
 if (is_array($jsonurlparams)) {
     $pageurl = '';
     $cnt = 1;

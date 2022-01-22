@@ -34,7 +34,7 @@ $PAGE->set_title($title);
 $PAGE->set_heading($SITE->fullname);
 
 $delete      = optional_param('delete', 0, PARAM_INT);
-$returnurl  = optional_param('returnurl', '', PARAM_RAW);
+$returnurl  = optional_param('returnurl', '', PARAM_URL);
 $confirm    = optional_param('confirm', '', PARAM_ALPHANUM);
 // Require access the page.
 require_deletenote_cap($delete);

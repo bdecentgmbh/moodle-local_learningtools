@@ -22,7 +22,7 @@ body.scrolled #goto-top-link,
     position: fixed;
     bottom: 10px;
     right: 10px;
-    z-index: 1;
+    z-index: 1100;
 }
 .floating-button > button {
     width: 50px;
@@ -49,15 +49,26 @@ body.scrolled #goto-top-link,
 }
 .floating-button .list-learningtools {
     display: none;
+    transition: all .5s ease;
+}
+.floating-button.sticky-tool > .show + button {
+    position: absolute;
+    top: 0;
+    transition: all .5s ease;
+}
+.floating-button.sticky-tool > .show + button i:before {
+    content: '\f103';
 }
 .floating-button .list-learningtools.show {
+    padding-top: 55px;
     display: block;
+    transition: all .5s ease;
 }
-.floating-button .list-learningtools > div {
+.floating-button > div > div {
     margin-bottom: 5px;
     position: relative;
 }
-.floating-button .list-learningtools > div button {
+.floating-button > div > div button {
     width: 50px;
     height: 50px;
     border: 0;
@@ -66,7 +77,7 @@ body.scrolled #goto-top-link,
     box-shadow: 2px 5px 5px rgb(0, 0, 0, .2);
     position: relative;
 }
-.floating-button .list-learningtools > div button span {
+.floating-button > div > div button span {
     width: 25px;
     height: 15px;
     color: #fff;
@@ -78,18 +89,18 @@ body.scrolled #goto-top-link,
     top: 0;
     right: -5px;
 }
-.floating-button .list-learningtools > div button:focus {
+.floating-button > div > div button:focus {
     border: 0;
     box-shadow: none;
     outline: none;
 }
-.floating-button .list-learningtools > div button p {
+.floating-button > div > div button p {
     position: absolute;
     top: 0;
     right: 60px;
     display: none;
 }
-.floating-button .list-learningtools > div button:hover p {
+.floating-button > div > div button:hover p {
     min-width: 100px;
     color: #fff;
     font-size: 13px;
@@ -101,7 +112,7 @@ body.scrolled #goto-top-link,
     margin-top: 13px;
 }
 
-.floating-button .list-learningtools > div button i,
+.floating-button > div > div button i,
 .floating-button .list-learningtools + button i {
     font-size: 26px;
     line-height: 43px;

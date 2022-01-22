@@ -124,4 +124,17 @@ class bookmarks extends \local_learningtools\learningtools {
         return ltool_bookmarks_render_template($data);
     }
 
+    /**
+     * Bookmarks active tool status.
+     * @return string Bookmark tool fab button html.
+     */
+    public function tool_active_condition() {
+        global $PAGE, $USER;
+        $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+        $pagebookmarks = check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
+        if ($pagebookmarks) {
+            return $this->render_template();
+        }
+    }
+
 }

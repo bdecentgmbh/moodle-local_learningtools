@@ -54,6 +54,13 @@ if ($hassiteconfig) {
         $setting = new admin_setting_configselect($name, $title, $desc, 'all', $choices);
         $page->add($setting);
 
+        // Define show when active.
+        $name = "local_learningtools/showactive";
+        $title = get_string('alwaysactive', 'local_learningtools');
+        $default = 0;
+        $setting = new admin_setting_configcheckbox($name, $title, '', $default);
+        $page->add($setting);
+
         // Select categories.
         $categories = \core_course_category::make_categories_list();
         $name = "local_learningtools/visiblecategories";

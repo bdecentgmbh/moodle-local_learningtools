@@ -23,9 +23,9 @@
  */
 namespace local_learningtools\plugininfo;
 
-defined('MOODLE_INTERNAL') || die();
-
-use core\plugininfo\base, part_of_admin_tree, admin_settingpage;
+use core\plugininfo\base;
+use part_of_admin_tree;
+use admin_settingpage;
 
 /**
  * Ltools subplugin define classes.

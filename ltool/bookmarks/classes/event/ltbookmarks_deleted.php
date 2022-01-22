@@ -25,7 +25,6 @@
 
 namespace ltool_bookmarks\event;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Bookmarks tool delete the event.
  */

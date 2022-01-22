@@ -24,8 +24,6 @@
 
 use core_user\output\myprofile\tree;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Defines learningtools nodes for my profile navigation tree.
  *
@@ -58,9 +56,7 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
  * @return navigation_node Returns the question branch that was added
  */
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
-
     global $PAGE, $CFG;
-
     $context = context_system::instance();
     $ltoolsjs = array();
     // Content of fab button html.
@@ -337,36 +333,102 @@ function get_learningtools_info() {
             }
         }
     }
-
-    $content .= html_writer::start_tag('div', array('class' => 'floating-button'));
-    $content .= html_writer::start_tag('div', array('class' => 'list-learningtools'));
-
+    $contentinner = '';
     // Get list of ltool sub plugins.
     $subplugins = local_learningtools_get_subplugins();
     $context = context_system::instance();
+    $stickytools = '';
     if (!empty($subplugins)) {
         foreach ($subplugins as $shortname => $toolobj) {
             $capability = 'ltool/'.$toolobj->shortname.':create'. $toolobj->shortname;
             if ($toolobj->contextlevel == 'system') {
                 if (has_capability($capability, $context)) {
-                    $content .= $toolobj->render_template();
+                    if (get_config('ltool_' . $toolobj->shortname, 'sticky')) {
+                        $stickytools .= $toolobj->render_template();
+                    } else if (get_config('local_learningtools', 'showactive')) {
+                        if (method_exists($toolobj, 'tool_active_condition')) {
+                            if ($toolobj->tool_active_condition()) {
+                                $stickytools .= $toolobj->tool_active_condition();
+                            } else {
+                                $contentinner .= $toolobj->render_template();
+                            }
+                        }
+                    } else {
+                        $contentinner .= $toolobj->render_template();
+                    }
                 }
             } else {
-                $content .= $toolobj->render_template();
+                if (get_config('ltool_' . $toolobj->shortname, 'sticky')) {
+                    $stickytools .= $toolobj->render_template();
+                } else if (get_config('local_learningtools', 'showactive')) {
+                    if (method_exists($toolobj, 'tool_active_condition')) {
+                        if ($toolobj->tool_active_condition()) {
+                            $stickytools .= $toolobj->tool_active_condition();
+                        } else {
+                            $contentinner .= $toolobj->render_template();
+                        }
+                    }
+                } else {
+                    $contentinner .= $toolobj->render_template();
+                }
             }
         }
     }
+    $stickytoolstatus = local_learningtools_get_stickytool_status();
+    $stickyclass = '';
+    $fabiconclass = "fa fa-magic";
+    if ($stickytoolstatus && !empty($stickytools)) {
+        $fabiconclass = "fa fa-angle-double-up";
+        $stickyclass = 'sticky-tool';
+    }
     $fabbackiconcolor = get_config('local_learningtools', 'fabiconbackcolor');
     $fabiconcolor = get_config('local_learningtools', 'fabiconcolor');
+    $content .= html_writer::start_tag('div', array('class' => 'learningtools-action-info'));
+    $content .= html_writer::start_tag('div', array('class' => "floating-button $stickyclass"));
+    $content .= html_writer::start_tag('div', array('class' => 'list-learningtools'));
+    $content .= $contentinner;
     $content .= html_writer::end_tag('div');
             $content .= html_writer::start_tag('button', array("class" => "btn btn-primary",
             'id' => 'tool-action-button', 'style' => "background:$fabbackiconcolor;") );
-    $content .= html_writer::start_tag('i', array('class' => 'fa fa-magic', 'style' => "color:$fabiconcolor;"));
+    $content .= html_writer::start_tag('i', array('class' => $fabiconclass, 'style' => "color:$fabiconcolor;"));
     $content .= html_writer::end_tag('i');
     $content .= html_writer::end_tag("button");
+        $content .= html_writer::start_tag('div', array('class' => 'sticky-tools-list'));
+        $content .= $stickytools;
+        $content .= html_writer::end_tag('div');
+    $content .= html_writer::end_tag('div');
     $content .= html_writer::end_tag('div');
     return $content;
 }
+
+/**
+ * Get sticky tools.
+ * @return void
+ */
+function local_learningtools_get_stickytool_status() {
+    $subplugins = local_learningtools_get_subplugins();
+    $stickystatus = false;
+    if (!empty($subplugins)) {
+        foreach ($subplugins as $shortname => $toolobj) {
+            $capability = 'ltool/'.$toolobj->shortname.':create'. $toolobj->shortname;
+            if ($toolobj->contextlevel == 'system') {
+                if (has_capability($capability, context_system::instance())) {
+                    if (get_config('ltool_' . $toolobj->shortname, 'sticky') ||
+                        get_config('local_learningtools', 'showactive')) {
+                        $stickystatus = true;
+                    }
+                }
+            } else {
+                if (get_config('ltool_' . $toolobj->shortname, 'sticky') ||
+                    get_config('local_learningtools', 'showactive')) {
+                    $stickystatus = true;
+                }
+            }
+        }
+    }
+    return $stickystatus;
+}
+
 
 /**
  * Get the students in course.
@@ -470,13 +532,14 @@ function add_learningtools_plugin($plugin) {
     global $DB;
     $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
     if (!$DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
-        $lasttool = $DB->get_record_sql(' SELECT id FROM {local_learningtools_products} ORDER BY id DESC LIMIT 1', null);
+        $existrecords = $DB->get_records('local_learningtools_products', null);
+        $maxrecord = $DB->get_record_sql('SELECT MAX(sort) AS value FROM {local_learningtools_products}', null);
+        $sortval = !empty($existrecords) ? $maxrecord->value + 1 : 1;
         $record = new stdClass;
         $record->shortname = $plugin;
         $record->name = $strpluginname;
         $record->status = 1;
-        $lasttoolcount = $DB->count_records('local_learningtools_products');
-        $record->sort = (!empty($lasttool)) ? $lasttoolcount + 1 : 1;
+        $record->sort = $sortval;
         $record->timecreated = time();
         $DB->insert_record('local_learningtools_products', $record);
     }

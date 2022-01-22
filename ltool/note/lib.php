@@ -63,7 +63,7 @@ class editorform extends moodleform {
 
         $mform->addElement('hidden', 'pageurl');
         $mform->setDefault('pageurl', $pageurl);
-        $mform->setType('pageurl', PARAM_RAW);
+        $mform->setType('pageurl', PARAM_URL);
 
         $mform->addElement('hidden', 'user');
         $mform->setDefault('user', $user);
@@ -94,7 +94,6 @@ class edit_noteinfo extends moodleform {
         $note = $DB->get_record('learningtools_note', array('id' => $noteid));
         $usernote = !empty($note->note) ? $note->note : '';
         $mform->addElement('editor', 'noteeditor', '')->setValue( array('text' => $usernote));
-        $mform->setType('noteeditor', PARAM_RAW);
         $mform->addElement('hidden', 'edit');
         $mform->setType('edit', PARAM_INT);
         $mform->setDefault('edit', $noteid);
@@ -106,11 +105,11 @@ class edit_noteinfo extends moodleform {
 
         if ($returnurl) {
             $mform->addElement('hidden', 'returnurl');
-            $mform->setType('returnurl', PARAM_RAW);
+            $mform->setType('returnurl', PARAM_URL);
             $mform->setDefault('returnurl', $returnurl);
         }
         $mform->addElement('hidden', 'sesskey');
-        $mform->setType('sesskey', PARAM_RAW);
+        $mform->setType('sesskey', PARAM_ALPHANUMEXT);
         $mform->setDefault('sesskey', sesskey());
         $this->add_action_buttons();
     }
@@ -336,49 +335,52 @@ function user_save_notes($contextid, $data) {
     global $DB, $PAGE;
     $context = context::instance_by_id($contextid, MUST_EXIST);
     $PAGE->set_context($context);
-    if (confirm_sesskey()) {
-        $record = new stdclass();
-        $record->userid = $data['user'];
-        $record->course = $data['course'];
-        $record->contextlevel = $data['contextlevel'];
-        $record->contextid = $contextid;
-        if ($record->contextlevel == 70) {
-            $record->coursemodule = get_coursemodule_id($record);
-        } else {
-            $record->coursemodule = 0;
+    if (!PHPUNIT_TEST) {
+        if (!confirm_sesskey()) {
+            return '';
         }
-        $record->pagetitle = $data['pagetitle'];
-        $record->pagetype = $data['pagetype'];
-        $record->pageurl = $data['pageurl'];
-        $record->note = format_text($data['ltnoteeditor'], FORMAT_HTML);
-        $record->timecreated = time();
-
-        $notesrecord = $DB->insert_record('learningtools_note', $record);
-        $eventcourseid = get_eventlevel_courseid($context, $data['course']);
-        // Add event to user create the note.
-        $event = \ltool_note\event\ltnote_created::create([
-            'objectid' => $notesrecord,
-            'courseid' => $eventcourseid,
-            'context' => $context,
-            'other' => [
-                'pagetype' => $data['pagetype'],
-            ]
-        ]);
-        $event->trigger();
-
-        $sql = "SELECT COUNT(*)
-        FROM {learningtools_note}
-        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
-        AND pagetype = ?
-        AND userid = ?";
-        $params = array(
-            $data['pageurl'],
-            $data['pagetype'],
-            $data['user']
-        );
-        $pageusernotes = $DB->count_records_sql($sql, $params);
-        return $pageusernotes;
     }
+    $record = new stdclass();
+    $record->userid = $data['user'];
+    $record->course = $data['course'];
+    $record->contextlevel = $data['contextlevel'];
+    $record->contextid = $contextid;
+    if ($record->contextlevel == 70) {
+        $record->coursemodule = get_coursemodule_id($record);
+    } else {
+        $record->coursemodule = 0;
+    }
+    $record->pagetitle = $data['pagetitle'];
+    $record->pagetype = $data['pagetype'];
+    $record->pageurl = $data['pageurl'];
+    $record->note = format_text($data['ltnoteeditor'], FORMAT_HTML);
+    $record->timecreated = time();
+
+    $notesrecord = $DB->insert_record('learningtools_note', $record);
+    $eventcourseid = get_eventlevel_courseid($context, $data['course']);
+    // Add event to user create the note.
+    $event = \ltool_note\event\ltnote_created::create([
+        'objectid' => $notesrecord,
+        'courseid' => $eventcourseid,
+        'context' => $context,
+        'other' => [
+            'pagetype' => $data['pagetype'],
+        ]
+    ]);
+    $event->trigger();
+
+    $sql = "SELECT COUNT(*)
+    FROM {learningtools_note}
+    WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
+    AND pagetype = ?
+    AND userid = ?";
+    $params = array(
+        $data['pageurl'],
+        $data['pagetype'],
+        $data['user']
+    );
+    $pageusernotes = $DB->count_records_sql($sql, $params);
+    return $pageusernotes;
 }
 
 

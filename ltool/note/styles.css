@@ -238,16 +238,16 @@
 
 
 /*floating button*/
-.floating-button .list-learningtools > div.ltnoteinfo button {
+.floating-button div.ltnoteinfo button {
     background: #17a2b8;
 }
-.floating-button .list-learningtools > div.ltnoteinfo button span {
+.floating-button div.ltnoteinfo button span {
     display: none;
 }
-.floating-button .list-learningtools > div.ltnoteinfo button span.ticked {
+.floating-button div.ltnoteinfo button span.ticked {
     display: block;
 }
-.floating-button .list-learningtools > div.ltnoteinfo button:hover p {
+.floating-button div.ltnoteinfo button:hover p {
     background: #17a2b8;
 }
 

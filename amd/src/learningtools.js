@@ -16,10 +16,11 @@
 /**
  * Learningtools define js.
  * @category  Classes - autoloading
+ * @module   local_learningtools
  * @copyright 2021, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define([], function() {
+ define([], function() {
 
     /* global fabbuttonhtml */
 
@@ -33,6 +34,16 @@ define([], function() {
         if (loggedin) {
             var pagewrapper = document.querySelector("footer");
             pagewrapper.insertAdjacentHTML("beforebegin", fabbuttonhtml);
+            var listtools = document.querySelectorAll(".floating-button .list-learningtools")[0];
+            if (listtools) {
+               if (listtools.childElementCount == 0 || listtools.childElementCount == 1) {
+                    let fabbutton = document.querySelectorAll(".floating-button #tool-action-button")[0];
+                    if (fabbutton) {
+                        fabbutton.style = "display:none";
+                    }
+                    document.querySelectorAll(".floating-button .list-learningtools")[0].classList.add('show');
+               }
+            }
         }
 
         // Add body class

@@ -38,4 +38,11 @@ if ($hassiteconfig) {
     $default = '#fff';
     $setting = new admin_setting_configcolourpicker($name, $title, '', $default);
     $page->add($setting);
+
+    // Define Sticky.
+    $name = "ltool_bookmarks/sticky";
+    $title = get_string('sticky', 'local_learningtools');
+    $default = 0;
+    $setting = new admin_setting_configcheckbox($name, $title, '', $default);
+    $page->add($setting);
 }
