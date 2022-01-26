@@ -18,13 +18,14 @@
  * Local plugin "Learning Tools" - Version file.
  *
  * @package   local_learningtools
- * @copyright bdecent GmbH 2021
+ * @copyright bdecent GmbH 2022
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_learningtools';
-$plugin->version = 2021090600;
+$plugin->version = 2021121602;
 $plugin->release = 'v1.0';
 $plugin->requires = 2020061501;
 $plugin->maturity = MATURITY_STABLE;
+

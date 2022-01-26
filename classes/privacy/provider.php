@@ -23,8 +23,6 @@
  */
 namespace local_learningtools\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The local_learningtools parent plugin does not store any data. Subplugin stores user data.
  */

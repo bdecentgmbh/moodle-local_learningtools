@@ -131,7 +131,6 @@ foreach ($learningtools as $tool) {
         $updown .= $spacer;
     }
     $cnt++;
-
     $table->add_data(array($tool->name, $version, $status, $updown, $uninstall));
 }
 // Print the ltool plugins table.

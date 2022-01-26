@@ -15,7 +15,7 @@
 
 /**
  * Bookmarks ltool define js.
- * @package   ltool_bookmarks
+ * @module   ltool_bookmarks
  * @category  Classes - autoloading
  * @copyright 2021, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -48,6 +48,16 @@ define(['core/str', 'core/ajax', 'core/notification'],
                 e.preventDefault();
                 submitFormdata(contextid, params);
             });
+            // Hover color.
+            var bookmarkshovercolor = bookmarksform.getAttribute("data-hovercolor");
+            var bookmarksfontcolor = bookmarksform.getAttribute("data-fontcolor");
+            if (bookmarkshovercolor && bookmarksfontcolor) {
+                bookmarksform.addEventListener("mouseover", function() {
+                    document.querySelector('#ltbookmarks-action p').style.background = bookmarkshovercolor;
+                    document.querySelector('#ltbookmarks-action p').style.color = bookmarksfontcolor;
+                });
+            }
+
         }
         var bookmarkssorttype = document.getElementById("bookmarkssorttype");
 
@@ -57,7 +67,6 @@ define(['core/str', 'core/ajax', 'core/notification'],
                 bookmarksSortActionPage(sorttype);
             });
         }
-
     }
 
     /**

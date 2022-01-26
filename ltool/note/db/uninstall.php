@@ -21,26 +21,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * ltool_note uninstall function.
  *
  * @return void
  */
 function xmldb_ltool_note_uninstall() {
-    global $DB;
-
+    global $CFG;
+    require_once($CFG->dirroot. '/local/learningtools/lib.php');
     $plugin = 'note';
-    if ($DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
-        $DB->delete_records('local_learningtools_products', array('shortname' => $plugin));
-    }
-    // Delete the table.
-    $table = "learningtools_note";
-    $dbman = $DB->get_manager();
-    if ($dbman->table_exists($table)) {
-        $droptable = new xmldb_table($table);
-        $dbman->drop_table($droptable);
-    }
-
+    delete_ltool_table($plugin);
 }

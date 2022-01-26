@@ -22,10 +22,10 @@ Feature: Check the Bookmarks ltool add/edit delete and list viewes.
   Scenario: Make bookmark the page.
     Given I log in as "student1"
     And I click on FAB button
-    And I click on "#ltbookmarkinfo" "css_element"
+    And I click on "#ltbookmarksinfo" "css_element"
     Then I should see "This page bookmarked successfully"
     And ".fa-bookmark.marked" "css_element" should exist
-    Then I click on "#ltbookmarkinfo" "css_element"
+    Then I click on "#ltbookmarksinfo" "css_element"
     And ".fa-bookmark.marked" "css_element" should not exist
     And I should see "This page bookmark removed"
     And I log out
@@ -34,13 +34,13 @@ Feature: Check the Bookmarks ltool add/edit delete and list viewes.
   Scenario: Create and test the list of bookmarks.
     Given I log in as "student1"
     And I click on FAB button
-    And I click on "#ltbookmarkinfo" "css_element"
+    And I click on "#ltbookmarksinfo" "css_element"
     Then I should see "This page bookmarked successfully"
     # Add second note.
     When I am on "Course 1" course homepage
     # When I click on "Site home" "link"
     And I click on FAB button
-    And I click on "#ltbookmarkinfo" "css_element"
+    And I click on "#ltbookmarksinfo" "css_element"
     Then I should see "This page bookmarked successfully"
     # List page.
     Then I follow "Profile" in the user menu

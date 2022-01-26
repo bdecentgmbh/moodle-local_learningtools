@@ -42,6 +42,13 @@ class bookmarks extends \local_learningtools\learningtools {
     public $shortname = 'bookmarks';
 
     /**
+     * Tool context level
+     *
+     * @var string
+     */
+    public $contextlevel = 'system';
+
+    /**
      * Bookmarks name
      * @return string name
      *
@@ -59,6 +66,14 @@ class bookmarks extends \local_learningtools\learningtools {
     }
 
     /**
+     * Bookmarks icon background color
+     */
+    public function get_tool_iconbackcolor() {
+
+        return '#343a40';
+    }
+
+    /**
      * Get the bookmarks content.
      *
      * @return string display tool bookmarks plugin html.
@@ -72,7 +87,6 @@ class bookmarks extends \local_learningtools\learningtools {
         $data['id'] = $this->shortname;
         $data['user'] = $USER->id;
         $data['course'] = $COURSE->id;
-        $data['pageurl'] = $PAGE->url->out(false);
         $data['pagetype'] = $PAGE->pagetype;
         $data['pagetitle'] = $PAGE->title;
         $data['coursemodule'] = get_moduleid($PAGE->context->id, $PAGE->context->contextlevel);
@@ -81,7 +95,11 @@ class bookmarks extends \local_learningtools\learningtools {
         $data['sesskey'] = sesskey();
         $data['ltbookmark'] = true;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
-        $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $data['pageurl'], $USER->id);
+        $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+        $data['pageurl'] = $pageurl;
+        $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
+        $data['iconbackcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconbackcolor");
+        $data['iconcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconcolor");
         return $data;
     }
 
@@ -104,6 +122,19 @@ class bookmarks extends \local_learningtools\learningtools {
     public function render_template() {
         $data = $this->get_tool_records();
         return ltool_bookmarks_render_template($data);
+    }
+
+    /**
+     * Bookmarks active tool status.
+     * @return string Bookmark tool fab button html.
+     */
+    public function tool_active_condition() {
+        global $PAGE, $USER;
+        $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+        $pagebookmarks = check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
+        if ($pagebookmarks) {
+            return $this->render_template();
+        }
     }
 
 }

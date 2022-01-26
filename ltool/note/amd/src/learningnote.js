@@ -15,7 +15,7 @@
 
 /**
  * Notes ltool define js.
- * @package   ltool_note
+ * @module   ltool_note
  * @category  Classes - autoloading
  * @copyright 2021, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -107,7 +107,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                         modal.getRoot().on(ModalEvents.save, function(e) {
 
                             e.preventDefault();
-                            submitFormData(modal, contextid, params);
+                            submitFormData(modal, contextid);
                             modal.getRoot().submit();
                         });
 
@@ -126,6 +126,15 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 });
 
             });
+            // Hover color.
+            var notehovercolor = notesinfo.getAttribute("data-hovercolor");
+            var notefontcolor = notesinfo.getAttribute("data-fontcolor");
+            if (notehovercolor && notefontcolor) {
+                notesinfo.addEventListener("mouseover", function() {
+                    document.querySelector('#ltnote-action p').style.background = notehovercolor;
+                    document.querySelector('#ltnote-action p').style.color = notefontcolor;
+                });
+            }
         }
     }
 

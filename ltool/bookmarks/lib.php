@@ -101,71 +101,80 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
  * @return array bookmarks save info details.
  */
 function user_save_bookmarks($contextid, $data) {
-    global $DB, $PAGE;
+    global $DB, $PAGE, $USER;
     $context = context::instance_by_id($contextid, MUST_EXIST);
     $PAGE->set_context($context);
-    if (confirm_sesskey()) {
-
-        if (!$DB->record_exists('learningtools_bookmarks', array('contextid' =>
-            $contextid, 'pageurl' => $data['pageurl'], 'userid' => $data['user']))) {
-
-            $record = new stdclass();
-            $record->userid = $data['user'];
-            $record->course = $data['course'];
-            $record->coursemodule = $data['coursemodule'];
-            $record->contextlevel = $data['contextlevel'];
-            $record->contextid = $contextid;
-            if ($record->contextlevel == 70) {
-                $record->coursemodule = get_coursemodule_id($record);
-            } else {
-                $record->coursemodule = 0;
-            }
-            $record->pagetype = $data['pagetype'];
-            $record->pagetitle = $data['pagetitle'];
-            $record->pageurl = $data['pageurl'];
-            $record->timecreated = time();
-            $bookmarksrecord = $DB->insert_record('learningtools_bookmarks', $record);
-            $eventcourseid = get_eventlevel_courseid($context, $data['course']);
-            // Add event to user create the bookmark.
-            $event = \ltool_bookmarks\event\ltbookmarks_created::create([
-                'objectid' => $bookmarksrecord,
-                'courseid' => $eventcourseid,
-                'context' => $context,
-                'other' => [
-                    'pagetype' => $data['pagetype'],
-                ]
-            ]);
-
-            $event->trigger();
-            $bookmarksmsg = get_string('successbookmarkmessage', 'local_learningtools');
-            $bookmarksstatus = !empty($bookmarksrecord) ? true : false;
-            $notificationtype = 'success';
-        } else {
-            $deleterecord = $DB->get_record('learningtools_bookmarks',
-                array('contextid' => $contextid, 'pageurl' => $data['pageurl']));
-            $DB->delete_records('learningtools_bookmarks', array('contextid' => $contextid,
-                'pageurl' => $data['pageurl']));
-             // Add event to user delete the bookmark.
-            $eventcourseid = get_eventlevel_courseid($context, $data['course']);
-            $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
-                'objectid' => $deleterecord->id,
-                'courseid' => $eventcourseid,
-                'context' => $context,
-                'other' => [
-                    'pagetype' => $data['pagetype'],
-                ]
-            ]);
-
-            $event->trigger();
-            $bookmarksstatus = false;
-            $bookmarksmsg = get_string('removebookmarkmessage', 'local_learningtools');
-            $notificationtype = 'info';
+    if (!PHPUNIT_TEST) {
+        if (!confirm_sesskey()) {
+            return '';
         }
-
-        return ['bookmarksstatus' => $bookmarksstatus, 'bookmarksmsg' => $bookmarksmsg, 'notificationtype' => $notificationtype];
-
     }
+    $sql = "SELECT *
+        FROM {learningtools_bookmarks}
+        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
+        AND contextid = ?
+        AND userid = ?";
+    $params = array($data['pageurl'], $contextid, $data['user']);
+    $bookrecord = $DB->get_record_sql($sql, $params);
+    if (empty($bookrecord)) {
+        $record = new stdclass();
+        $record->userid = $data['user'];
+        $record->course = $data['course'];
+        $record->coursemodule = $data['coursemodule'];
+        $record->contextlevel = $data['contextlevel'];
+        $record->contextid = $contextid;
+        if ($record->contextlevel == 70) {
+            $record->coursemodule = get_coursemodule_id($record);
+        } else {
+            $record->coursemodule = 0;
+        }
+        $record->pagetype = $data['pagetype'];
+        $record->pagetitle = $data['pagetitle'];
+        $record->pageurl = $data['pageurl'];
+        $record->timecreated = time();
+        $bookmarksrecord = $DB->insert_record('learningtools_bookmarks', $record);
+        $eventcourseid = get_eventlevel_courseid($context, $data['course']);
+        // Add event to user create the bookmark.
+        $event = \ltool_bookmarks\event\ltbookmarks_created::create([
+            'objectid' => $bookmarksrecord,
+            'userid' => $data['user'],
+            'courseid' => $eventcourseid,
+            'context' => $context,
+            'other' => [
+                'pagetype' => $data['pagetype'],
+            ]
+        ]);
+        $event->trigger();
+        $bookmarksmsg = get_string('successbookmarkmessage', 'local_learningtools');
+        $bookmarksstatus = !empty($bookmarksrecord) ? true : false;
+        $notificationtype = 'success';
+    } else {
+        $selectdelete = $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255).
+            "AND contextid = ? AND userid = ?";
+        $delteparams = [$data['pageurl'], $contextid, $data['user']];
+        $DB->delete_records_select('learningtools_bookmarks', $selectdelete, $delteparams);
+            // Add event to user delete the bookmark.
+        $relateduserid = ($bookrecord->userid != $USER->id) ? $USER->id : 0;
+        $eventcourseid = get_eventlevel_courseid($context, $data['course']);
+        $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
+            'objectid' => $bookrecord->id,
+            'userid' => $data['user'],
+            'courseid' => $eventcourseid,
+            'context' => $context,
+            'relateduserid' => $relateduserid,
+            'other' => [
+                'pagetype' => $data['pagetype'],
+            ]
+        ]);
+
+        $event->trigger();
+        $bookmarksstatus = false;
+        $bookmarksmsg = get_string('removebookmarkmessage', 'local_learningtools');
+        $notificationtype = 'info';
+    }
+    return ['bookmarksstatus' => $bookmarksstatus, 'bookmarksmsg' => $bookmarksmsg, 'notificationtype' => $notificationtype];
 }
+
 /**
  *
  * Check capability to show bookmarks.
@@ -195,7 +204,7 @@ function load_bookmarks_js_config($data) {
 }
 
 /**
- * Learning tools template function.
+ * Learning tools bookmarks template function.
  * @param array $templatecontent template content
  * @return string display html content.
  */
@@ -213,15 +222,18 @@ function ltool_bookmarks_render_template($templatecontent) {
  */
 function check_page_bookmarks_exist($contextid, $pageurl, $userid) {
     global $DB;
-
     $pagebookmarks = false;
-    if ($DB->record_exists('learningtools_bookmarks', array('contextid' => $contextid,
-        'pageurl' => $pageurl, 'userid' => $userid))) {
+    $sql = "SELECT id
+        FROM {learningtools_bookmarks}
+        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
+        AND contextid = ?
+        AND userid = ?";
+    $params = array($pageurl, $contextid, $userid);
+    if ($DB->record_exists_sql($sql, $params)) {
         $pagebookmarks = true;
     }
     return $pagebookmarks;
 }
-
 
 /**
  * Check the bookmarks status.

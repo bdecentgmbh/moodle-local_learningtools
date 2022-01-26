@@ -39,10 +39,14 @@ abstract class learningtools {
     abstract public function get_tool_icon();
 
     /**
+     * Tool icon background color.
+     */
+    abstract public function get_tool_iconbackcolor();
+
+    /**
      * Get the available data records for the ltool.
      */
     abstract public function get_tool_records();
-
     /**
      * Fetch available tool data from subplugin. By default it returns the tool icon and name.
      *

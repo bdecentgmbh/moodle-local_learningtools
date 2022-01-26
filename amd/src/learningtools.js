@@ -15,25 +15,44 @@
 
 /**
  * Learningtools define js.
- * @package   local_learnigtools
  * @category  Classes - autoloading
+ * @module   local_learningtools
  * @copyright 2021, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define([], function() {
+ define([], function() {
+
+    /* global fabbuttonhtml */
 
     /**
      * Controls Learning Tools action.
      * @param {bool} loggedin login status
-     * @param {object} fabbuttonhtml display fab button html.
      */
-    function learningToolsAction(loggedin, fabbuttonhtml) {
+    function learningToolsAction(loggedin) {
+        fabbuttonhtml = JSON.parse(fabbuttonhtml);
         // Add fab button.
         if (loggedin) {
             var pagewrapper = document.querySelector("footer");
             pagewrapper.insertAdjacentHTML("beforebegin", fabbuttonhtml);
+            var listtools = document.querySelectorAll(".floating-button .list-learningtools")[0];
+            if (listtools) {
+               if (listtools.childElementCount == 0 || listtools.childElementCount == 1) {
+                    let fabbutton = document.querySelectorAll(".floating-button #tool-action-button")[0];
+                    if (fabbutton) {
+                        fabbutton.style = "display:none";
+                    }
+                    document.querySelectorAll(".floating-button .list-learningtools")[0].classList.add('show');
+               }
+            }
         }
 
+        // Add body class
+        var body = document.querySelector('body');
+        if (body) {
+            if (!body.classList.contains('local-learningtools')) {
+                body.classList.add('local-learningtools');
+            }
+        }
         var toolaction = document.getElementById("tool-action-button");
         if (toolaction !== null) {
             toolaction.addEventListener("click", function() {
@@ -45,10 +64,31 @@ define([], function() {
                 }
             });
         }
+
+        var bodyid = document.querySelector("body").id;
+        if (bodyid == 'page-admin-setting-local_learningtools' || bodyid == 'page-admin-setting-local_learningtools_settings') {
+            document.querySelectorAll("#admin-visiblecategories")[0].style.display = 'none';
+            document.querySelectorAll("#admin-fabbuttonvisible select")[0].addEventListener("change", function() {
+                var val = this.value;
+                if (val == 'specificcate') {
+                    document.querySelectorAll("#admin-visiblecategories")[0].style.display = 'flex';
+                } else {
+                    document.querySelectorAll("#admin-visiblecategories")[0].style.display = 'none';
+                }
+            });
+
+            var select = document.querySelectorAll("#admin-fabbuttonvisible select")[0];
+            var option = select.options[select.selectedIndex];
+            var optionval = option.value;
+            if (optionval == 'specificcate') {
+                document.querySelectorAll("#admin-visiblecategories")[0].style.display = 'flex';
+            }
+        }
     }
     return {
-        init: function(loggedin, fabbuttonhtml) {
-            learningToolsAction(loggedin, fabbuttonhtml);
+        init: function(loggedin) {
+            learningToolsAction(loggedin);
         }
     };
+
 });

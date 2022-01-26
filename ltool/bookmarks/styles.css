@@ -175,16 +175,16 @@
 
 
 /*floating button*/
-.floating-button .list-learningtools > div.ltbookmarksinfo button {
+.floating-button div.ltbookmarksinfo button {
     background: #343a40;
 }
-.floating-button .list-learningtools > div.ltbookmarksinfo button:hover p {
+.floating-button div.ltbookmarksinfo button:hover p {
     background: #343a40;
 }
-.floating-button .list-learningtools > div.ltbookmarksinfo button i + span {
+.floating-button div.ltbookmarksinfo button i + span {
     display: none;
 }
-.floating-button .list-learningtools > div.ltbookmarksinfo button i.marked + span {
+.floating-button div.ltbookmarksinfo button i.marked + span {
     width: 18px;
     height: 18px;
     line-height: 18px;

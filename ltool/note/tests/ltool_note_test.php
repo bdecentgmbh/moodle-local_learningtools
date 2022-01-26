@@ -22,12 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined( 'MOODLE_INTERNAL') || die(' No direct access ');
-
 /**
  * Note subplugin for learningtools phpunit test cases defined.
  */
-class ltool_note_testcase extends advanced_testcase {
+class ltool_note_test extends advanced_testcase {
 
     /**
      * Create custom page instance and set admin user as loggedin user.
@@ -37,7 +35,6 @@ class ltool_note_testcase extends advanced_testcase {
     public function setup(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
-
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $this->context = \context_course::instance($course->id);
@@ -62,7 +59,6 @@ class ltool_note_testcase extends advanced_testcase {
         $tool = $DB->get_record('local_learningtools_products', ['shortname' => 'note']);
         $data = $this->get_note_info($toolobj, $tool);
         $data['ltnoteeditor'] = 'Test note';
-        $_POST['sesskey'] = sesskey();
         return $data;
     }
 
@@ -101,7 +97,6 @@ class ltool_note_testcase extends advanced_testcase {
         ];
         $count = get_userpage_countnotes($args);
         $this->assertEquals(2, $count);
-
         $notes = check_instanceof_block((object) $data);
         $this->assertEquals('course', $notes->instance);
     }
@@ -122,7 +117,6 @@ class ltool_note_testcase extends advanced_testcase {
         $event = reset($events);
         $this->assertInstanceOf('\ltool_note\event\ltnote_created', $event);
         $this->assertEquals($this->context, $event->get_context());
-
         $notecount = ltool_note\external::save_usernote($this->context->id, $data);
         $this->assertEquals(2, $notecount);
     }

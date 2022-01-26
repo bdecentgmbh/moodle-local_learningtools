@@ -21,8 +21,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * ltool_bookmarks upgrade function.
  * @param int $oldversion old plugin version
@@ -36,6 +34,12 @@ function xmldb_ltool_bookmarks_upgrade($oldversion) {
     null, null, null, 'pagetype');
     if (!$dbman->field_exists($table, $field)) {
         $dbman->add_field($table, $field);
+    }
+    if ($oldversion < 2021102700) {
+        $pageurlfield = new xmldb_field('pageurl', XMLDB_TYPE_TEXT, null, null, null, null, null,
+                'pagetitle');
+        $dbman->change_field_type($table, $pageurlfield);
+        upgrade_plugin_savepoint(true, 2021102700, 'ltool', 'bookmarks');
     }
     return true;
 }

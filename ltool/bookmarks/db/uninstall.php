@@ -21,25 +21,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * ltool_bookmarks uninstall function.
  *
  * @return void
  */
 function xmldb_ltool_bookmarks_uninstall() {
-    global $DB;
-
+    global $CFG;
+    require_once($CFG->dirroot. '/local/learningtools/lib.php');
     $plugin = 'bookmarks';
-    if ($DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
-        $DB->delete_records('local_learningtools_products', array('shortname' => $plugin));
-    }
-
-    $table = "learningtools_bookmarks";
-    $dbman = $DB->get_manager();
-    if ($dbman->table_exists($table)) {
-        $droptable = new xmldb_table($table);
-        $dbman->drop_table($droptable);
-    }
+    delete_ltool_table($plugin);
 }

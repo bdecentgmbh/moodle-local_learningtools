@@ -22,12 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined( 'MOODLE_INTERNAL') || die(' No direct access ');
-
 /**
  * Bookmarks subplugin for learningtools phpunit test cases defined.
  */
-class ltool_bookmarks_testcase extends advanced_testcase {
+class ltool_bookmarks_test extends advanced_testcase {
 
     /**
      * Create custom page instance and set admin user as loggedin user.
@@ -36,7 +34,7 @@ class ltool_bookmarks_testcase extends advanced_testcase {
      */
     public function setup(): void {
         global $PAGE;
-        $this->resetAfterTest();
+        $this->resetAfterTest(true);
         $this->setAdminUser();
 
         $generator = $this->getDataGenerator();
@@ -63,7 +61,6 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $toolobj = new \ltool_bookmarks\bookmarks();
         $tool = $DB->get_record('local_learningtools_products', ['shortname' => 'bookmarks']);
         $data = $this->get_bookmarks_info($toolobj, $tool);
-        $_POST['sesskey'] = sesskey();
         $data = json_encode($data);
         // Redirect all events. Created event must trigger when the note saved.
         $sink = $this->redirectEvents();
@@ -89,7 +86,6 @@ class ltool_bookmarks_testcase extends advanced_testcase {
         $toolobj = new \ltool_bookmarks\bookmarks();
         $tool = $DB->get_record('local_learningtools_products', ['shortname' => 'bookmarks']);
         $data = $this->get_bookmarks_info($toolobj, $tool);
-        $_POST['sesskey'] = sesskey();
 
         $sink = $this->redirectEvents();
         user_save_bookmarks($this->context->id, $data);

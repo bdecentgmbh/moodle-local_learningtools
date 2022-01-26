@@ -24,8 +24,6 @@
 
 use core_user\output\myprofile\tree;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Defines learningtools nodes for my profile navigation tree.
  *
@@ -58,20 +56,19 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
  * @return navigation_node Returns the question branch that was added
  */
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
-
-    global $PAGE, $USER, $COURSE;
-
+    global $PAGE, $CFG;
     $context = context_system::instance();
     $ltoolsjs = array();
     // Content of fab button html.
-    $fabbuttonhtml = get_learningtools_info();
+    $fabbuttonhtml = json_encode(get_learningtools_info());
     $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
     $PAGE->requires->data_for_js('ltools', $ltoolsjs);
+    $PAGE->requires->data_for_js('fabbuttonhtml', $fabbuttonhtml, true);
     $loggedin = false;
     if (isloggedin() && !isguestuser()) {
         $loggedin = true;
     }
-    $viewcapability = array('loggedin' => $loggedin, 'fabbuttonhtml' => $fabbuttonhtml);
+    $viewcapability = array('loggedin' => $loggedin);
     $PAGE->requires->js_call_amd('local_learningtools/learningtools', 'init', $viewcapability);
     // List of subplugins.
     // Load available subplugins javascript.
@@ -79,6 +76,10 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
     foreach ($subplugins as $shortname => $plugin) {
         if (method_exists($plugin, 'load_js')) {
             $plugin->load_js();
+        }
+        // Required load tools function.
+        if (method_exists($plugin, 'required_load_data')) {
+            $plugin->required_load_data();
         }
     }
 }
@@ -108,9 +109,12 @@ function check_instanceof_block($record) {
 
     } else if ($record->contextlevel == 80) { // Context blocklevel.
         $data->instance = 'block';
+    } else {
+        $data->instance = '';
     }
     return $data;
 }
+
 /**
  * Get the course module id.
  * @param int $contextid context id
@@ -130,7 +134,7 @@ function get_moduleid($contextid, $contextlevel) {
 
 /**
  * Get the course module Id.
- * @param array $record list of the page info.
+ * @param stdclass $record list of the page info.
  * @return int course module id.
  */
 function get_coursemodule_id($record) {
@@ -278,18 +282,14 @@ function get_mod_section($courseid, $modid) {
  * @return array $plugins List of available subplugins.
  */
 function local_learningtools_get_subplugins() {
-    global $DB;
-    $context = context_system::instance();
+    global $DB, $PAGE, $SITE;
     $learningtools = $DB->get_records('local_learningtools_products', array('status' => 1), 'sort');
     if (!empty($learningtools)) {
         foreach ($learningtools as $tool) {
-            $capability = 'ltool/'.$tool->shortname.':create'. $tool->shortname;
-            if (has_capability($capability, $context)) {
-                $plugin = 'ltool_'.$tool->shortname;
-                $classname = "\\$plugin\\$tool->shortname";
-                if (class_exists($classname)) {
-                    $plugins[$tool->shortname] = new $classname();
-                }
+            $plugin = 'ltool_'.$tool->shortname;
+            $classname = "\\$plugin\\$tool->shortname";
+            if (class_exists($classname)) {
+                $plugins[$tool->shortname] = new $classname();
             }
         }
         return isset($plugins) ? $plugins : [];
@@ -303,27 +303,132 @@ function local_learningtools_get_subplugins() {
  * @return string fab button html content.
  */
 function get_learningtools_info() {
+    global $PAGE, $SITE, $USER;
+
     $content = '';
-
-    $content .= html_writer::start_tag('div', array('class' => 'floating-button'));
-    $content .= html_writer::start_tag('div', array('class' => 'list-learningtools'));
-
-    // Get list of ltool sub plugins.
-    $subplugins = local_learningtools_get_subplugins();
-    if (!empty($subplugins)) {
-        foreach ($subplugins as $shortname => $toolobj) {
-            $content .= $toolobj->render_template();
+    // Visiblity of learningtools.
+    $fabvisiablestatus = get_config('local_learningtools', 'fabbuttonvisible');
+    if ($fabvisiablestatus == 'allcourses') {
+        if (empty($PAGE->course->id) || ($PAGE->course->id == $SITE->id)) {
+            return '';
+        }
+    } else if ($fabvisiablestatus == 'specificcate') {
+        if (isset($PAGE->category->id) && !empty($PAGE->category->id)) {
+            $visiblecategories = explode(",", get_config('local_learningtools', 'visiblecategories'));
+            if (!in_array($PAGE->category->id, $visiblecategories)) {
+                return '';
+            }
+        } else {
+            return '';
         }
     }
 
+    // Disable of activities.
+    $disablemodstatus = get_config('local_learningtools', 'disablemod');
+    if ($disablemodstatus != 0) {
+        if (isset($PAGE->cm->module) && !empty($PAGE->cm->module)) {
+            $visiblemods = explode(",", get_config('local_learningtools', 'disablemod'));
+            if (in_array($PAGE->cm->module, $visiblemods)) {
+                return '';
+            }
+        }
+    }
+    $contentinner = '';
+    // Get list of ltool sub plugins.
+    $subplugins = local_learningtools_get_subplugins();
+    $context = context_system::instance();
+    $stickytools = '';
+    if (!empty($subplugins)) {
+        foreach ($subplugins as $shortname => $toolobj) {
+            $capability = 'ltool/'.$toolobj->shortname.':create'. $toolobj->shortname;
+            if ($toolobj->contextlevel == 'system') {
+                if (has_capability($capability, $context)) {
+                    if (get_config('ltool_' . $toolobj->shortname, 'sticky')) {
+                        $stickytools .= $toolobj->render_template();
+                    } else if (get_config('local_learningtools', 'showactive')) {
+                        if (method_exists($toolobj, 'tool_active_condition')) {
+                            if ($toolobj->tool_active_condition()) {
+                                $stickytools .= $toolobj->tool_active_condition();
+                            } else {
+                                $contentinner .= $toolobj->render_template();
+                            }
+                        }
+                    } else {
+                        $contentinner .= $toolobj->render_template();
+                    }
+                }
+            } else {
+                if (get_config('ltool_' . $toolobj->shortname, 'sticky')) {
+                    $stickytools .= $toolobj->render_template();
+                } else if (get_config('local_learningtools', 'showactive')) {
+                    if (method_exists($toolobj, 'tool_active_condition')) {
+                        if ($toolobj->tool_active_condition()) {
+                            $stickytools .= $toolobj->tool_active_condition();
+                        } else {
+                            $contentinner .= $toolobj->render_template();
+                        }
+                    }
+                } else {
+                    $contentinner .= $toolobj->render_template();
+                }
+            }
+        }
+    }
+    $stickytoolstatus = local_learningtools_get_stickytool_status();
+    $stickyclass = '';
+    $fabiconclass = "fa fa-magic";
+    if ($stickytoolstatus && !empty($stickytools)) {
+        $fabiconclass = "fa fa-angle-double-up";
+        $stickyclass = 'sticky-tool';
+    }
+    $fabbackiconcolor = get_config('local_learningtools', 'fabiconbackcolor');
+    $fabiconcolor = get_config('local_learningtools', 'fabiconcolor');
+    $content .= html_writer::start_tag('div', array('class' => 'learningtools-action-info'));
+    $content .= html_writer::start_tag('div', array('class' => "floating-button $stickyclass"));
+    $content .= html_writer::start_tag('div', array('class' => 'list-learningtools'));
+    $content .= $contentinner;
     $content .= html_writer::end_tag('div');
-            $content .= html_writer::start_tag('button', array("class" => "btn btn-primary", 'id' => 'tool-action-button') );
-    $content .= html_writer::start_tag('i', array('class' => 'fa fa-magic'));
+            $content .= html_writer::start_tag('button', array("class" => "btn btn-primary",
+            'id' => 'tool-action-button', 'style' => "background:$fabbackiconcolor;") );
+    $content .= html_writer::start_tag('i', array('class' => $fabiconclass, 'style' => "color:$fabiconcolor;"));
     $content .= html_writer::end_tag('i');
     $content .= html_writer::end_tag("button");
+        $content .= html_writer::start_tag('div', array('class' => 'sticky-tools-list'));
+        $content .= $stickytools;
+        $content .= html_writer::end_tag('div');
+    $content .= html_writer::end_tag('div');
     $content .= html_writer::end_tag('div');
     return $content;
 }
+
+/**
+ * Get sticky tools.
+ * @return void
+ */
+function local_learningtools_get_stickytool_status() {
+    $subplugins = local_learningtools_get_subplugins();
+    $stickystatus = false;
+    if (!empty($subplugins)) {
+        foreach ($subplugins as $shortname => $toolobj) {
+            $capability = 'ltool/'.$toolobj->shortname.':create'. $toolobj->shortname;
+            if ($toolobj->contextlevel == 'system') {
+                if (has_capability($capability, context_system::instance())) {
+                    if (get_config('ltool_' . $toolobj->shortname, 'sticky') ||
+                        get_config('local_learningtools', 'showactive')) {
+                        $stickystatus = true;
+                    }
+                }
+            } else {
+                if (get_config('ltool_' . $toolobj->shortname, 'sticky') ||
+                    get_config('local_learningtools', 'showactive')) {
+                    $stickystatus = true;
+                }
+            }
+        }
+    }
+    return $stickystatus;
+}
+
 
 /**
  * Get the students in course.
@@ -415,5 +520,77 @@ function get_eventlevel_courseid($context, $courseid) {
         return $courseid;
     } else {
         return $course;
+    }
+}
+
+/**
+ * Add the learningtools in db.
+ * @param string $plugin plugin name
+ * @return void
+ */
+function add_learningtools_plugin($plugin) {
+    global $DB;
+    $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
+    if (!$DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
+        $existrecords = $DB->get_records('local_learningtools_products', null);
+        $maxrecord = $DB->get_record_sql('SELECT MAX(sort) AS value FROM {local_learningtools_products}', null);
+        $sortval = !empty($existrecords) ? $maxrecord->value + 1 : 1;
+        $record = new stdClass;
+        $record->shortname = $plugin;
+        $record->name = $strpluginname;
+        $record->status = 1;
+        $record->sort = $sortval;
+        $record->timecreated = time();
+        $DB->insert_record('local_learningtools_products', $record);
+    }
+}
+
+/**
+ * Remove the learningtools in db.
+ * @param string $plugin ltool plugin shortname
+ * @return void
+ */
+function delete_ltool_table($plugin) {
+    global $DB;
+
+    if ($DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
+        $DB->delete_records('local_learningtools_products', array('shortname' => $plugin));
+    }
+
+    $table = "learningtools_". $plugin;
+    $dbman = $DB->get_manager();
+    if ($dbman->table_exists($table)) {
+        $droptable = new xmldb_table($table);
+        $dbman->drop_table($droptable);
+    }
+}
+
+/**
+ * Clean the assignment page userlist id.
+ * @param string $pageurl pageurl
+ * @param object $cm course module id.
+ * @return string pageurl
+ */
+function clean_mod_assign_userlistid($pageurl, $cm) {
+    if (!empty($cm->id)) {
+        $data = new stdClass;
+        $data->coursemodule = $cm->id;
+        $modname = get_module_name($data, true);
+        if ($modname == 'assign') {
+            $parsed = parse_url($pageurl);
+            if (isset($parsed['query'])) {
+                $query = $parsed['query'];
+                parse_str($query, $params);
+                unset($params['useridlistid']);
+            };
+            $url = $parsed['scheme'] . "://" . $parsed['host'] . $parsed['path'];
+            $urlparams = isset($parsed['query']) ? '?' . http_build_query($params, '', '&') : '';
+            $url = $url . $urlparams;
+            return $url;
+        } else {
+            return $pageurl;
+        }
+    } else {
+        return $pageurl;
     }
 }
