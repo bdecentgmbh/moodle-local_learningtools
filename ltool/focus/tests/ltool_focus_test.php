@@ -21,11 +21,12 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace ltool_focus;
 
 /**
  * focus subplugin for learningtools phpunit test cases defined.
  */
-class ltool_focus_test extends advanced_testcase {
+class ltool_focus_test extends \advanced_testcase {
     /**
      * Create custom page instance and set admin user as loggedin user.
      *

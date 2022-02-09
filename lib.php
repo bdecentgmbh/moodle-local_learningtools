@@ -361,13 +361,14 @@ function get_learningtools_info() {
                 if (get_config('ltool_' . $toolobj->shortname, 'sticky')) {
                     $stickytools .= $toolobj->render_template();
                 } else if (get_config('local_learningtools', 'showactive')) {
+                    $activetool = $toolobj->render_template();
                     if (method_exists($toolobj, 'tool_active_condition')) {
                         if ($toolobj->tool_active_condition()) {
                             $stickytools .= $toolobj->tool_active_condition();
-                        } else {
-                            $contentinner .= $toolobj->render_template();
+                            $activetool = '';
                         }
                     }
+                    $contentinner .= $activetool;
                 } else {
                     $contentinner .= $toolobj->render_template();
                 }
@@ -593,4 +594,19 @@ function clean_mod_assign_userlistid($pageurl, $cm) {
     } else {
         return $pageurl;
     }
+}
+
+/**
+ * Is the event visible?
+ *
+ * This is used to determine global visibility of an event in all places throughout Moodle.
+ *
+ * @param calendar_event $event
+ * @param int $requestinguserid User id to use for all capability checks, etc. Set to 0 for current user (default).
+ * @return bool Returns true if the event is visible to the current user, false otherwise.
+ */
+function local_learningtools_core_calendar_is_event_visible($event, $requestinguserid) {
+    global $DB;
+    $userid = $DB->get_field('event', 'userid', ['id' => $event->id]);
+    return ($userid == $requestinguserid) ? true : false;
 }

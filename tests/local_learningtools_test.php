@@ -21,11 +21,12 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_learningtools;
 
 /**
  * local learning tools main primary plugin phpunit test cases defined.
  */
-class local_learningtools_lib_test extends advanced_testcase {
+class local_learningtools_test extends \advanced_testcase {
 
     /**
      * Set the admin user as User.
@@ -62,7 +63,7 @@ class local_learningtools_lib_test extends advanced_testcase {
         // Create modules.
         $this->create_course();
         // Fetch module context id.
-        $modulecontext = context_module::instance($this->mod->cmid);
+        $modulecontext = \context_module::instance($this->mod->cmid);
         $moduleid = get_moduleid($modulecontext->id, $modulecontext->contextlevel);
         $this->assertEquals($this->mod->cmid, $moduleid);
         // Test get_module_name.

@@ -203,11 +203,11 @@ $string['timemanagementheader'] = 'Time management for {$a->name}';
 $string['print'] = "Print";
 $string['sendmessage'] = "Send message";
 $string['viewprofile'] = "View profile";
-$string['managedates'] = "Managedates";
+$string['managedates'] = "Manage dates";
 $string['activities'] = "activities";
 $string['today'] = "Today";
-$string['expectstarton'] = "(Expect Start On)";
-$string['expectdueon'] = "(Expect Due On)";
+$string['expectstarton'] = "should be started";
+$string['expectdueon'] = "should be completed";
 $string['open'] = "Open";
 $string['resume'] = "Resume";
 $string['review'] = "Review";
@@ -226,22 +226,14 @@ $string['startdate'] = "Start date";
 $string['duedate'] = "Due date";
 $string['uponenroll'] = "Upon enrollment";
 $string['open'] = "Open";
-$string['saveandgen'] = "Save and Generate calendar entries";
+$string['saveandgen'] = "Save and generate calendar entries";
 $string['cancel'] = "Cancel";
-$string['enablecompletiontrackmsg'] = "Turn on completion tracking to use time management";
-$string['enrolluserscourse'] = "Enroll to users in the course";
-
-
+$string['enablecompletiontrackmsg'] = "Turn on completion tracking to use Time Management.";
+$string['enrolluserscourse'] = "Please enroll at least one user to use Time Management.";
 $string['enrolldurationstr'] = "Enrollment duration";
 $string['courseprogress'] = "Course progress";
 $string['coursecompdate'] = "Course completion date";
 $string['progress'] = "Progress";
 $string['cmpdate'] = "Completion date";
-$string['demo'] = "Demo";
-$string['demo'] = "Demo";
-$string['demo'] = "Demo";
-
-
-
-
-
+$string['managetimemanagment'] = "Manage dates reports";
+$string['gotocourse'] = "Go to course";

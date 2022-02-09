@@ -21,11 +21,11 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+namespace ltool_bookmarks;
 /**
  * Bookmarks subplugin for learningtools phpunit test cases defined.
  */
-class ltool_bookmarks_test extends advanced_testcase {
+class ltool_bookmarks_test extends \advanced_testcase {
 
     /**
      * Create custom page instance and set admin user as loggedin user.
@@ -46,7 +46,7 @@ class ltool_bookmarks_test extends advanced_testcase {
         $page->set_pagelayout('standard');
         $page->set_pagetype('course-view');
         $page->set_title('Course: Course 1');
-        $page->set_url(new moodle_url('/course/view.php', ['id' => $course->id]));
+        $page->set_url(new \moodle_url('/course/view.php', ['id' => $course->id]));
         $this->page = $page;
     }
 
@@ -64,7 +64,7 @@ class ltool_bookmarks_test extends advanced_testcase {
         $data = json_encode($data);
         // Redirect all events. Created event must trigger when the note saved.
         $sink = $this->redirectEvents();
-        $bookmarks = ltool_bookmarks\external::save_userbookmarks($this->context->id, $data);
+        $bookmarks = \ltool_bookmarks\external::save_userbookmarks($this->context->id, $data);
         $events = $sink->get_events();
         $event = reset($events);
         $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);

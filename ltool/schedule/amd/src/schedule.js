@@ -63,6 +63,13 @@
 
             modal.getRoot().on(ModalEvents.save, function(e) {
                 e.preventDefault();
+                var innerform = document.querySelectorAll('#ltoolschedule-editorbox form')[0];
+                if (innerform) {
+                    innerform.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                    });
+                }
+
                 var schedulenameinfo = document.querySelectorAll("#ltoolschedule-editorbox input[name='schedulename']")[0];
                 if (schedulenameinfo.value) {
                     self.submitFormData(params.contextid);
@@ -80,7 +87,7 @@
         var modalform = document.querySelectorAll('#ltoolschedule-editorbox form')[0];
         var formData = new URLSearchParams(new FormData(modalform)).toString();
         Fragment.loadFragment('ltool_schedule', 'set_calendar_event', contextid, {'formdata': formData});
-        modalform.submit();
+        modalform.querySelector("input[name=submitbutton]").click();
         return true;
     };
 

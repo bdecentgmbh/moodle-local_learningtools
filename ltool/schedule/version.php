@@ -25,5 +25,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_schedule';
-$plugin->version = 2021121101;
+$plugin->version = 2022012700;
 $plugin->requires = 2020061501;

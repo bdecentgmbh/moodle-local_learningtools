@@ -35,8 +35,15 @@
             var pagewrapper = document.querySelector("footer");
             pagewrapper.insertAdjacentHTML("beforebegin", fabbuttonhtml);
             var listtools = document.querySelectorAll(".floating-button .list-learningtools")[0];
+            var stickytools = document.querySelectorAll(".floating-button .sticky-tools-list")[0];
+            var enablesticky = false;
+            if (stickytools) {
+                if (stickytools.childElementCount) {
+                    enablesticky = true;
+                }
+            }
             if (listtools) {
-               if (listtools.childElementCount == 0 || listtools.childElementCount == 1) {
+               if (listtools.childElementCount == 0 || listtools.childElementCount == 1 && !enablesticky) {
                     let fabbutton = document.querySelectorAll(".floating-button #tool-action-button")[0];
                     if (fabbutton) {
                         fabbutton.style = "display:none";
