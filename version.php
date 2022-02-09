@@ -18,7 +18,7 @@
  * Local plugin "Learning Tools" - Version file.
  *
  * @package   local_learningtools
- * @copyright bdecent GmbH 2021
+ * @copyright bdecent GmbH 2022
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
