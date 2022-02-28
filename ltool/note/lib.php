@@ -30,7 +30,7 @@ require_once($CFG->dirroot. '/local/learningtools/lib.php');
 /**
  * Define notes form.
  */
-class editorform extends moodleform {
+class ltool_email_popoutform extends moodleform {
     /**
      * Adds element to form
      */
@@ -79,7 +79,7 @@ class editorform extends moodleform {
 /**
  * Define user edit the notes form.
  */
-class edit_noteinfo extends moodleform {
+class ltool_note_info extends moodleform {
     /**
      * Adds element to form
      */
@@ -91,7 +91,7 @@ class edit_noteinfo extends moodleform {
         $courseid = $this->_customdata['courseid'];
         $returnurl = $this->_customdata['returnurl'];
 
-        $note = $DB->get_record('learningtools_note', array('id' => $noteid));
+        $note = $DB->get_record('ltool_note_data', array('id' => $noteid));
         $usernote = !empty($note->note) ? $note->note : '';
         $mform->addElement('editor', 'noteeditor', '')->setValue( array('text' => $usernote));
         $mform->addElement('hidden', 'edit');
@@ -128,7 +128,7 @@ function ltool_note_myprofile_navigation(tree $tree, $user, $iscurrentuser, $cou
     global $PAGE, $USER, $DB;
     $userid = optional_param('id', 0, PARAM_INT);
     $context = context_system::instance();
-    if (is_note_status()) {
+    if (ltool_note_is_note_status()) {
         if ($iscurrentuser) {
             if (!empty($course)) {
                 $coursecontext = context_course::instance($course->id);
@@ -147,7 +147,7 @@ function ltool_note_myprofile_navigation(tree $tree, $user, $iscurrentuser, $cou
             }
         } else {
 
-            if (is_parentforchild($user->id, 'ltool/note:viewnote')) {
+            if (local_learningtools_is_parentforchild($user->id, 'ltool/note:viewnote')) {
                 $params = ['userid' => $user->id];
                 $title = get_string('note', 'local_learningtools');
                 if (!empty($course)) {
@@ -241,7 +241,7 @@ function ltool_note_output_fragment_get_note_form($args) {
 
     $editorhtml .= html_writer::end_tag('form');
     $editorhtml .= html_writer::end_tag('div');
-    $editorhtml .= load_context_notes($args);
+    $editorhtml .= ltool_note_load_context_notes($args);
     return $editorhtml;
 }
 
@@ -250,12 +250,12 @@ function ltool_note_output_fragment_get_note_form($args) {
  * @param array $args page arguments.
  * @return string display the html exist notes list.
  */
-function load_context_notes($args) {
+function ltool_note_load_context_notes($args) {
     $editorhtml = '';
     $context = context_system::instance();
-    if (get_userpage_countnotes($args) && has_capability('ltool/note:viewownnote', $context)) {
+    if (ltool_note_get_userpage_countnotes($args) && has_capability('ltool/note:viewownnote', $context)) {
         $editorhtml .= html_writer::start_tag('div', array('class' => 'list-context-existnotes'));
-        $editorhtml .= get_contextuser_notes($args);
+        $editorhtml .= ltool_note_get_contextuser_notes($args);
         $editorhtml .= html_writer::end_tag('div');
     }
     return $editorhtml;
@@ -266,13 +266,13 @@ function load_context_notes($args) {
  * @param array $args page arguments list.
  * @return string return to html the user notes.
  */
-function get_contextuser_notes($args) {
+function ltool_note_get_contextuser_notes($args) {
     global $DB, $OUTPUT;
     $context = context_system::instance();
     $reports = [];
     $template = [];
     $listrecords = [];
-    $sql = "SELECT * FROM {learningtools_note}
+    $sql = "SELECT * FROM {ltool_note_data}
     WHERE userid = ? AND
     contextid = ? AND ".
     $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) .
@@ -286,7 +286,7 @@ function get_contextuser_notes($args) {
     $cnt = 1;
     if (!empty($records)) {
         foreach ($records as $record) {
-            $time = floor($record->timecreated / 86400);
+            $time = floor($record->timecreated / DAYSECS);
             if (isset($listrecords[$time])) {
                 $listrecords[$time]['notesgroup'][] = $record->id;
             } else {
@@ -298,22 +298,22 @@ function get_contextuser_notes($args) {
             $notes = [];
             if (isset($listrecord['notesgroup'])) {
                 list($dbsql, $dbparam) = $DB->get_in_or_equal($listrecord['notesgroup'], SQL_PARAMS_NAMED);
-                $notesrecords = $DB->get_records_sql("SELECT * FROM {learningtools_note}
+                $notesrecords = $DB->get_records_sql("SELECT * FROM {ltool_note_data}
                     WHERE id $dbsql ORDER BY timecreated desc", $dbparam);
                 if (!empty($notesrecords)) {
                     foreach ($notesrecords as $note) {
                         $list['note'] = !empty($note->note) ? $note->note : '';
-                        $list['time'] = userdate(($note->timecreated), '%B %d, %Y, %I:%M %p', '', false);
+                        $list['time'] = userdate(($note->timecreated), get_string("baseformat", "local_learningtools"), '', false);
                         if (has_capability('ltool/note:manageownnote', $context)) {
                             $returnparams = array('returnurl' => $args['pageurl']);
-                            $list['delete'] = delete_note_record($note, $returnparams);
-                            $list['edit'] = edit_note_record($note, $returnparams);
+                            $list['delete'] = ltool_note_delete_note_record($note, $returnparams);
+                            $list['edit'] = ltool_note_edit_note_record($note, $returnparams);
                         }
                         $notes[] = $list;
                     }
                 }
                 $res['notes'] = $notes;
-                $res['title'] = userdate(($time * 86400), '%B, %dth %Y', '', false);
+                $res['title'] = userdate(($time * DAYSECS), get_string('strftimemonthdateyear', 'local_learningtools'), '', false);
                 $res['range'] = $cnt.'-block';
                 $res['active'] = ($cnt == 1) ? true : false;
             }
@@ -331,8 +331,8 @@ function get_contextuser_notes($args) {
  * @param array $data page data
  * @return int save notes status
  */
-function user_save_notes($contextid, $data) {
-    global $DB, $PAGE;
+function ltool_note_user_save_notes($contextid, $data) {
+    global $DB, $PAGE, $USER;
     $context = context::instance_by_id($contextid, MUST_EXIST);
     $PAGE->set_context($context);
     if (!PHPUNIT_TEST) {
@@ -341,12 +341,12 @@ function user_save_notes($contextid, $data) {
         }
     }
     $record = new stdclass();
-    $record->userid = $data['user'];
+    $record->userid = $USER->id;
     $record->course = $data['course'];
     $record->contextlevel = $data['contextlevel'];
     $record->contextid = $contextid;
-    if ($record->contextlevel == 70) {
-        $record->coursemodule = get_coursemodule_id($record);
+    if ($record->contextlevel == CONTEXT_MODULE) {
+        $record->coursemodule = local_learningtools_get_coursemodule_id($record);
     } else {
         $record->coursemodule = 0;
     }
@@ -356,8 +356,8 @@ function user_save_notes($contextid, $data) {
     $record->note = format_text($data['ltnoteeditor'], FORMAT_HTML);
     $record->timecreated = time();
 
-    $notesrecord = $DB->insert_record('learningtools_note', $record);
-    $eventcourseid = get_eventlevel_courseid($context, $data['course']);
+    $notesrecord = $DB->insert_record('ltool_note_data', $record);
+    $eventcourseid = local_learningtools_get_eventlevel_courseid($context, $data['course']);
     // Add event to user create the note.
     $event = \ltool_note\event\ltnote_created::create([
         'objectid' => $notesrecord,
@@ -370,7 +370,7 @@ function user_save_notes($contextid, $data) {
     $event->trigger();
 
     $sql = "SELECT COUNT(*)
-    FROM {learningtools_note}
+    FROM {ltool_note_data}
     WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
     AND pagetype = ?
     AND userid = ?";
@@ -390,7 +390,7 @@ function user_save_notes($contextid, $data) {
  * @param array $params page url params
  * @return string edit note html
  */
-function edit_note_record($row, $params = []) {
+function ltool_note_edit_note_record($row, $params = []) {
     global $OUTPUT;
     $stredit = get_string('edit');
     $buttons = [];
@@ -410,7 +410,7 @@ function edit_note_record($row, $params = []) {
  * @param array $params page url params
  * @return string delete note html
  */
-function delete_note_record($row, $params = []) {
+function ltool_note_delete_note_record($row, $params = []) {
 
     global $OUTPUT;
     $strdelete = get_string('delete');
@@ -428,12 +428,12 @@ function delete_note_record($row, $params = []) {
  * @param int $id note id.
  * @return bool|string return status.
  */
-function require_deletenote_cap($id) {
+function ltool_note_require_deletenote_cap($id) {
     global $DB, $USER;
 
     $context = context_system::instance();
     $returnurl = new moodle_url('/my');
-    $currentrecord = $DB->get_record('learningtools_note', array('id' => $id));
+    $currentrecord = $DB->get_record('ltool_note_data', array('id' => $id));
     if (!empty($currentrecord)) {
         if ($currentrecord->userid == $USER->id) {
             if (has_capability('ltool/note:manageownnote', $context)) {
@@ -453,10 +453,10 @@ function require_deletenote_cap($id) {
  * @param array $args page info
  * @return int page user notes.
  */
-function get_userpage_countnotes($args) {
+function ltool_note_get_userpage_countnotes($args) {
     global $DB;
     $sql = "SELECT COUNT(*)
-        FROM {learningtools_note}
+        FROM {ltool_note_data}
         WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
         AND pagetype = ?
         AND userid = ?";
@@ -472,10 +472,10 @@ function get_userpage_countnotes($args) {
  * Check capability to show notes.
  * @return bool notes status
  */
-function check_view_notes() {
+function ltool_note_check_view_notes() {
     $viewnote = false;
     $context = context_system::instance();
-    if (has_capability('ltool/note:viewownnote', $context) && is_note_status()) {
+    if (has_capability('ltool/note:viewownnote', $context) && ltool_note_is_note_status()) {
         $viewnote = true;
     }
     return $viewnote;
@@ -485,18 +485,19 @@ function check_view_notes() {
  * Load notes js files.
  * @return void
  */
-function load_notes_js_config() {
+function ltool_note_load_js_config() {
     global $COURSE, $PAGE, $USER;
     $params['course'] = $COURSE->id;
     $params['contextlevel'] = $PAGE->context->contextlevel;
     $params['pagetype'] = $PAGE->pagetype;
     $params['pagetitle'] = $PAGE->title;
-    $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+    $pageurl = local_learningtools_clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
     $params['pageurl'] = $pageurl;
     $params['user'] = $USER->id;
     $params['contextid'] = $PAGE->context->id;
     $params['title'] = $PAGE->title;
     $params['heading'] = $PAGE->heading;
+    $params['sesskey'] = sesskey();
     $PAGE->requires->js_call_amd('ltool_note/learningnote', 'init', array($PAGE->context->id, $params));
 }
 
@@ -515,7 +516,7 @@ function ltool_note_render_template($templatecontent) {
  * Check the note status.
  * @return bool
  */
-function is_note_status() {
+function ltool_note_is_note_status() {
     global $DB;
     $noterecord = $DB->get_record('local_learningtools_products', array('shortname' => 'note'));
     if (isset($noterecord->status) && !empty($noterecord->status)) {
@@ -527,8 +528,8 @@ function is_note_status() {
  * Check the note view capability.
  * @return bool|redirect status
  */
-function require_note_status() {
-    if (!is_note_status()) {
+function ltool_note_require_note_status() {
+    if (!ltool_note_is_note_status()) {
         $url = new moodle_url('/my');
         redirect($url);
     }
@@ -540,10 +541,10 @@ function require_note_status() {
  * Delete the course notes.
  * @param int $courseid course id.
  */
-function delete_course_note($courseid) {
+function ltool_note_delete_course_note($courseid) {
     global $DB;
-    if ($DB->record_exists('learningtools_note', array('course' => $courseid))) {
-        $DB->delete_records('learningtools_note', array('course' => $courseid));
+    if ($DB->record_exists('ltool_note_data', array('course' => $courseid))) {
+        $DB->delete_records('ltool_note_data', array('course' => $courseid));
     }
 }
 
@@ -551,11 +552,11 @@ function delete_course_note($courseid) {
  * Delete the course notes.
  * @param int $module course moudleid
  */
-function delete_module_note($module) {
+function ltool_note_delete_module_note($module) {
     global $DB;
 
-    if ($DB->record_exists('learningtools_note', array('coursemodule' => $module))) {
-        $DB->delete_records('learningtools_note', array('coursemodule' => $module));
+    if ($DB->record_exists('ltool_note_data', array('coursemodule' => $module))) {
+        $DB->delete_records('ltool_note_data', array('coursemodule' => $module));
     }
 }
 
@@ -565,9 +566,9 @@ function delete_module_note($module) {
  * @param object $record notes record
  * @return string instance of coursemodule name.
  */
-function get_note_module_coursesection($data, $record) {
-    $coursename = get_course_name($data->courseid);
-    $section = get_mod_section($data->courseid, $data->coursemodule);
+function ltool_note_get_module_coursesection($data, $record) {
+    $coursename = local_learningtools_get_course_name($data->courseid);
+    $section = local_learningtools_get_mod_section($data->courseid, $data->coursemodule);
     $modulename = $record->pagetitle;
     return $coursename.' / '. $section. ' / '. $modulename;
 }

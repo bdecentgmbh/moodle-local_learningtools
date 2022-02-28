@@ -39,13 +39,10 @@ function ltool_focus_render_template($templatecontent) {
  * Load focus configuration.
  * @return void
  */
-function load_focus_config() {
-    global $SESSION, $CFG, $PAGE;
-    $enablefocusmode = $SESSION->focusmode;
-    $url = get_focus_css_url();
-    $focuscssurl = $enablefocusmode ? $url : "";
+function ltool_focus_load_focus_config() {
+    global $PAGE;
     $disableclass = 'disable-focus d-none';
-    $focuscsshtml = '<link id="ltool-focuscss" rel="stylesheet" type="text/css" href="'. $focuscssurl . '">';
+    $focuscsshtml = '<link id="ltool-focuscss" rel="stylesheet" type="text/css" href="">';
     $PAGE->add_header_action($focuscsshtml);
     $focusdisable = html_writer::start_tag('div', array('id' => 'disable-focusmode', 'class' => $disableclass));
     $focusdisable .= html_writer::start_tag('button', array('class' => 'btn btn-primary'));
@@ -59,10 +56,10 @@ function load_focus_config() {
  * Get the focus tool implemented css file url.
  * @return string file url.
  */
-function get_focus_css_url() {
+function ltool_focus_get_focus_css_url() {
     $url = '';
     $fs = get_file_storage();
-    $fileinfo = get_focus_css_fileinfo();
+    $fileinfo = ltool_focus_get_focus_css_fileinfo();
     $filename = $fileinfo['filename'];
     if ($files = $fs->get_area_files($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
     $fileinfo['itemid'])) {
@@ -84,7 +81,7 @@ function get_focus_css_url() {
  *
  * @return void
  */
-function load_focus_js_config() {
+function ltool_focus_load_js_config() {
     global $PAGE, $SESSION;
     if (isset($SESSION->focusmode)) {
         $focusmode = $SESSION->focusmode;
@@ -97,9 +94,9 @@ function load_focus_js_config() {
  *
  * @return stored_file
  */
-function create_focus_temp_cssfile() {
+function ltool_focus_create_focus_temp_cssfile() {
     $fs = get_file_storage();
-    $fileinfo = get_focus_css_fileinfo();
+    $fileinfo = ltool_focus_get_focus_css_fileinfo();
     $focusmodecss = get_config('ltool_focus', 'focusmodecss');
     if ($files = $fs->get_area_files($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
         $fileinfo['itemid'])) {
@@ -117,7 +114,7 @@ function create_focus_temp_cssfile() {
  *
  * @return array file info
  */
-function get_focus_css_fileinfo() {
+function ltool_focus_get_focus_css_fileinfo() {
     $fileinfo = array(
         'contextid' => context_system::instance()->id,
         'component' => 'ltool_focus',
@@ -186,6 +183,6 @@ function ltool_focus_focusmode_actions() {
     if (!isset($SESSION->focusmode)) {
         $SESSION->focusmode = 0;
     }
-    load_focus_config();
+    ltool_focus_load_focus_config();
 }
 

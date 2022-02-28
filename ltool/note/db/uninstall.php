@@ -30,5 +30,5 @@ function xmldb_ltool_note_uninstall() {
     global $CFG;
     require_once($CFG->dirroot. '/local/learningtools/lib.php');
     $plugin = 'note';
-    delete_ltool_table($plugin);
+    local_learningtools_delete_ltool_table($plugin);
 }

@@ -27,10 +27,9 @@ require_once($CFG->dirroot. '/local/learningtools/lib.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->dirroot. '/course/classes/list_element.php');
 require_login();
-require_bookmarks_status();
+ltool_bookmarks_require_bookmarks_status();
 
 $selectcourse = optional_param('selectcourse', 0, PARAM_INT);
-$sort = optional_param('sort', '', PARAM_TEXT);
 $delete = optional_param('delete', 0, PARAM_INT);
 $confirm = optional_param('confirm', '', PARAM_ALPHANUM);
 $page = optional_param('page', 0, PARAM_INT);
@@ -38,9 +37,16 @@ $perpage = optional_param('perpage', 10, PARAM_INT);
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $childid = optional_param('userid', 0, PARAM_INT);
 $teacher = optional_param('teacher', 0, PARAM_INT);
-$sort = optional_param('sort', 'date', PARAM_TEXT);
-$sorttype = optional_param('sorttype', 'asc', PARAM_TEXT);
+$sort = optional_param('sort', 'date', PARAM_ALPHA);
+$sorttype = optional_param('sorttype', 'asc', PARAM_ALPHA);
 $context = context_system::instance();
+
+if ($delete) {
+    $deleterecord = $DB->get_record('ltool_bookmarks_data', ['id' => $delete]);
+    if (empty($deleterecord)) {
+        redirect(new moodle_url('/'));
+    }
+}
 
 $coursebase = false;
 $userbase = false;
@@ -94,6 +100,9 @@ if ($courseid && !$childid) {
     $urlparams['courseid'] = $courseid;
     $coursecontext = context_course::instance($courseid);
     require_capability('ltool/bookmarks:viewbookmarks', $coursecontext);
+    if ($delete) {
+        require_capability('ltool/bookmarks:managebookmarks', $coursecontext);
+    }
 } else if ($childid) {
 
      $urlparams['courseid'] = $courseid;
@@ -102,16 +111,36 @@ if ($courseid && !$childid) {
         $urlparams['teacher'] = true;
         $coursecontext = context_course::instance($courseid);
         require_capability('ltool/bookmarks:viewbookmarks', $coursecontext);
+        if ($delete) {
+            require_capability('ltool/bookmarks:managebookmarks', $coursecontext);
+        }
     } else {
         if ($childid != $USER->id) {
             $usercontext = context_user::instance($childid);
             require_capability('ltool/bookmarks:viewbookmarks', $usercontext, $USER->id);
+            if ($delete) {
+                require_capability('ltool/bookmarks:managebookmarks', $usercontext, $USER->id);
+            }
         } else {
             require_capability('ltool/bookmarks:viewownbookmarks', $context);
+            if ($delete) {
+                if ($deleterecord->userid == $USER->id) {
+                    require_capability('ltool/bookmarks:manageownbookmarks', $context);
+                } else {
+                    require_capability('ltool/bookmarks:managebookmarks', $context);
+                }
+            }
         }
     }
 } else {
     require_capability('ltool/bookmarks:viewownbookmarks', $context);
+    if ($delete) {
+        if ($deleterecord->userid == $USER->id) {
+            require_capability('ltool/bookmarks:manageownbookmarks', $context);
+        } else {
+            require_capability('ltool/bookmarks:managebookmarks', $context);
+        }
+    }
 }
 
 if ($selectcourse) {
@@ -129,7 +158,6 @@ if ($sorttype) {
 $baseurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', $urlparams);
 
 if ($delete && confirm_sesskey()) {
-
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
@@ -142,10 +170,10 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->footer();
         die;
     } else if (data_submitted()) {
-        $deleterecord = $DB->get_record('learningtools_bookmarks', ['id' => $delete]);
+        $deleterecord = $DB->get_record('ltool_bookmarks_data', ['id' => $delete]);
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
-        if ($DB->delete_records('learningtools_bookmarks', ['id' => $delete])) {
-            $eventcourseid = get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
+        if ($DB->delete_records('ltool_bookmarks_data', ['id' => $delete])) {
+            $eventcourseid = local_learningtools_get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
             $deleteeventparams = [
                 'objectid' => $deleterecord->id,
                 'courseid' => $eventcourseid,
@@ -189,7 +217,7 @@ $sqlconditions = '';
 $sqlparams = [];
 $templatecontent = [];
 if (!empty($courseid) && !$childid) {
-    $students = get_students_incourse($courseid);
+    $students = local_learningtools_get_students_incourse($courseid);
     if (!empty($students)) {
         list($studentcondition, $sqlparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
         $sqlconditions .= 'userid '. $studentcondition;

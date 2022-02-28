@@ -25,7 +25,6 @@
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_login();
-
 $context = context_system::instance();
 $PAGE->set_context($context);
 require_capability("moodle/site:config", $context);
@@ -35,8 +34,8 @@ $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('learningtools', 'local_learningtools'));
 $PAGE->set_heading(get_string('learningtools', 'local_learningtools'));
 
-$action = optional_param('action', '', PARAM_TEXT);
-$tool = optional_param('tool', '', PARAM_TEXT);
+$action = optional_param('action', '', PARAM_ALPHANUMEXT);
+$tool = optional_param('tool', '', PARAM_ALPHANUMEXT);
 
 // Strings.
 $strenable    = get_string('enable');
@@ -50,6 +49,7 @@ $strname      = get_string('name');
 
 // Show/hide tools.
 if (!empty($action) && !empty($tool)) {
+    require_sesskey();
     if ($action == 'disable') {
         $DB->set_field('local_learningtools_products', 'status', 0, array('shortname' => $tool));
     } else if ($action == 'enable') {
@@ -105,12 +105,12 @@ foreach ($learningtools as $tool) {
     $status = '-';
     $lttool = $DB->get_record('local_learningtools_products', array('shortname' => $plugin));
     if ($lttool->status) {
-        $aurl = new moodle_url($PAGE->url, array('action' => 'disable', 'tool' => $plugin));
+        $aurl = new moodle_url($PAGE->url, array('action' => 'disable', 'tool' => $plugin, 'sesskey' => sesskey()));
         $status = "<a href=\"$aurl\">";
         $status .= $OUTPUT->pix_icon('t/hide', $strdisable) . '</a>';
         $enabled = true;
     } else {
-        $aurl = new moodle_url($PAGE->url, array('action' => 'enable', 'tool' => $plugin));
+        $aurl = new moodle_url($PAGE->url, array('action' => 'enable', 'tool' => $plugin, 'sesskey' => sesskey()));
         $status = "<a href=\"$aurl\">";
         $status .= $OUTPUT->pix_icon('t/show', $strenable) . '</a>';
         $enabled = false;
@@ -119,13 +119,14 @@ foreach ($learningtools as $tool) {
     // Plugin sort option.
     $updown = '';
     if ($cnt) {
-        $updown .= html_writer::link($PAGE->url->out(false, array('action' => 'up', 'tool' => $plugin)),
+        $updown .= html_writer::link($PAGE->url->out(false, array('action' => 'up', 'tool' => $plugin, 'sesskey' => sesskey())),
             $OUTPUT->pix_icon('t/up', $strup, 'moodle', array('class' => 'iconsmall'))). '';
     } else {
         $updown .= $spacer;
     }
     if ($cnt < count($learningtools) - 1) {
-        $updown .= '&nbsp;'.html_writer::link($PAGE->url->out(false, array('action' => 'down', 'tool' => $plugin)),
+        $updown .= '&nbsp;'.html_writer::link($PAGE->url->out(false, array('action' => 'down', 'tool' => $plugin,
+        'sesskey' => sesskey())),
             $OUTPUT->pix_icon('t/down', $strdown, 'moodle', array('class' => 'iconsmall')));
     } else {
         $updown .= $spacer;

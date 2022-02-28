@@ -39,7 +39,7 @@ class event_observer {
     public static function bookmarks_coursedata_deleteaction($event) {
         $eventdata = $event->get_data();
         $courseid = $eventdata['objectid'];
-        delete_course_bookmarks($courseid);
+        ltool_bookmarks_delete_course_bookmarks($courseid);
     }
 
     /**
@@ -50,6 +50,6 @@ class event_observer {
     public static function bookmarks_moduledata_deleteaction($event) {
         $eventdata = $event->get_data();
         $coursemodule = $eventdata['objectid'];
-        delete_module_bookmarks($coursemodule);
+        ltool_bookmarks_delete_module_bookmarks($coursemodule);
     }
 }

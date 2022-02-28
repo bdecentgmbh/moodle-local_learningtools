@@ -30,6 +30,6 @@ function xmldb_ltool_schedule_install() {
     global $CFG;
     require_once($CFG->dirroot. '/local/learningtools/lib.php');
     $plugin = 'schedule';
-    add_learningtools_plugin($plugin);
+    local_learningtools_add_learningtools_plugin($plugin);
 }
 

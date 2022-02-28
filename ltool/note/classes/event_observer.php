@@ -39,7 +39,7 @@ class event_observer {
     public static function note_coursedata_deleteaction($event) {
         $eventdata = $event->get_data();
         $courseid = $eventdata['objectid'];
-        delete_course_note($courseid);
+        ltool_note_delete_course_note($courseid);
     }
 
     /**
@@ -50,6 +50,6 @@ class event_observer {
     public static function note_moduledata_deleteaction($event) {
         $eventdata = $event->get_data();
         $coursemodule = $eventdata['objectid'];
-        delete_module_note($coursemodule);
+        ltool_note_delete_module_note($coursemodule);
     }
 }

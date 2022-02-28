@@ -29,7 +29,7 @@ require_once($CFG->libdir.'/formslib.php');
 /**
  * Define user edit the schedulebox form.
  */
-class edit_schedulebox extends moodleform {
+class ltool_schedule_editbox extends moodleform {
     /**
      * Adds element to form
      */
@@ -95,12 +95,12 @@ function ltool_schedule_render_template($templatecontent) {
  *
  * @return void
  */
-function load_schedule_js_config() {
+function ltool_schedule_load_js_config() {
     global $PAGE, $USER;
     $params['pagetitle'] = $PAGE->title;
     $params['contextid'] = $PAGE->context->id;
     $params['user'] = $USER->id;
-    $params['pageurl'] = $PAGE->url->out();
+    $params['pageurl'] = $PAGE->url->out(false);
     $params['course'] = $PAGE->course->id;
     $params['cm'] = !empty($PAGE->cm->id) ? $PAGE->cm->id : 0;
     $PAGE->requires->js_call_amd('ltool_schedule/schedule', 'init', array($params));
@@ -114,7 +114,7 @@ function load_schedule_js_config() {
  */
 function ltool_schedule_output_fragment_get_schedule_form($args) {
     $schedulebox = html_writer::start_tag('div', array('id' => 'ltoolschedule-editorbox'));
-    $mform = new edit_schedulebox(null, $args);
+    $mform = new ltool_schedule_editbox(null, $args);
     $schedulebox .= $mform->render();
     $schedulebox .= html_writer::end_tag('div');
     return $schedulebox;
@@ -127,7 +127,7 @@ function ltool_schedule_output_fragment_get_schedule_form($args) {
  * @return void
  */
 function ltool_schedule_output_fragment_set_calendar_event($args) {
-    global $CFG;
+    global $CFG, $USER;
     require_once($CFG->dirroot.'/calendar/lib.php');
     parse_str($args['formdata'], $formdata);
     if (!empty($formdata)) {
@@ -145,7 +145,7 @@ function ltool_schedule_output_fragment_set_calendar_event($args) {
             $event->description = $scheduledesc;
             $event->format = FORMAT_HTML;
             $event->groupid = 0;
-            $event->userid = $formdata['user'];
+            $event->userid = $USER->id;
             $timestart = $formdata['scheduletimestart'];
             $event->timestart = make_timestamp($timestart['year'], $timestart['month'], $timestart['day'],
             $timestart['hour'], $timestart['minute']);

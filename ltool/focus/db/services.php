@@ -30,6 +30,7 @@ $functions = array(
         'methodname'  => 'save_userfocusmode',
         'description' => 'Save the user focus mode',
         'type'        => 'write',
+        'capabilities' => 'ltool/focus:createfocus',
         'ajax'          => true,
         'loginrequired' => true,
     ),

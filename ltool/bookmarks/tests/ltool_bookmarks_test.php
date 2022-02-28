@@ -67,7 +67,7 @@ class ltool_bookmarks_test extends \advanced_testcase {
         $bookmarks = \ltool_bookmarks\external::save_userbookmarks($this->context->id, $data);
         $events = $sink->get_events();
         $event = reset($events);
-        $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
+        $exist = ltool_bookmarks_check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
         $bookmarksmsg = get_string('successbookmarkmessage', 'local_learningtools');
         $this->assertEquals($bookmarks['bookmarksmsg'], $bookmarksmsg);
         $this->assertTrue($exist);
@@ -88,21 +88,21 @@ class ltool_bookmarks_test extends \advanced_testcase {
         $data = $this->get_bookmarks_info($toolobj, $tool);
 
         $sink = $this->redirectEvents();
-        user_save_bookmarks($this->context->id, $data);
+        ltool_bookmarks_user_save_bookmarks($this->context->id, $data);
         $events = $sink->get_events();
         $event = reset($events);
 
-        $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
+        $exist = ltool_bookmarks_check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
         $this->assertTrue($exist);
         $this->assertInstanceOf('\ltool_bookmarks\event\ltbookmarks_created', $event);
         $this->assertEquals($this->context, $event->get_context());
         // Test the toggle of bookmarks. Delete the bookmark if already stored.
         $sink = $this->redirectEvents();
-        user_save_bookmarks($this->context->id, $data);
+        ltool_bookmarks_user_save_bookmarks($this->context->id, $data);
         $events = $sink->get_events();
         $event = reset($events);
 
-        $exist = check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
+        $exist = ltool_bookmarks_check_page_bookmarks_exist($this->context->id, $this->page->url->out(), $USER->id);
         $this->assertFalse($exist);
         $this->assertInstanceOf('\ltool_bookmarks\event\ltbookmarks_deleted', $event);
         $this->assertEquals($this->context, $event->get_context());
@@ -123,14 +123,15 @@ class ltool_bookmarks_test extends \advanced_testcase {
         $data['course'] = $this->context->instanceid;
         $data['pageurl'] = $this->page->url->out(false);
         $data['pagetype'] = $this->page->pagetype;
-        $data['coursemodule'] = get_moduleid($this->page->context->id, $this->page->context->contextlevel);
+        $data['coursemodule'] = local_learningtools_get_moduleid($this->page->context->id, $this->page->context->contextlevel);
         $data['contextlevel'] = $this->page->context->contextlevel;
         $data['contextid'] = $this->page->context->id;
         $data['sesskey'] = sesskey();
         $data['ltbookmark'] = true;
         $data['pagetitle'] = $this->page->title;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
-        $data['pagebookmarks'] = check_page_bookmarks_exist($this->page->context->id, $this->page->pagetype, $USER->id);
+        $data['pagebookmarks'] = ltool_bookmarks_check_page_bookmarks_exist($this->page->context->id, $this->page->pagetype,
+            $USER->id);
         return $data;
     }
 }

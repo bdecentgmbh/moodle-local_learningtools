@@ -38,6 +38,12 @@ $childid = optional_param('userid', 0, PARAM_INT);
 $teacher = optional_param('teacher', 0, PARAM_INT);
 $returnurl = optional_param('returnurl', '', PARAM_URL);
 
+if ($edit) {
+    $editedrecord = $DB->get_record('ltool_note_data', array('id' => $edit));
+    if (empty($editedrecord)) {
+        redirect(new moodle_url('/'));
+    }
+}
 $urlparams = [];
 if ($courseid && !$childid) {
     $urlparams['courseid'] = $courseid;
@@ -55,7 +61,11 @@ if ($courseid && !$childid) {
         require_capability('ltool/note:managenote', $usercontext, $USER->id);
     }
 } else {
-    require_capability('ltool/note:manageownnote', $context);
+    if ($USER->id == $editedrecord->userid) {
+        require_capability('ltool/note:manageownnote', $context);
+    } else {
+        redirect(new moodle_url('/'));
+    }
 }
 
 
@@ -74,18 +84,18 @@ if ($edit && confirm_sesskey()) {
     $params['id'] = $edit;
     $params['courseid'] = $courseid;
     $params['returnurl'] = $returnurl;
-    $editorform = new edit_noteinfo($pageurl->out(false), $params);
+    $editorform = new ltool_note_info($pageurl->out(false), $params);
     if ($editorform->is_cancelled()) {
         redirect($baseurl);
     } else if ($fromdata = $editorform->get_data()) {
         $usernote = $fromdata->noteeditor['text'];
-        $exitnote = $DB->get_record('learningtools_note', array('id' => $edit));
+        $exitnote = $DB->get_record('ltool_note_data', array('id' => $edit));
         if ($exitnote) {
             if ($usernote != $exitnote->note) {
-                    $DB->set_field('learningtools_note', 'note', $usernote, array('id' => $edit));
-                    $DB->set_field('learningtools_note', 'timemodified', time(), array('id' => $edit));
+                    $DB->set_field('ltool_note_data', 'note', $usernote, array('id' => $edit));
+                    $DB->set_field('ltool_note_data', 'timemodified', time(), array('id' => $edit));
                     $editeventcontext = context::instance_by_id($exitnote->contextid, MUST_EXIST);
-                    $eventcourseid = get_eventlevel_courseid($editeventcontext, $exitnote->course);
+                    $eventcourseid = local_learningtools_get_eventlevel_courseid($editeventcontext, $exitnote->course);
                     // Add event to user edit the note.
                     $editeventparams = [
                         'objectid' => $exitnote->id,

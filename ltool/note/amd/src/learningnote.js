@@ -117,7 +117,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                             var url = M.cfg.wwwroot + "/local/learningtools/ltool/note/pop_out.php?contextid=" +
                             params.contextid + "&pagetype=" + params.pagetype + "&contextlevel=" + params.contextlevel + "&course="
                             + params.course + "&user=" + params.user + "&pageurl=" + pageurljson + "&pagetitle=" + params.pagetitle
-                            + "&heading=" + params.heading;
+                            + "&heading=" + params.heading + "&sesskey=" + params.sesskey;
                             modal.hide();
                             window.open(url, '_blank');
                         });

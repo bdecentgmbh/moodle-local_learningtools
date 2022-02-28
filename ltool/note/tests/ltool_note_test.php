@@ -71,7 +71,7 @@ class ltool_note_test extends \advanced_testcase {
 
         $data = $this->create_note();
         $sink = $this->redirectEvents();
-        user_save_notes($this->context->id, $data);
+        ltool_note_user_save_notes($this->context->id, $data);
         $events = $sink->get_events();
         $event = reset($events);
         $this->assertInstanceOf('\ltool_note\event\ltnote_created', $event);
@@ -86,18 +86,18 @@ class ltool_note_test extends \advanced_testcase {
     public function test_note_count(): void {
 
         $data = $this->create_note();
-        user_save_notes($this->context->id, $data);
+        ltool_note_user_save_notes($this->context->id, $data);
         $data1 = $this->create_note();
-        user_save_notes($this->context->id, $data1);
+        ltool_note_user_save_notes($this->context->id, $data1);
         $args = [
             'contextid' => $data['contextid'],
             'pagetype' => $data['pagetype'],
             'user' => $data['user'],
             'pageurl' => $data['pageurl']
         ];
-        $count = get_userpage_countnotes($args);
+        $count = ltool_note_get_userpage_countnotes($args);
         $this->assertEquals(2, $count);
-        $notes = check_instanceof_block((object) $data);
+        $notes = local_learningtools_check_instanceof_block((object) $data);
         $this->assertEquals('course', $notes->instance);
     }
 

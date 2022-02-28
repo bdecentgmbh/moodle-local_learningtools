@@ -237,3 +237,7 @@ $string['progress'] = "Progress";
 $string['cmpdate'] = "Completion date";
 $string['managetimemanagment'] = "Manage dates reports";
 $string['gotocourse'] = "Go to course";
+$string['baseformat'] = '%B %d, %Y, %I:%M %p';
+$string['strftimemonthdateyear'] = '%B, %dth %Y';
+$string['strftimeyearmonth'] = '%Y/%m/%d';
+$string['strftimemonthnamedate'] = '%B %d, %Y';

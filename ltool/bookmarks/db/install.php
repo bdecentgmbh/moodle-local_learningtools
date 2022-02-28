@@ -29,5 +29,5 @@ function xmldb_ltool_bookmarks_install() {
     global $CFG;
     require_once($CFG->dirroot. '/local/learningtools/lib.php');
     $plugin = 'bookmarks';
-    add_learningtools_plugin($plugin);
+    local_learningtools_add_learningtools_plugin($plugin);
 }

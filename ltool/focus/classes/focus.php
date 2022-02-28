@@ -93,7 +93,7 @@ class focus extends \local_learningtools\learningtools {
         $data['iconbackcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconbackcolor");
         $data['iconcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconcolor");
         $data['focusmode'] = $focusmode;
-        $data['focuscssurl'] = get_focus_css_url();
+        $data['focuscssurl'] = ltool_focus_get_focus_css_url();
         ltool_focus_focusmode_actions();
         return $data;
     }
@@ -115,7 +115,7 @@ class focus extends \local_learningtools\learningtools {
      */
     public function load_js() {
         // Load schedule tool js configuration.
-        load_focus_js_config();
+        ltool_focus_load_js_config();
     }
 
     /**

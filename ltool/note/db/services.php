@@ -29,6 +29,7 @@ $functions = array(
         'methodname'  => 'save_usernote',
         'description' => 'Save the user note',
         'type'        => 'write',
+        'capabilities' => 'ltool/note:createnote',
         'ajax'          => true,
         'loginrequired' => true,
     ),

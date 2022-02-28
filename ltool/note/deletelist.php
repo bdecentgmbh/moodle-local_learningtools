@@ -37,7 +37,7 @@ $delete      = optional_param('delete', 0, PARAM_INT);
 $returnurl  = optional_param('returnurl', '', PARAM_URL);
 $confirm    = optional_param('confirm', '', PARAM_ALPHANUM);
 // Require access the page.
-require_deletenote_cap($delete);
+ltool_note_require_deletenote_cap($delete);
 // If user is logged in, then use profile navigation in breadcrumbs.
 if ($profilenode = $PAGE->settingsnav->find('myprofile', null)) {
     $profilenode->make_active();
@@ -63,10 +63,10 @@ if ($delete && confirm_sesskey()) {
 
     } else if (data_submitted()) {
 
-        $deleterecord = $DB->get_record('learningtools_note', array('id' => $delete));
+        $deleterecord = $DB->get_record('ltool_note_data', array('id' => $delete));
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
-        if ($DB->delete_records('learningtools_note', ['id' => $delete])) {
-            $eventcourseid = get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
+        if ($DB->delete_records('ltool_note_data', ['id' => $delete])) {
+            $eventcourseid = local_learningtools_get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
             $deleteeventparams = [
                 'objectid' => $deleterecord->id,
                 'courseid' => $eventcourseid,

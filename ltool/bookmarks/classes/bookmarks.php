@@ -89,15 +89,15 @@ class bookmarks extends \local_learningtools\learningtools {
         $data['course'] = $COURSE->id;
         $data['pagetype'] = $PAGE->pagetype;
         $data['pagetitle'] = $PAGE->title;
-        $data['coursemodule'] = get_moduleid($PAGE->context->id, $PAGE->context->contextlevel);
+        $data['coursemodule'] = local_learningtools_get_moduleid($PAGE->context->id, $PAGE->context->contextlevel);
         $data['contextlevel'] = $PAGE->context->contextlevel;
         $data['contextid'] = $PAGE->context->id;
         $data['sesskey'] = sesskey();
         $data['ltbookmark'] = true;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
-        $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+        $pageurl = local_learningtools_clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
         $data['pageurl'] = $pageurl;
-        $data['pagebookmarks'] = check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
+        $data['pagebookmarks'] = ltool_bookmarks_check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
         $data['iconbackcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconbackcolor");
         $data['iconcolor'] = get_config("ltool_{$this->shortname}", "{$this->shortname}iconcolor");
         return $data;
@@ -111,7 +111,7 @@ class bookmarks extends \local_learningtools\learningtools {
     public function load_js() {
         $data = $this->get_tool_records();
         // Load bookmarks tool js configuration.
-        load_bookmarks_js_config($data);
+        ltool_bookmarks_load_bookmarks_js_config($data);
     }
 
     /**
@@ -130,8 +130,8 @@ class bookmarks extends \local_learningtools\learningtools {
      */
     public function tool_active_condition() {
         global $PAGE, $USER;
-        $pageurl = clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
-        $pagebookmarks = check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
+        $pageurl = local_learningtools_clean_mod_assign_userlistid($PAGE->url->out(false), $PAGE->cm);
+        $pagebookmarks = ltool_bookmarks_check_page_bookmarks_exist($PAGE->context->id, $pageurl, $USER->id);
         if ($pagebookmarks) {
             return $this->render_template();
         }

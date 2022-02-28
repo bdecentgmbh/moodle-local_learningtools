@@ -30,5 +30,5 @@ function xmldb_ltool_bookmarks_uninstall() {
     global $CFG;
     require_once($CFG->dirroot. '/local/learningtools/lib.php');
     $plugin = 'bookmarks';
-    delete_ltool_table($plugin);
+    local_learningtools_delete_ltool_table($plugin);
 }

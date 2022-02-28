@@ -59,7 +59,7 @@ class provider implements
             'pageurl' => 'privacy:metadata:bookmarks:pageurl',
             'timemodified' => 'privacy:metadata:bookmarks:timemodified'
         ];
-        $collection->add_database_table('learningtools_bookmarks', $bookmarksmetadata, 'privacy:metadata:bookmarksmetadata');
+        $collection->add_database_table('ltool_bookmarks_data', $bookmarksmetadata, 'privacy:metadata:bookmarksmetadata');
 
         return $collection;
     }
@@ -73,7 +73,7 @@ class provider implements
     public static function user_has_bookmark_data($userid) {
         global $DB;
 
-        if ($DB->count_records('learningtools_bookmarks', ['userid' => $userid])) {
+        if ($DB->count_records('ltool_bookmarks_data', ['userid' => $userid])) {
             return true;
         }
         return false;
@@ -124,7 +124,7 @@ class provider implements
             list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             if (!empty($userinparams)) {
                 $sql = "userid {$userinsql}";
-                $DB->delete_records_select('learningtools_bookmarks', $sql, $userinparams);
+                $DB->delete_records_select('ltool_bookmarks_data', $sql, $userinparams);
             }
         }
     }
@@ -167,7 +167,7 @@ class provider implements
      */
     private static function delete_user_data(int $userid) {
         global $DB;
-        if ($DB->delete_records('learningtools_bookmarks', ['userid' => $userid])) {
+        if ($DB->delete_records('ltool_bookmarks_data', ['userid' => $userid])) {
             return true;
         }
         return false;
@@ -187,7 +187,7 @@ class provider implements
         // Context user.
         $user = $contextlist->get_user();
 
-        $records = $DB->get_records('learningtools_bookmarks', ['userid' => $user->id]);
+        $records = $DB->get_records('ltool_bookmarks_data', ['userid' => $user->id]);
 
         if (empty($records)) {
             return;

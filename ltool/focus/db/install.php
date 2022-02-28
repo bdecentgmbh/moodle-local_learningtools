@@ -31,6 +31,6 @@ function xmldb_ltool_focus_install() {
     require_once($CFG->dirroot. '/local/learningtools/lib.php');
     require_once($CFG->dirroot. '/local/learningtools/ltool/focus/lib.php');
     $plugin = 'focus';
-    create_focus_temp_cssfile();
-    add_learningtools_plugin($plugin);
+    ltool_focus_create_focus_temp_cssfile();
+    local_learningtools_add_learningtools_plugin($plugin);
 }
