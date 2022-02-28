@@ -26,17 +26,22 @@ require_once(dirname(__FILE__).'/../../../../config.php');
 require_once($CFG->dirroot. '/local/learningtools/ltool/note/lib.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_login();
-require_note_status();
-
+ltool_note_require_note_status();
+require_sesskey();
+$context = context_system::instance();
+require_capability('ltool/note:createnote', $context);
 $contextid = optional_param('contextid', 0, PARAM_INT);
 $courseid = optional_param('course', 0, PARAM_INT);
 $user = optional_param('user', 0, PARAM_INT);
 $contextlevel = optional_param('contextlevel', 0, PARAM_INT);
-$pagetype = optional_param('pagetype', '', PARAM_TEXT);
+$pagetype = optional_param('pagetype', '', PARAM_ALPHANUMEXT);
 $urlparams = optional_param('pageurl', '', PARAM_TEXT);
 $pagetitle = optional_param('pagetitle', '', PARAM_TEXT);
 $pageheading = optional_param('heading' , '', PARAM_TEXT);
 $jsonurlparams = json_decode($urlparams);
+if ($USER->id != $user) {
+    redirect(new moodle_url('/'));
+}
 if (is_array($jsonurlparams)) {
     $pageurl = '';
     $cnt = 1;
@@ -78,18 +83,16 @@ $PAGE->set_title($pagetitle);
 $PAGE->set_heading($pageheading);
 $PAGE->set_pagetype($pagetype);
 
-sesskey();
-
 if ($contextid && $courseid && $user && $contextlevel
     && $pagetype && $pageurl) {
     $params['popoutaction'] = true;
     $actionurl = $url->out(false);
-    $mform = new editorform($actionurl, $params);
+    $mform = new ltool_email_popoutform($actionurl, $params);
     if ($mform->is_cancelled()) {
         redirect($pageurl);
     } else if ($formdata = (array)$mform->get_data()) {
         $formdata['ltnoteeditor'] = $formdata['ltnoteeditor']['text'];
-        user_save_notes($contextid, $formdata);
+        ltool_note_user_save_notes($contextid, $formdata);
 
         redirect($pageurl, get_string('successnotemessage', 'local_learningtools'),
             null, \core\output\notification::NOTIFY_SUCCESS);

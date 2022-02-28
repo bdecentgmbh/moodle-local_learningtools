@@ -77,11 +77,11 @@ class bookmarkstool_filter {
         $template = [];
         $courses = [];
         $urlparams = [];
-        $records = $DB->get_records_sql("SELECT * FROM {learningtools_bookmarks} WHERE $usercondition", $userparams);
+        $records = $DB->get_records_sql("SELECT * FROM {ltool_bookmarks_data} WHERE $usercondition", $userparams);
 
         if (!empty($records)) {
             foreach ($records as $record) {
-                $instanceblock = check_instanceof_block($record);
+                $instanceblock = local_learningtools_check_instanceof_block($record);
                 if (isset($instanceblock->instance)) {
                     if ($instanceblock->instance == 'course' || $instanceblock->instance == 'mod') {
                         if ($instanceblock->courseid > 1) {
@@ -92,7 +92,7 @@ class bookmarkstool_filter {
             }
         }
         // Get courses.
-        $courses = get_courses_name(array_unique($courses), $this->baseurl, $selectcourse, $this->child);
+        $courses = local_learningtools_get_courses_name(array_unique($courses), $this->baseurl, $selectcourse, $this->child);
         $template['courses'] = $courses;
         $template['pageurl'] = $this->pageurl->out(false);
 
@@ -162,19 +162,25 @@ class bookmarkstool_filter {
         global $DB, $OUTPUT;
 
         $orderconditions  = '';
+        $filtersort = '';
+        if ($sorttype == 'asc') {
+            $filtersort = 'ASC';
+        } else if ($sorttype == 'desc') {
+            $filtersort = 'DESC';
+        }
+
         if ($sort == 'course') {
-            $orderconditions .= "ORDER BY c.fullname $sorttype, coursemodule";
+            $orderconditions .= "ORDER BY c.fullname $filtersort, coursemodule";
         } else {
-            $orderconditions .= "ORDER BY timecreated $sorttype";
+            $orderconditions .= "ORDER BY timecreated $filtersort";
         }
 
         $sql = "SELECT b.*, c.fullname
-        FROM {learningtools_bookmarks} b
+        FROM {ltool_bookmarks_data} b
         LEFT JOIN {course} c ON c.id = b.course
         WHERE $sqlconditions $orderconditions";
-
-        $records = $DB->get_records_sql($sql, $sqlparams, $page * $perpage, $perpage);
-        $totalbookmarks = $DB->count_records_sql("SELECT count(*) FROM {learningtools_bookmarks}
+        $records = $DB->get_records_sql($sql, $sqlparams);
+        $totalbookmarks = $DB->count_records_sql("SELECT count(*) FROM {ltool_bookmarks_data}
             WHERE $sqlconditions", $sqlparams);
         $pageingbar = $OUTPUT->paging_bar($totalbookmarks, $page, $perpage, $this->baseurl);
 
@@ -183,7 +189,7 @@ class bookmarkstool_filter {
         if (!empty($records)) {
             foreach ($records as $row) {
                 $list = [];
-                $data = check_instanceof_block($row);
+                $data = local_learningtools_check_instanceof_block($row);
                 $list['instance'] = $row->pagetitle;
                 $list['instanceinfo'] = $this->get_instance_bookmarkinfo($data);
                 $list['courseinstance'] = ($data->instance == 'course') ? true : false;
@@ -207,11 +213,11 @@ class bookmarkstool_filter {
     public function get_instance_bookmark($data) {
         $bookmark = '';
         if ($data->instance == 'course') {
-            $bookmark = get_course_name($data->courseid);
+            $bookmark = local_learningtools_get_course_name($data->courseid);
         } else if ($data->instance == 'user') {
             $bookmark = 'user';
         } else if ($data->instance == 'mod') {
-            $bookmark = get_module_name($data);
+            $bookmark = local_learningtools_get_module_name($data);
         } else if ($data->instance == 'system') {
              $bookmark = 'system';
         } else if ($data->instance == 'block') {
@@ -228,11 +234,11 @@ class bookmarkstool_filter {
     public function get_instance_bookmarkinfo($data) {
          $bookmarkinfo = '';
         if ($data->instance == 'course') {
-            $bookmarkinfo = get_course_categoryname($data->courseid);
+            $bookmarkinfo = local_learningtools_get_course_categoryname($data->courseid);
         } else if ($data->instance == 'user') {
             $bookmarkinfo = '';
         } else if ($data->instance == 'mod') {
-            $bookmarkinfo = get_bookmarks_module_coursesection($data);
+            $bookmarkinfo = ltool_bookmarks_get_bookmarks_module_coursesection($data);
         } else if ($data->instance == 'system') {
              $bookmarkinfo = '';
         } else if ($data->instance == 'block') {
@@ -247,7 +253,7 @@ class bookmarkstool_filter {
      * @return string result
      */
     public function get_bookmark_time($record) {
-        return userdate($record->timecreated, '%B %d, %Y, %I:%M %p', '', false);
+        return userdate($record->timecreated, get_string("baseformat", "local_learningtools"), '', false);
     }
 
     /**
@@ -315,7 +321,7 @@ class bookmarkstool_filter {
      * @return mixed result
      */
     public function get_bookmark_viewinfo($row) {
-        return get_instance_tool_view_url($row);
+        return local_learningtools_get_instance_tool_view_url($row);
     }
 
 }

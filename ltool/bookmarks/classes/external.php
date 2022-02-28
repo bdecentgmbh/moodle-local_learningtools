@@ -54,12 +54,19 @@ class external extends \external_api {
      * @return array Bookmarks save info details.
      */
     public static function save_userbookmarks($contextid, $formdata) {
-        global $CFG;
+        global $CFG, $USER;
+        require_login();
         require_once($CFG->dirroot.'/local/learningtools/ltool/bookmarks/lib.php');
+        $context = \context_system::instance();
+        require_capability('ltool/bookmarks:createbookmarks', $context);
+        $params = self::validate_parameters(self::save_userbookmarks_parameters(),
+                        array('contextid' => $contextid, 'formdata' => $formdata));
         // Parse serialize form data.
-        $data = json_decode($formdata);
+        $data = json_decode($params['formdata']);
         $data = (array) $data;
-        return user_save_bookmarks($contextid, $data);
+        if ($USER->id == $data['user']) {
+            return ltool_bookmarks_user_save_bookmarks($params['contextid'], $data);
+        }
     }
 
     /**

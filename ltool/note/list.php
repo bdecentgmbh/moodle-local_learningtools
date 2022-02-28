@@ -27,14 +27,14 @@ require_once($CFG->dirroot. '/local/learningtools/lib.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 require_login();
-require_note_status();
+ltool_note_require_note_status();
 
 $context = context_system::instance();
 
 $selectcourse = optional_param('selectcourse', 0, PARAM_INT);
 $activity     = optional_param('activity', 0, PARAM_INT);
-$sort         = optional_param('sort', 'date', PARAM_TEXT);
-$sorttype     = optional_param('sorttype', 'asc', PARAM_TEXT);
+$sort         = optional_param('sort', 'date', PARAM_ALPHA);
+$sorttype     = optional_param('sorttype', 'asc', PARAM_ALPHA);
 $delete       = optional_param('delete', 0, PARAM_INT);
 $confirm      = optional_param('confirm', '', PARAM_ALPHANUM);
 $courseid     = optional_param('courseid', 0, PARAM_INT);
@@ -45,6 +45,13 @@ $perpage      = optional_param('perpage', 10, PARAM_INT);
 
 $coursebase = false;
 $userbase = false;
+
+if ($delete) {
+    $deleterecord = $DB->get_record('ltool_note_data', ['id' => $delete]);
+    if (empty($deleterecord)) {
+        redirect(new moodle_url('/'));
+    }
+}
 
 if ($courseid || $selectcourse) {
 
@@ -106,6 +113,9 @@ if ($courseid && !$childid) {
     $coursecontext = context_course::instance($courseid);
     $urlparams['courseid'] = $courseid;
     require_capability('ltool/note:viewnote', $coursecontext);
+    if ($delete) {
+        require_capability('ltool/note:managenote', $coursecontext);
+    }
 
 } else if ($childid) {
     $urlparams['courseid'] = $courseid;
@@ -114,17 +124,37 @@ if ($courseid && !$childid) {
         $urlparams['teacher'] = true;
         $coursecontext = context_course::instance($courseid);
         require_capability('ltool/note:viewnote', $coursecontext);
+        if ($delete) {
+            require_capability('ltool/note:managenote', $coursecontext);
+        }
     } else {
         if ($childid != $USER->id) {
             $usercontext = context_user::instance($childid);
             require_capability('ltool/note:viewnote', $usercontext, $USER->id);
+            if ($delete) {
+                require_capability('ltool/note:managenote', $usercontext, $USER->id);
+            }
         } else {
             require_capability('ltool/note:viewownnote', $context);
+            if ($delete) {
+                if ($deleterecord->userid == $USER->id) {
+                    require_capability('ltool/note:manageownnote', $context);
+                } else {
+                    redirect(new moodle_url('/'));
+                }
+            }
         }
     }
 
 } else {
     require_capability('ltool/note:viewownnote', $context);
+    if ($delete) {
+        if ($deleterecord->userid == $USER->id) {
+            require_capability('ltool/note:manageownnote', $context);
+        } else {
+            redirect(new moodle_url('/'));
+        }
+    }
 }
 
 // Page  params.
@@ -137,7 +167,6 @@ $pageurl = new moodle_url('/local/learningtools/ltool/note/list.php', $urlparams
 // Delete action in note.
 
 if ($delete && confirm_sesskey()) {
-
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
@@ -153,10 +182,10 @@ if ($delete && confirm_sesskey()) {
         die;
 
     } else if (data_submitted()) {
-        $deleterecord = $DB->get_record('learningtools_note', array('id' => $delete));
+        $deleterecord = $DB->get_record('ltool_note_data', array('id' => $delete));
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
-        if ($DB->delete_records('learningtools_note', ['id' => $delete])) {
-            $eventcourseid = get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
+        if ($DB->delete_records('ltool_note_data', ['id' => $delete])) {
+            $eventcourseid = local_learningtools_get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
             $deleteeventparams = [
                 'objectid' => $deleterecord->id,
                 'courseid' => $eventcourseid,
@@ -201,7 +230,7 @@ if ($userbase) {
 }
 echo $OUTPUT->heading($title);
 
-$blockinstance = new \ltool_note\notetool_filter($USER->id, $selectcourse,
+$blockinstance = new \ltool_note\ltool_note_filter($USER->id, $selectcourse,
     $sort, $activity, $courseid, $childid, $teacher, $urlparams, $pageurl);
 
 echo $blockinstance->get_main_body();

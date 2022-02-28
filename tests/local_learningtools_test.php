@@ -21,11 +21,12 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_learningtools;
 
 /**
  * local learning tools main primary plugin phpunit test cases defined.
  */
-class local_learningtools_lib_test extends advanced_testcase {
+class local_learningtools_test extends \advanced_testcase {
 
     /**
      * Set the admin user as User.
@@ -57,28 +58,28 @@ class local_learningtools_lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_get_moduleid(): void {
+    public function test_local_learningtools_get_moduleid(): void {
         global $DB;
         // Create modules.
         $this->create_course();
         // Fetch module context id.
-        $modulecontext = context_module::instance($this->mod->cmid);
-        $moduleid = get_moduleid($modulecontext->id, $modulecontext->contextlevel);
+        $modulecontext = \context_module::instance($this->mod->cmid);
+        $moduleid = local_learningtools_get_moduleid($modulecontext->id, $modulecontext->contextlevel);
         $this->assertEquals($this->mod->cmid, $moduleid);
-        // Test get_module_name.
+        // Test local_learningtools_get_module_name.
         $params = (object) ['coursemodule' => $this->mod->cmid, 'courseid' => $this->course->id];
-        $modulename = get_module_name($params);
+        $modulename = local_learningtools_get_module_name($params);
         $this->assertEquals($this->mod->name, $modulename);
-        $modulename = get_module_name($params, true);
+        $modulename = local_learningtools_get_module_name($params, true);
         $this->assertEquals('page', $modulename);
     }
 
     /**
-     * Test function get_courses_name which returns list of course names from list of course ids.
+     * Test function local_learningtools_get_courses_name which returns list of course names from list of course ids.
      *
      * @return void
      */
-    public function test_get_courses_name(): void {
+    public function test_local_learningtools_get_courses_name(): void {
         // Create multiple courses.
         foreach (range(0, 3) as $count) {
             $course  = $this->generator->create_course();
@@ -86,7 +87,7 @@ class local_learningtools_lib_test extends advanced_testcase {
             $courses[$course->id] = $course;
         }
 
-        $courseinfo = get_courses_name($courseids);
+        $courseinfo = local_learningtools_get_courses_name($courseids);
         foreach ($courseinfo as $courseid => $coursename) {
             $this->assertEquals($courses[$courseid]->fullname, $coursename);
         }
@@ -97,7 +98,7 @@ class local_learningtools_lib_test extends advanced_testcase {
      *
      * @return void
      */
-    public function test_get_students_incourse(): void {
+    public function test_local_learningtools_get_students_incourse(): void {
         $this->create_course();
         $teacher = $this->generator->create_and_enrol(
             $this->course,
@@ -108,7 +109,7 @@ class local_learningtools_lib_test extends advanced_testcase {
         $this->generator->create_and_enrol($this->course, 'student', ['username' => 'studnet2', 'student2@test.com']);
         $this->generator->create_and_enrol($this->course, 'student', ['username' => 'studnet3', 'student3@test.com']);
         // Test count of enrolled students.
-        $students = get_students_incourse($this->course->id);
+        $students = local_learningtools_get_students_incourse($this->course->id);
         $this->assertCount(3, $students);
     }
 }

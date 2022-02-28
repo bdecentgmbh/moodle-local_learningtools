@@ -29,17 +29,24 @@
 function xmldb_ltool_bookmarks_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
-    $table = new xmldb_table('learningtools_bookmarks');
-    $field = new xmldb_field('pagetitle', XMLDB_TYPE_CHAR, '500', null,
-    null, null, null, 'pagetype');
-    if (!$dbman->field_exists($table, $field)) {
-        $dbman->add_field($table, $field);
-    }
     if ($oldversion < 2021102700) {
+        $table = new xmldb_table('learningtools_bookmarks');
+        $field = new xmldb_field('pagetitle', XMLDB_TYPE_CHAR, '500', null,
+        null, null, null, 'pagetype');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
         $pageurlfield = new xmldb_field('pageurl', XMLDB_TYPE_TEXT, null, null, null, null, null,
                 'pagetitle');
         $dbman->change_field_type($table, $pageurlfield);
         upgrade_plugin_savepoint(true, 2021102700, 'ltool', 'bookmarks');
+    }
+    if ($oldversion < 2022022600) {
+        $oldtable = new xmldb_table('learningtools_bookmarks');
+        if ($dbman->table_exists($oldtable)) {
+            $dbman->rename_table($oldtable, 'ltool_bookmarks_data');
+        }
+        upgrade_plugin_savepoint(true, 2022022600, 'ltool', 'bookmarks');
     }
     return true;
 }

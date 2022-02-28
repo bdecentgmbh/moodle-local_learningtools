@@ -53,7 +53,12 @@ class external extends \external_api {
      */
     public static function save_userfocusmode($status) {
         global $SESSION;
-        $SESSION->focusmode = $status;
+        require_login();
+        $context = \context_system::instance();
+        require_capability('ltool/focus:createfocus', $context);
+        $params = self::validate_parameters(self::save_userfocusmode_parameters(),
+            array('status' => $status));
+        $SESSION->focusmode = $params['status'];
         return $status;
     }
 

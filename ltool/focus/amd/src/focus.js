@@ -29,8 +29,10 @@
      */
     var LearningToolFocus = function(focusMode) {
         var self = this;
+        var focusBlock = document.querySelector('.ltoolfocus-info');
         var focusInfo = document.querySelector(".ltoolfocus-info #ltoolfocus-action");
         if (focusMode) {
+            self.addFocusMode(focusBlock);
             if (self.disableButton) {
                 if (self.disableButton.classList.contains('d-none')) {
                     self.disableButton.classList.remove('d-none');
@@ -40,7 +42,6 @@
 
         if (focusInfo) {
             focusInfo.addEventListener("click", function() {
-                var focusBlock = document.querySelector('.ltoolfocus-info');
                 if (focusBlock) {
                     if (focusBlock.classList.contains('enable')) {
                         focusBlock.classList.remove('enable');

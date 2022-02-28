@@ -41,7 +41,7 @@ class event_observer {
         if (isset($data['other']['plugin'])) {
             $pluginconfig = $data['other']['plugin'];
             if ($pluginconfig == 'ltool_focus') {
-                create_focus_temp_cssfile();
+                ltool_focus_create_focus_temp_cssfile();
             }
         }
     }

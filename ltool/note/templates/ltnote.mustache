@@ -19,7 +19,7 @@
 
     Example context (json):
     {
-        "reactionurl_dislike" : "http://moodleurl/local/learningtools/ltool/note/classes/notetool_filter.php"
+        "reactionurl_dislike" : "http://moodleurl/local/learningtools/ltool/note/classes/ltool_note_filter.php"
     }
 }}
 
@@ -32,7 +32,7 @@
 			<div class="ltnote-coursefilter" id="ltnote-coursefilter">
 				<div class="ltnote-coursefilter" id="ltnote-coursefilter">
 					<select class="form-control" name="ltcoursesort" id="ltcoursesort" onchange="location = this.value;">
-						<option value="{{pageurl}}"> 
+						<option value="{{pageurl}}">
 							{{#str}} allcourses, local_learningtools {{/str}} </a>
 						</option>
 						{{#courses}}

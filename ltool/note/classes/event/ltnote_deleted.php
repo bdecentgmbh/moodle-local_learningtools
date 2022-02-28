@@ -33,7 +33,7 @@ class ltnote_deleted extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'learningtools_note';
+        $this->data['objecttable'] = 'ltool_note_data';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
     }

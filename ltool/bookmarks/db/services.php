@@ -30,6 +30,7 @@ $functions = array(
         'methodname'  => 'save_userbookmarks',
         'description' => 'Save the user Bookmarks',
         'type'        => 'write',
+        'capabilities' => 'ltool/bookmarks:createbookmarks',
         'ajax'          => true,
         'loginrequired' => true,
     ),

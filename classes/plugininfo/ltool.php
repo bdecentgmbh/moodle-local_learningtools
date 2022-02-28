@@ -95,4 +95,14 @@ class ltool extends base {
         }
     }
 
+    /**
+     * Pre-uninstall hook.
+     */
+    public function uninstall_cleanup() {
+        global $CFG;
+        require_once($CFG->dirroot. "/local/learningtools/lib.php");
+        local_learningtools_delete_ltool_table($this->name);
+        parent::uninstall_cleanup();
+    }
+
 }

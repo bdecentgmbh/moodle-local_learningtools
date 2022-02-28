@@ -101,7 +101,7 @@ class bookmarkstool_table extends \table_sql {
      * @return string instance bookmark
      */
     public function col_course(stdclass $row) {
-        $data = check_instanceof_block($row);
+        $data = local_learningtools_check_instanceof_block($row);
         return $this->get_instance_bookmark($data);
     }
     /**
@@ -112,11 +112,11 @@ class bookmarkstool_table extends \table_sql {
     public function get_instance_bookmark($data) {
         $bookmark = '';
         if ($data->instance == 'course') {
-            $bookmark = get_course_name($data->courseid);
+            $bookmark = local_learningtools_get_course_name($data->courseid);
         } else if ($data->instance == 'user') {
             $bookmark = 'user';
         } else if ($data->instance == 'mod') {
-            $bookmark = get_module_name($data);
+            $bookmark = local_learningtools_get_module_name($data);
         } else if ($data->instance == 'system') {
              $bookmark = 'system';
         } else if ($data->instance == 'block') {
@@ -131,7 +131,7 @@ class bookmarkstool_table extends \table_sql {
      * @return string display the bookmark instance info
      */
     public function col_bookmarkinfo(stdclass $row) {
-        $data = check_instanceof_block($row);
+        $data = local_learningtools_check_instanceof_block($row);
         return $this->get_instance_bookmarkinfo($data);
     }
     /**
@@ -141,11 +141,11 @@ class bookmarkstool_table extends \table_sql {
     public function get_instance_bookmarkinfo($data) {
          $bookmarkinfo = '';
         if ($data->instance == 'course') {
-            $bookmarkinfo = get_course_categoryname($data->courseid);
+            $bookmarkinfo = local_learningtools_get_course_categoryname($data->courseid);
         } else if ($data->instance == 'user') {
             $bookmarkinfo = 'user';
         } else if ($data->instance == 'mod') {
-            $bookmarkinfo = get_bookmarks_module_coursesection($data);
+            $bookmarkinfo = ltool_bookmarks_get_bookmarks_module_coursesection($data);
         } else if ($data->instance == 'system') {
              $bookmarkinfo = 'system';
         } else if ($data->instance == 'block') {
@@ -159,7 +159,7 @@ class bookmarkstool_table extends \table_sql {
      * @return mixed display the bookmarks date
      */
     public function col_timecreated(stdclass $row) {
-        return userdate($row->timecreated, '%B %d, %Y, %I:%M %p', '', false);
+        return userdate($row->timecreated, get_string("baseformat", "local_learningtools"), '', false);
     }
 
     /**
@@ -222,6 +222,6 @@ class bookmarkstool_table extends \table_sql {
      * @return string view the bookmarks url
      */
     public function col_view(stdclass $row) {
-        return get_instance_tool_view_url($row);
+        return local_learningtools_get_instance_tool_view_url($row);
     }
 }

@@ -21,11 +21,12 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace ltool_focus;
 
 /**
  * focus subplugin for learningtools phpunit test cases defined.
  */
-class ltool_focus_test extends advanced_testcase {
+class ltool_focus_test extends \advanced_testcase {
     /**
      * Create custom page instance and set admin user as loggedin user.
      *
@@ -41,9 +42,9 @@ class ltool_focus_test extends advanced_testcase {
     /**
      * Create css file in temp directory.
      */
-    public function test_create_focus_temp_cssfile() {
+    public function test_ltool_focus_create_focus_temp_cssfile() {
         $configdata = get_config('ltool_focus', 'focusmodecss');
-        $fileinfo = create_focus_temp_cssfile();
+        $fileinfo = ltool_focus_create_focus_temp_cssfile();
         $this->assertEquals($configdata, $fileinfo->get_content());
     }
 }

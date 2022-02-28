@@ -25,5 +25,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_focus';
-$plugin->version = 2021121600;
+$plugin->version = 2022022800;
 $plugin->requires = 2020061501;

@@ -63,7 +63,7 @@ class provider implements
             'timecreated' => 'privacy:metadata:note:timecreated',
             'timemodified' => 'privacy:metadata:note:timemodified'
         ];
-        $collection->add_database_table('learningtools_note', $notemetadata, 'privacy:metadata:notemetadata');
+        $collection->add_database_table('ltool_note_data', $notemetadata, 'privacy:metadata:notemetadata');
 
         return $collection;
     }
@@ -77,7 +77,7 @@ class provider implements
     public static function user_has_note_data($userid): bool {
         global $DB;
 
-        if ($DB->count_records('learningtools_note', ['userid' => $userid])) {
+        if ($DB->count_records('ltool_note_data', ['userid' => $userid])) {
             return true;
         }
         return false;
@@ -128,7 +128,7 @@ class provider implements
             list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             if (!empty($userinparams)) {
                 $sql = "userid {$userinsql}";
-                $DB->delete_records_select('learningtools_note', $sql, $userinparams);
+                $DB->delete_records_select('ltool_note_data', $sql, $userinparams);
             }
         }
     }
@@ -170,7 +170,7 @@ class provider implements
      */
     private static function delete_user_notedata(int $userid) {
         global $DB;
-        if ($DB->delete_records('learningtools_note', ['userid' => $userid])) {
+        if ($DB->delete_records('ltool_note_data', ['userid' => $userid])) {
             return true;
         }
         return false;
@@ -190,7 +190,7 @@ class provider implements
         $user = $contextlist->get_user();
 
         // List of user notes stored in table.
-        $notes = $DB->get_records('learningtools_note', ['userid' => $user->id]);
+        $notes = $DB->get_records('ltool_note_data', ['userid' => $user->id]);
 
         if (empty($notes)) {
             return;

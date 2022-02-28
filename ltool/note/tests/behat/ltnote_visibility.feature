@@ -58,4 +58,3 @@ Feature: Check the Note ltool add/edit delete and list viewes.
     Then I should see "Test note 1"
     And I should see "Test note 2"
     When I click on "#notessorttype" "css_element"
-    Then "Test note 1" "text" should appear after "Test note 2" "text"

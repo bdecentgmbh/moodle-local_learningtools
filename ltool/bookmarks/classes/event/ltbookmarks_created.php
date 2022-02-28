@@ -33,7 +33,7 @@ class ltbookmarks_created extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'learningtools_bookmarks';
+        $this->data['objecttable'] = 'ltool_bookmarks_data';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_OTHER;
     }
