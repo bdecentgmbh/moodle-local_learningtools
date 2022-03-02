@@ -15,17 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * Define plugin capabilities.
  *
  * @package   local_learningtools
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'local_learningtools';
-$plugin->version = 2022030200;
-$plugin->release = 'v1.0';
-$plugin->requires = 2020061501;
-$plugin->maturity = MATURITY_STABLE;
-
+$capabilities = array(
+    'local/learningtools:studentcontroller' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype'      => 'read',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes'   => array(
+            'student' => CAP_ALLOW
+        )
+    )
+);

@@ -56,7 +56,7 @@ $string['enabledisablemodules'] = "Enable Learning Tools to hide activities";
 $string['fabbuttonvisible_desc'] = 'You can decide where the Learning Tools shall be available.';
 $string['sticky'] = "Sticky";
 $string['alwaysactive'] = "Always show active tools";
-
+$string['learningtools:studentcontroller'] = "Learning Tools student controller.";
 
 $string['bookmarksusermenu'] = "Display Bookmarks tool in user menu";
 $string['bookmarksusermenu_help'] = "bookmarks,local_learningtools|/local/learningtools/ltool/bookmarks/list.php|b/bookmark-new";

@@ -19,7 +19,11 @@
 
     Example context (json):
     {
-        "reactionurl_dislike" : "http://moodleurl/local/learningtools/ltool/bookmarks/lib.php"
+        "reactionurl_dislike" : "http://moodleurl/local/learningtools/ltool/bookmarks/lib.php",
+        "ltbookmark" : 1,
+        "bookmarkhovername" : "Bookmarks",
+        "iconbackcolor" : "black",
+        "iconcolor": "red"
     }
 }}
 
@@ -28,8 +32,8 @@
     <button type="submit" id="ltbookmarks-action" data-hovercolor="{{iconbackcolor}}"
     data-fontcolor="{{iconcolor}}" style="background:{{iconbackcolor}};">
         <i class="{{icon}}" id="bookmarks-marked" style="color:{{iconcolor}}"></i>
-         <span class="fa fa-check"></span>
-        <p> {{bookmarkhovername}} </p>
+        <span class="fa fa-check"></span>
     </button>
+    <p> {{bookmarkhovername}} </p>
 </div>
 {{/ltbookmark}}

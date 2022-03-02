@@ -53,8 +53,8 @@ define(['core/str', 'core/ajax', 'core/notification'],
             var bookmarksfontcolor = bookmarksform.getAttribute("data-fontcolor");
             if (bookmarkshovercolor && bookmarksfontcolor) {
                 bookmarksform.addEventListener("mouseover", function() {
-                    document.querySelector('#ltbookmarks-action p').style.background = bookmarkshovercolor;
-                    document.querySelector('#ltbookmarks-action p').style.color = bookmarksfontcolor;
+                    document.querySelector('#ltbookmarksinfo p').style.background = bookmarkshovercolor;
+                    document.querySelector('#ltbookmarksinfo p').style.color = bookmarksfontcolor;
                 });
             }
 
