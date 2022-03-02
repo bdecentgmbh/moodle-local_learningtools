@@ -101,17 +101,18 @@ body.local-learningtools.scrolled #goto-top-link,
     box-shadow: none;
     outline: none;
 }
-.learningtools-action-info .floating-button > div > div button p {
+.learningtools-action-info .floating-button > div > div p {
     position: absolute;
     top: 0;
     right: 60px;
     display: none;
 }
-.learningtools-action-info .floating-button > div > div button:hover p {
+.learningtools-action-info .floating-button > div > div:hover p {
     min-width: 130px;
     color: #fff;
     font-size: 13px;
     line-height: initial;
+    text-align: center;
     background: #e83e8c;
     display: block;
     padding: 0 2px 3px;

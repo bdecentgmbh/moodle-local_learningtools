@@ -60,8 +60,8 @@
             var focusfontcolor = focusInfo.getAttribute("data-fontcolor");
             if (focushovercolor && focusfontcolor) {
                 focusInfo.addEventListener("mouseover", function() {
-                    document.querySelector('#ltoolfocus-action p').style.background = focushovercolor;
-                    document.querySelector('#ltoolfocus-action p').style.color = focusfontcolor;
+                    document.querySelector('#ltoolfocus-info p').style.background = focushovercolor;
+                    document.querySelector('#ltoolfocus-info p').style.color = focusfontcolor;
                 });
             }
         }

@@ -304,7 +304,6 @@ function local_learningtools_get_subplugins() {
  */
 function local_learningtools_get_learningtools_info() {
     global $PAGE, $SITE, $USER;
-
     $content = '';
     // Visiblity of learningtools.
     $fabvisiablestatus = get_config('local_learningtools', 'fabbuttonvisible');
@@ -438,20 +437,9 @@ function local_learningtools_get_stickytool_status() {
  */
 function local_learningtools_get_students_incourse($courseid) {
     global $DB;
-    $users = [];
-    $studentroleids = array_keys(get_archetype_roles('student'));
-    if ($studentroleids) {
-        $coursecontext = context_course::instance($courseid);
-        foreach ($studentroleids as $role) {
-            $coursestudents = get_role_users($role, $coursecontext);
-            if (!empty($coursestudents)) {
-                foreach ($coursestudents as $coursestudent) {
-                    $users[] = $coursestudent->id;
-                }
-            }
-        }
-    }
-    return $users;
+    $coursecontext = context_course::instance($courseid);
+    $studentids = array_keys(get_enrolled_users($coursecontext, 'local/learningtools:studentcontroller'));
+    return $studentids;
 }
 
 /**

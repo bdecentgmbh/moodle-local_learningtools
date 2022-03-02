@@ -19,7 +19,11 @@
 
     Example context (json):
     {
-        "reactionurl_dislike" : "http://moodleurl/local/learningtools//focus/lib.php"
+        "reactionurl_dislike" : "http://moodleurl/local/learningtools//focus/lib.php",
+        "ltoolfocus" : 1,
+        "focushovername" : "Focus",
+        "iconbackcolor" : "black",
+        "iconcolor": "red"
     }
 }}
 {{#ltoolfocus}}
@@ -27,8 +31,8 @@
     data-focuscssurl="{{focuscssurl}}">
         <button type="submit" id="ltoolfocus-action" data-hovercolor="{{iconbackcolor}}"
         data-fontcolor="{{iconcolor}}" style="background:{{iconbackcolor}};">
-             <i class="{{icon}}" style="color:{{iconcolor}}"></i>
-            <p>{{focushovername}} </p>
+            <i class="{{icon}}" style="color:{{iconcolor}}"></i>
         </button>
+        <p>{{focushovername}} </p>
     </div>
 {{/ltoolfocus}}

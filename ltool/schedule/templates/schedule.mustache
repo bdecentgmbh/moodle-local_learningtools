@@ -19,7 +19,11 @@
 
     Example context (json):
     {
-        "reactionurl_dislike" : "http://moodleurl/local/learningtools//schedule/lib.php"
+        "reactionurl_dislike" : "http://moodleurl/local/learningtools//schedule/lib.php",
+        "ltoolschedule" : 1,
+        "schedulehovername" : "Schedule",
+        "iconbackcolor" : "black",
+        "iconcolor": "red"
     }
 }}
 {{#ltoolschedule}}
@@ -27,7 +31,7 @@
         <button type="submit" id="ltoolschedule-action" data-hovercolor="{{iconbackcolor}}"
         data-fontcolor="{{iconcolor}}" style="background:{{iconbackcolor}};">
              <i class="{{icon}}" style="color:{{iconcolor}}"></i>
-            <p>{{schedulehovername}} </p>
         </button>
+        <p>{{schedulehovername}} </p>
     </div>
 {{/ltoolschedule}}

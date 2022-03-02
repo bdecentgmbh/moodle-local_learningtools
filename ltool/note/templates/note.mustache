@@ -19,7 +19,12 @@
 
     Example context (json):
     {
-        "reactionurl_dislike" : "http://moodleurl/local/learningtools/ltool/note/lib.php"
+        "reactionurl_dislike" : "http://moodleurl/local/learningtools/ltool/note/lib.php",
+        "ltnote" : 1,
+        "notehovername" : "Note",
+        "pagenotes" : 2,
+        "iconbackcolor" : "black",
+        "iconcolor": "red"
     }
 }}
 {{! Note list info block }}
@@ -27,9 +32,9 @@
     <div class="ltnoteinfo" id="ltnoteinfo">
         <button type="submit" id="ltnote-action" data-hovercolor="{{iconbackcolor}}"
         data-fontcolor="{{iconcolor}}" style="background:{{iconbackcolor}};">
-             <i class="{{icon}}" style="color:{{iconcolor}}"></i>
+            <i class="{{icon}}" style="color:{{iconcolor}}"></i>
                 <span  class="{{#pagenotes}}ticked{{/pagenotes}}"> {{pagenotes}} </span>
-            <p> {{notehovername}} </p>
         </button>
+        <p> {{notehovername}} </p>
     </div>
 {{/ltnote}}

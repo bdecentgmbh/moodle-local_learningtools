@@ -36,8 +36,8 @@
             var schedulefontcolor = scheduleInfo.getAttribute("data-fontcolor");
             if (schedulehovercolor && schedulefontcolor) {
                 scheduleInfo.addEventListener("mouseover", function() {
-                    document.querySelector('#ltoolschedule-action p').style.background = schedulehovercolor;
-                    document.querySelector('#ltoolschedule-action p').style.color = schedulefontcolor;
+                    document.querySelector('#ltoolschedule-info p').style.background = schedulehovercolor;
+                    document.querySelector('#ltoolschedule-info p').style.color = schedulefontcolor;
                 });
             }
             scheduleInfo.addEventListener('click', function() {
