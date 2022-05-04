@@ -268,3 +268,6 @@
     margin-top: 2rem;
 }
 
+.ltool-note-popout #page-content .activity-header {
+    display: none;
+}

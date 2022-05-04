@@ -75,8 +75,6 @@ class ltool_schedule_editbox extends moodleform {
         $mform->addElement('hidden', 'pageurl');
         $mform->setDefault('pageurl', $pageurl);
         $mform->setType('pageurl', PARAM_URL);
-
-        $this->add_action_buttons(true, get_string('save'));
     }
 }
 

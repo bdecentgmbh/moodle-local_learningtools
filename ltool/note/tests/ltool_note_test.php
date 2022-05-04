@@ -64,7 +64,7 @@ class ltool_note_test extends \advanced_testcase {
 
     /**
      * Test the note save method and the triggered event have correct context.
-     *
+     * @covers ::ltool_note_user_save_notes
      * @return void
      */
     public function test_save_note(): void {
@@ -80,7 +80,7 @@ class ltool_note_test extends \advanced_testcase {
 
     /**
      * Test created notes count.
-     *
+     * @covers ::ltool_note_get_userpage_countnotes
      * @return void
      */
     public function test_note_count(): void {
@@ -103,7 +103,7 @@ class ltool_note_test extends \advanced_testcase {
 
     /**
      * Case to test the external method to create/delete notes.
-     *
+     * @covers \ltool_note\external::save_usernote
      * @return void
      */
     public function test_external_test(): void {

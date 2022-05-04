@@ -22,7 +22,7 @@ Feature: Check the learning tools features and manage sub plugins.
   Scenario: Check the subplugins visibility.
     # Admin view
     Given I log in as "admin"
-    And I follow "Dashboard" in the user menu
+    And I follow "Dashboard"
     Then "#tool-action-button" "css_element" should be visible
     And I click on "#tool-action-button" "css_element"
     Then "#ltnoteinfo" "css_element" should be visible

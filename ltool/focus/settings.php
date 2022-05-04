@@ -42,8 +42,17 @@ if ($hassiteconfig) {
     // Define the Focus mode css.
     $name = "ltool_focus/focusmodecss";
     $title = get_string('focusmodecss', 'local_learningtools');
-    $default = '#page-footer, .d-print-none, .navbar {
+    $default = '#page-footer, .navbar, #page.drawers {
         display: none;
+    }
+    .header-maxwidth, .secondary-navigation {
+    max-width: none;
+    }
+    #page.drawers {
+        margin-top: 0;
+    }
+    .pagelayout-standard #page.drawers .main-inner, body.limitedwidth #page.drawers .main-inner {
+        max-width: none;
     }
     #page {
         margin-top: 0px;

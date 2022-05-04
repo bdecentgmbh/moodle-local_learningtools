@@ -22,7 +22,7 @@ body.local-learningtools.scrolled #goto-top-link,
     position: fixed;
     bottom: 10px;
     right: 10px;
-    z-index: 1100;
+    z-index: 1005;
 }
 .learningtools-action-info .floating-button > button {
     width: 50px;
