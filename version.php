@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_learningtools';
-$plugin->version = 2022050400;
+$plugin->version = 2022050900;
 $plugin->release = 'v1.0';
 $plugin->requires = 2020061501;
 $plugin->maturity = MATURITY_STABLE;
