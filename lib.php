@@ -312,9 +312,9 @@ function local_learningtools_get_learningtools_info() {
             return '';
         }
     } else if ($fabvisiablestatus == 'specificcate') {
-        if (isset($PAGE->category->id) && !empty($PAGE->category->id)) {
+        if (isset($PAGE->course->category) && !empty($PAGE->course->category)) {
             $visiblecategories = explode(",", get_config('local_learningtools', 'visiblecategories'));
-            if (!in_array($PAGE->category->id, $visiblecategories)) {
+            if (!in_array($PAGE->course->category, $visiblecategories)) {
                 return '';
             }
         } else {
