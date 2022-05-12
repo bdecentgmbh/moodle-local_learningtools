@@ -43,14 +43,6 @@ class behat_schedule extends behat_base {
      *
      */
     public function i_check_schedule_event(): void {
-        global $CFG;
-
-        if (round($CFG->version) < 2021051706) {
-            // Moodle-3.11 and below.
-            $this->execute("behat_general::click_link", "This month");
-        } else {
-            // Moodle-4.0.
-            $this->execute("behat_general::click_link", "Full calendar");
-        }
+        $this->execute("behat_general::click_link", "This month");
     }
 }

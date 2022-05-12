@@ -105,10 +105,14 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                         });
 
                         modal.getRoot().on(ModalEvents.save, function(e) {
+                            e.preventDefault();
+                            $(e.target).find("button[data-action=save]").attr("disabled", true);
+                            modal.getRoot().find('form').submit();
+                        });
 
+                        modal.getRoot().on('submit', 'form', e => {
                             e.preventDefault();
                             submitFormData(modal, contextid);
-                            modal.getRoot().submit();
                         });
 
                         document.querySelector("#popout-action").addEventListener('click', function() {

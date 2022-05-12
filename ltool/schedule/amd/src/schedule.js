@@ -20,8 +20,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- define(['core/fragment', 'core/modal_factory', 'core/str', 'core/modal_events', 'core/notification'],
- function(Fragment, ModalFactory, String, ModalEvents, Notification) {
+ define(['jquery', 'core/fragment', 'core/modal_factory', 'core/str', 'core/modal_events', 'core/notification'],
+ function($, Fragment, ModalFactory, String, ModalEvents, Notification) {
+    /* global ltools */
 
     /**
      * Controls Schedule tool action.
@@ -50,34 +51,46 @@
     LearningToolSchedule.prototype.displaySchedulebox = function(params) {
         var self = this;
         var strschedule = String.get_string('schedule', 'local_learningtools');
-        ModalFactory.create({
+        return ModalFactory.create({
             title: strschedule,
             type: ModalFactory.types.SAVE_CANCEL,
             body: self.getScheduleAction(params),
             large: true
         }).then(function(modal) {
-            modal.show();
-            modal.getRoot().on(ModalEvents.hidden, function() {
-                modal.destroy();
+            modal.getRoot().on(ModalEvents.save, e => {
+                // Trigger a form submission, so that any mform elements can do final tricks before the form submission
+                // is processed.
+                // The actual submit even tis captured in the next handler.
+                e.preventDefault();
+                $(e.target).find("button[data-action=save]").attr("disabled", true);
+                modal.getRoot().find('form').submit();
             });
 
-            modal.getRoot().on(ModalEvents.save, function(e) {
+            modal.getRoot().on('submit', 'form', e => {
                 e.preventDefault();
-                var innerform = document.querySelectorAll('#ltoolschedule-editorbox form')[0];
-                if (innerform) {
-                    innerform.addEventListener('submit', function(e) {
-                        e.preventDefault();
-                    });
-                }
-
                 var schedulenameinfo = document.querySelectorAll("#ltoolschedule-editorbox input[name='schedulename']")[0];
                 if (schedulenameinfo.value) {
                     self.submitFormData(params.contextid);
-                    modal.getRoot().submit();
-                    modal.hide();
-                    window.location.reload();
+                    var successinfo = String.get_string('successtoolschedule', 'local_learningtools');
+                    $.when(successinfo).done(function(localizedEditString) {
+                        Notification.addNotification({
+                            message: localizedEditString,
+                            type: "success"
+                        });
+                    });
+                    if (ltools.disappertimenotify != 0) {
+                        setTimeout(function() {
+                            document.querySelector("span.notifications").innerHTML = "";
+                        }, ltools.disappertimenotify);
+                    }
                 }
+                modal.hide();
             });
+
+            modal.getRoot().on(ModalEvents.hidden, function() {
+                modal.destroy();
+            });
+            modal.show();
             return modal;
         }).fail(Notification.exception);
 
@@ -87,7 +100,6 @@
         var modalform = document.querySelectorAll('#ltoolschedule-editorbox form')[0];
         var formData = new URLSearchParams(new FormData(modalform)).toString();
         Fragment.loadFragment('ltool_schedule', 'set_calendar_event', contextid, {'formdata': formData});
-        modalform.querySelector("input[name=submitbutton]").click();
         return true;
     };
 

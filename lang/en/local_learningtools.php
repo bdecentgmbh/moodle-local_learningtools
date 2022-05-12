@@ -194,6 +194,7 @@ the end of the style sheet for all pages in the current course.";
 
 // Schedule tool.
 $string['schedule'] = "Schedule";
+$string['successtoolschedule'] = "Schedule added the user calendar";
 $string['visitpage'] = "Visit page";
 
 // Time management.
