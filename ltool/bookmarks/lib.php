@@ -26,6 +26,7 @@ use core_user\output\myprofile\tree;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot. '/local/learningtools/lib.php');
+
 /**
  * Defines ltool bookmarks nodes for my profile navigation tree.
  *

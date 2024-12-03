@@ -43,6 +43,12 @@ class behat_schedule extends behat_base {
      *
      */
     public function i_check_schedule_event(): void {
-        $this->execute("behat_general::click_link", "This month");
+        global $CFG;
+
+        if ($CFG->branch <= 403) {
+            $this->execute("behat_general::click_link", "Full calendar");
+        } else {
+            $this->execute("behat_general::click_link", "Course calendar");
+        }
     }
 }

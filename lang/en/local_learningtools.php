@@ -59,9 +59,9 @@ $string['alwaysactive'] = "Always show active tools";
 $string['learningtools:studentcontroller'] = "Learning Tools student controller.";
 
 $string['bookmarksusermenu'] = "Display Bookmarks tool in user menu";
-$string['bookmarksusermenu_help'] = "bookmarks,local_learningtools|/local/learningtools/ltool/bookmarks/list.php|b/bookmark-new";
+$string['bookmarksusermenu_help'] = "bookmarks,local_learningtools|/local/learningtools/ltool/bookmarks/list.php";
 $string['notesusermenu'] = "Display Notes tool in user menu";
-$string['notesusermenu_help'] = "notes,local_learningtools|/local/learningtools/ltool/note/list.php|i/edit";
+$string['notesusermenu_help'] = "notes,local_learningtools|/local/learningtools/ltool/note/list.php";
 
 
 // Bookmarks strings.
@@ -194,8 +194,8 @@ the end of the style sheet for all pages in the current course.";
 
 // Schedule tool.
 $string['schedule'] = "Schedule";
-$string['successtoolschedule'] = "Schedule added the user calendar";
 $string['visitpage'] = "Visit page";
+$string['successtoolschedule'] = "Schedule added the user calendar";
 
 // Time management.
 
@@ -242,3 +242,5 @@ $string['baseformat'] = '%B %d, %Y, %I:%M %p';
 $string['strftimemonthdateyear'] = '%B, %dth %Y';
 $string['strftimeyearmonth'] = '%Y/%m/%d';
 $string['strftimemonthnamedate'] = '%B %d, %Y';
+$string['subplugintype_ltool'] = "Learning Tools";
+$string['subplugintype_ltool_plural'] = "ltools";

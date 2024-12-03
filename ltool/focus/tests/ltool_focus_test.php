@@ -41,6 +41,7 @@ class ltool_focus_test extends \advanced_testcase {
 
     /**
      * Create css file in temp directory.
+     * @covers ::ltool_focus_create_focus_temp_cssfile
      */
     public function test_ltool_focus_create_focus_temp_cssfile() {
         $configdata = get_config('ltool_focus', 'focusmodecss');

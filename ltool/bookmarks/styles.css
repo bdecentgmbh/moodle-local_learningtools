@@ -86,6 +86,7 @@
 }
 .bookmarks-list-info .activity-block .course-element .course-list .right-block {
     margin-left: 30px;
+    justify-content: end;
 }
 .bookmarks-list-info .activity-block .course-element .course-list .right-block .calendar-block {
     margin-right: 30px;

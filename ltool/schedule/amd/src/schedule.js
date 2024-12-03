@@ -22,6 +22,7 @@
 
  define(['jquery', 'core/fragment', 'core/modal_factory', 'core/str', 'core/modal_events', 'core/notification'],
  function($, Fragment, ModalFactory, String, ModalEvents, Notification) {
+
     /* global ltools */
 
     /**
