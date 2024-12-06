@@ -108,6 +108,7 @@
     margin-right: 0;
 }
 .bookmarks-list-info .activity-block .course-element .course-list .right-block .button-block button {
+    min-width: 100px;
     height: auto;
     color: #fff;
     font-size: 13px;
