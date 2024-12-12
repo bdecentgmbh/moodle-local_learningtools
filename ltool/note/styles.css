@@ -93,12 +93,14 @@
 }
 .ltnotes-mainbody .card .card-header h5 button:after {
     content: '\f103';
-    font-family: 'fontawesome';
+    font-family: var(--fa-style-family, "Font Awesome 6 Free", "Font Awesome 6 Brands", fontawesome);
+    font-weight: 700;
     float: right;
 }
 .ltnotes-mainbody .card .card-header h5 button.collapsed:after {
     content: '\f102';
-    font-family: 'fontawesome';
+    font-family: var(--fa-style-family, "Font Awesome 6 Free", "Font Awesome 6 Brands", fontawesome);
+    font-weight: 700;
 }
 
 /*Accordion body content*/
@@ -194,7 +196,8 @@
 }
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button:after {
     content: '\f102';
-    font-family: 'FontAwesome';
+    font-family: var(--fa-style-family, "Font Awesome 6 Free", "Font Awesome 6 Brands", fontawesome);
+    font-weight: 700;
     float: right;
 }
 .learningtool-note .modal .modal-body .list-context-existnotes .usernotes-mainbody .card .card-header h5 button.collapsed:after {

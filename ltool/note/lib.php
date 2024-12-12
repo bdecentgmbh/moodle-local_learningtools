@@ -303,7 +303,7 @@ function ltool_note_get_contextuser_notes($args) {
                 if (!empty($notesrecords)) {
                     foreach ($notesrecords as $note) {
                         $list['note'] = !empty($note->note) ? $note->note : '';
-                        $list['time'] = userdate(($note->timecreated), get_string("baseformat", "local_learningtools"), '', false);
+                        $list['time'] = userdate(($note->timemodified), get_string("baseformat", "local_learningtools"), '', false);
                         if (has_capability('ltool/note:manageownnote', $context)) {
                             $returnparams = array('returnurl' => $args['pageurl']);
                             $list['delete'] = ltool_note_delete_note_record($note, $returnparams);
@@ -355,6 +355,7 @@ function ltool_note_user_save_notes($contextid, $data) {
     $record->pageurl = $data['pageurl'];
     $record->note = format_text($data['ltnoteeditor'], FORMAT_HTML);
     $record->timecreated = time();
+    $record->timemodified = time();
 
     $notesrecord = $DB->insert_record('ltool_note_data', $record);
     $eventcourseid = local_learningtools_get_eventlevel_courseid($context, $data['course']);

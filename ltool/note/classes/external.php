@@ -26,6 +26,7 @@ namespace ltool_note;
 
 defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir.'/externallib.php');
+
 /**
  * Define external class.
  */

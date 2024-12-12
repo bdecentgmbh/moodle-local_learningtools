@@ -22,10 +22,25 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace ltool_bookmarks;
+
 /**
  * Bookmarks subplugin for learningtools phpunit test cases defined.
+ * @runTestsInSeparateProcesses
  */
 class ltool_bookmarks_test extends \advanced_testcase {
+
+
+    /**
+     * Summary of context
+     * @var object
+     */
+    public $page;
+
+    /**
+     * Summary of context
+     * @var object
+     */
+    public $context;
 
     /**
      * Create custom page instance and set admin user as loggedin user.
@@ -52,7 +67,8 @@ class ltool_bookmarks_test extends \advanced_testcase {
 
     /**
      * Case to test the external method to create/delete bookmarks.
-     * @covers ::ltool_bookmarks_check_page_bookmarks_exist
+     * @covers \ltool_bookmarks\external::save_userbookmarks
+     * @runInSeparateProcess
      * @return void
      */
     public function test_external_test(): void {

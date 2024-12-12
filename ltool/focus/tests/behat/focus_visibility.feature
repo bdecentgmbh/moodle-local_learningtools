@@ -22,6 +22,7 @@ Feature: Check the focus ltool workflow.
     And I check focus mode disable
     And "#ltoolfocus-info" "css_element" should exist
     And I click on "#ltoolfocus-info" "css_element"
+    Then I wait "5" seconds
     And I check focus mode enable
     And I am on "Course 1" course homepage
     And I check focus mode enable
@@ -34,6 +35,7 @@ Feature: Check the focus ltool workflow.
     And I click on FAB button
     And "#ltoolfocus-info" "css_element" should exist
     And I click on "#ltoolfocus-info" "css_element"
+    Then I wait "5" seconds
     And I check focus mode enable
     Then I log out
     And I log in as "student1"

@@ -34,6 +34,41 @@ require_once($CFG->dirroot.'/local/learningtools/lib.php');
 class bookmarkstool_filter {
 
     /**
+     * @var int
+     */
+    public $userid;
+
+    /**
+     * @var int
+     */
+    public $courseid;
+
+    /**
+     * @var int
+     */
+    public $child;
+
+    /**
+     * @var array
+     */
+    public $urlparams;
+
+    /**
+     * @var int
+     */
+    public $teacher;
+
+    /**
+     * @var string
+     */
+    public $baseurl;
+
+    /**
+     * @var string
+     */
+    public $pageurl;
+
+    /**
      * Loads bookmarks tools info.
      * @param int $userid current userid
      * @param int $courseid course id

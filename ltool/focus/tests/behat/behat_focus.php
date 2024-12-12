@@ -49,9 +49,10 @@ class behat_focus extends behat_base {
         $footerjs = "
             return (
                 Y.one('#page-footer') &&
-                Y.one('#page-footer').getComputedStyle('display') === 'none'
+                Y.one('#page-footer').getComputedStyle('display') == 'none'
             )
         ";
+
         if (!$this->evaluate_script($footerjs)) {
             throw new ExpectationException("Doesn't enable the focus mode", $this->getSession());
         }

@@ -29,6 +29,24 @@ namespace local_learningtools;
 class local_learningtools_test extends \advanced_testcase {
 
     /**
+     * Summary of course
+     * @var object
+     */
+    public $course;
+
+    /**
+     * Summary of mod
+     * @var object
+     */
+    public $mod;
+
+    /**
+     * Summary of generator
+     * @var object
+     */
+    public $generator;
+
+    /**
      * Set the admin user as User.
      *
      * @return void

@@ -22,10 +22,25 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace ltool_note;
+
 /**
  * Note subplugin for learningtools phpunit test cases defined.
+ * @runTestsInSeparateProcesses
  */
 class ltool_note_test extends \advanced_testcase {
+
+
+    /**
+     * Summary of context
+     * @var object
+     */
+    public $context;
+
+    /**
+     * Summary of page
+     * @var object
+     */
+    public $page;
 
     /**
      * Create custom page instance and set admin user as loggedin user.
@@ -104,6 +119,7 @@ class ltool_note_test extends \advanced_testcase {
     /**
      * Case to test the external method to create/delete notes.
      * @covers \ltool_note\external::save_usernote
+     * @runInSeparateProcess
      * @return void
      */
     public function test_external_test(): void {

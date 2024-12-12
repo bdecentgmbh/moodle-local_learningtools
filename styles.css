@@ -1,3 +1,8 @@
+/* focus mode header */
+.local-learningtools #page header {
+    display: block;
+}
+
 /* Goto top button */
 body.local-learningtools.scrolled #goto-top-link,
 .local-learningtools #goto-top-link {
@@ -23,6 +28,7 @@ body.local-learningtools.scrolled #goto-top-link,
     bottom: 10px;
     right: 10px;
     z-index: 1005;
+    transition: 0.2s;
 }
 .learningtools-action-info .floating-button > button {
     width: 50px;
@@ -129,4 +135,10 @@ body.local-learningtools.scrolled #goto-top-link,
 
 footer .btn-footer-popover {
     right: 5rem;
+}
+
+.jsenabled #page.drawers.show-drawer-right .learningtools-action-info .floating-button {
+    bottom: 80px;
+    right: calc(315px + 2rem);
+    transition: 0.2s;
 }

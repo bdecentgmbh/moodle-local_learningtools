@@ -83,7 +83,7 @@ Feature: Check the learning tools features and manage sub plugins.
     And I am on "Course 1" course homepage with editing mode on
     And I click on "#tool-action-button" "css_element"
     And "#ltbookmarksinfo" "css_element" should appear after "#ltoolfocus-info" "css_element"
-    # Focus mode order down.
+    # Email order down.
     And I navigate to "Plugins > Local plugins > Manage Learning Tools" in site administration
     Then I click on ".fa-arrow-down" "css_element" in the "Learning Tools Focus mode" "table_row"
     And "Learning Tools Bookmarks" "table_row" should appear before "Learning Tools Focus mode" "table_row"

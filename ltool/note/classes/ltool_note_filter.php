@@ -39,6 +39,61 @@ require_once($CFG->dirroot. '/local/learningtools/ltool/note/lib.php');
  *  List of the user notes filter action.
  */
 class ltool_note_filter {
+
+    /**
+     * @var int
+     */
+    public $userid;
+
+    /**
+     * @var int
+     */
+    public $selectcourse;
+
+    /**
+     * @var string
+     */
+    public $sort;
+
+
+    /**
+     * @var int
+     */
+    public $activity;
+
+
+    /**
+     * @var int
+     */
+    public $childid;
+
+    /**
+     * @var string
+     */
+    public $courseid;
+
+
+    /**
+     * @var int
+     */
+    public $teacher;
+
+    /**
+     * @var array
+     */
+    public $urlparams;
+
+    /**
+     * @var string
+     */
+    public $pageurl;
+
+    /**
+     * @var string
+     */
+    public $totalnotes;
+
+
     /**
      * Loads the notes info data.
      * @param int $userid current user id
@@ -82,17 +137,17 @@ class ltool_note_filter {
                 $students = local_learningtools_get_students_incourse($this->courseid);
                 if (!empty($students)) {
                     list($studentsql, $userparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-                    $usersql .= 'userid '. $studentsql;
+                    $usersql .= 'lnd.userid '. $studentsql;
                 }
             } else {
-                $usersql = 'userid = :userid';
+                $usersql = 'lnd.userid = :userid';
                 $userparams = ['userid' => $this->childid];
             }
         } else if ($this->childid) {
-            $usersql = 'userid = :userid';
+            $usersql = 'lnd.userid = :userid';
             $userparams = ['userid' => $this->childid];
         } else {
-            $usersql = 'userid = :userid';
+            $usersql = 'lnd.userid = :userid';
             $userparams = ['userid' => $this->userid];
         }
         return ['sql' => $usersql, 'params' => $userparams];
@@ -110,7 +165,7 @@ class ltool_note_filter {
         $usercondition = $this->get_user_sql();
         $usersql = $usercondition['sql'];
         $userparams = $usercondition['params'];
-        $records = $DB->get_records_sql("SELECT * FROM {ltool_note_data} WHERE $usersql", $userparams);
+        $records = $DB->get_records_sql("SELECT * FROM {ltool_note_data} lnd WHERE $usersql", $userparams);
         if (!empty($records)) {
             foreach ($records as $record) {
                 $instanceblock = local_learningtools_check_instanceof_block($record);
@@ -153,10 +208,12 @@ class ltool_note_filter {
         $usercondition = $this->get_user_sql($this->courseid, $this->childid);
         $usersql = $usercondition['sql'];
         $userparams = $usercondition['params'];
-        $sql = "SELECT coursemodule, course FROM {ltool_note_data}
-        WHERE $usersql AND course = :course AND coursemodule != 0 GROUP BY coursemodule, course";
+        $sql = "SELECT lnd.coursemodule, lnd.course FROM {ltool_note_data} lnd
+        LEFT JOIN {course_modules} cm ON cm.id = lnd.coursemodule
+        WHERE $usersql AND cm.deletioninprogress != 0 AND lnd.course = :course AND lnd.coursemodule != 0
+        GROUP BY lnd.coursemodule, lnd.course";
         $params = [
-        'course' => $this->selectcourse,
+            'course' => $this->selectcourse,
         ];
 
         $params = array_merge($params, $userparams);
@@ -474,7 +531,7 @@ class ltool_note_filter {
                 $list['instance'] = $this->get_instance_note($data);
                 $list['base'] = $this->get_title_note($data, $record);
                 $list['note'] = !empty($record->note) ? $record->note : '';
-                $list['time'] = userdate($record->timecreated, get_string("baseformat", "local_learningtools"), '', false);
+                $list['time'] = userdate($record->timemodified, get_string("baseformat", "local_learningtools"), '', false);
                 $list['viewurl'] = $this->get_view_url($record);
 
                 if (!empty($this->courseid) && !$this->childid) {
