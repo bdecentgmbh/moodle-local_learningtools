@@ -24,5 +24,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'ltool_note';
-$plugin->version = 2024120300;
+$plugin->version = 2025042300;
 $plugin->requires = 2020061501;

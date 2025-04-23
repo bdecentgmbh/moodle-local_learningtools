@@ -498,7 +498,11 @@ function local_learningtools_get_instance_tool_view_url($row) {
         $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
         $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
     } else if ($data->instance == 'mod') {
-        $viewurl = $OUTPUT->single_button($row->pageurl, get_string('viewactivity', 'local_learningtools'), 'get');
+        $pageurl = $row->pageurl;
+        if ($row->itemtype == 'chapter') {
+            $pageurl = $row->pageurl . "#chapters-list-" . $row->itemid;
+        }
+        $viewurl = $OUTPUT->single_button($pageurl, get_string('viewactivity', 'local_learningtools'), 'get');
     } else {
         $viewurl = $OUTPUT->single_button($row->pageurl, get_string('viewpage', 'local_learningtools'), 'get');
     }

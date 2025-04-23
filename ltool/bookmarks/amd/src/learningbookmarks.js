@@ -21,8 +21,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['core/str', 'core/ajax', 'core/notification'],
-    function(String, Ajax, notification) {
+define(['core/str', 'core/ajax', 'core/notification', 'jquery'],
+    function(String, Ajax, notification, $, str) {
 
     /* global ltools, pagebookmarks */
 
@@ -59,6 +59,37 @@ define(['core/str', 'core/ajax', 'core/notification'],
             }
 
         }
+
+        // Content designer bookmarks.
+        $(document).on('click', '.content-designer-learningtool-bookmark', function(e) {
+            e.preventDefault();
+            var button = $(this);
+            var itemType = button.data('itemtype');
+            var itemId = button.data('itemid');
+            var userid = button.data('userid');
+            var sesskey = button.data('sesskey');
+            var course = button.data('courseid');
+            var coursemodule = button.data('coursemodule');
+            var contextlevel = button.data('contextlevel');
+            var pagetype = button.data('pagetype');
+            // Prepare the parameters for the bookmark.
+            var contextId = M.cfg.contextid;
+            var params = {
+                pagetitle: document.title,
+                pageurl: window.location.href,
+                pageid: 0,
+                itemtype: itemType,
+                itemid: itemId,
+                user: userid,
+                sesskey: sesskey,
+                course: course,
+                coursemodule: coursemodule,
+                contextlevel: contextlevel,
+                pagetype: pagetype,
+            };
+            submitFormdata(contextId, params, button);
+        });
+
         var bookmarkssorttype = document.getElementById("bookmarkssorttype");
 
         if (bookmarkssorttype) {
@@ -131,7 +162,7 @@ define(['core/str', 'core/ajax', 'core/notification'],
      * @param {object} formData form instance data.
      * @return {void} ajax response
      */
-    function submitFormdata(contextid, formData) {
+    function submitFormdata(contextid, formData, button = null) {
 
         if (formData.pagetitle == "") {
             formData.pagetitle = document.querySelector('title').innerHTML;
@@ -147,11 +178,30 @@ define(['core/str', 'core/ajax', 'core/notification'],
                     type: response.notificationtype
                 });
 
+
                 let bookmarkmarked = document.getElementById('bookmarks-marked');
                 if (response.bookmarksstatus) {
-                    bookmarkmarked.classList.add('marked');
+                    if (button) {
+                        button.addClass('active');
+                        button.addClass('btn-link');
+                        button.find('i').removeClass('fa-bookmark-o').addClass('fa-bookmark');
+                        String.get_string('strbookmarked', 'local_learningtools').then(function(langString) {
+                            button.html(langString);
+                        });
+                    } else {
+                        bookmarkmarked.classList.add('marked');
+                    }
                 } else {
-                    bookmarkmarked.classList.remove('marked');
+                    if (button) {
+                        button.removeClass('active');
+                        button.removeClass('btn-link');
+                        button.find('i').removeClass('fa-bookmark').addClass('fa-bookmark-o');
+                        String.get_string('strbookmark', 'local_learningtools').then(function(langString) {
+                            button.html(langString);
+                        });
+                    } else {
+                        bookmarkmarked.classList.remove('marked');
+                    }
                 }
 
                 if (ltools.disappertimenotify != 0) {
@@ -160,7 +210,9 @@ define(['core/str', 'core/ajax', 'core/notification'],
                     }, ltools.disappertimenotify);
                 }
 
-            },
+            },fail: function(error) {
+                notification.exception(error);
+            }
         }]);
     }
 

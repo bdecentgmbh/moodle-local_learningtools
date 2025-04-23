@@ -48,5 +48,35 @@ function xmldb_ltool_bookmarks_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2022022600, 'ltool', 'bookmarks');
     }
+
+
+    if ($oldversion < 2025041700) {
+        // Modify the bookmarks table to support itemtype and itemid.
+        $table = new xmldb_table('ltool_bookmarks_data');
+
+        // Add itemtype field if it doesn't exist
+        $field = new xmldb_field('itemtype', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, 'page', 'pageurl');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Add itemid field if it doesn't exist.
+        $field = new xmldb_field('itemid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'itemtype');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Update existing records to use the new fields.
+        $DB->execute("UPDATE {ltool_bookmarks_data} SET itemtype = 'page', itemid = 0");
+
+        // Create index for the new fields.
+        $index = new xmldb_index('itemtype_itemid_idx', XMLDB_INDEX_NOTUNIQUE, ['itemtype', 'itemid']);
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2025041700, 'ltool', 'bookmarks');
+    }
+
     return true;
 }
