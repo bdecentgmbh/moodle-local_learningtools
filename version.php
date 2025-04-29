@@ -24,8 +24,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_learningtools';
-$plugin->version = 2025042300;
+$plugin->version = 2025042901;
 $plugin->release = 'v1.2';
 $plugin->requires = 2022041900; // Moodle 4.0.
 $plugin->maturity = MATURITY_STABLE;
 $plugin->supported = [400, 405];
+

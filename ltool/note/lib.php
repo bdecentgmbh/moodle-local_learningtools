@@ -42,6 +42,8 @@ class ltool_email_popoutform extends moodleform {
         $pageurl = $this->_customdata['pageurl'];
         $user = $this->_customdata['user'];
         $pagetitle = $this->_customdata['pagetitle'];
+        $itemtype = $this->_customdata['itemtype'];
+        $itemid = $this->_customdata['itemid'];
         $popoutaction = isset($this->_customdata['popoutaction']) ?
         $this->_customdata['popoutaction'] : '';
 
@@ -68,6 +70,16 @@ class ltool_email_popoutform extends moodleform {
         $mform->addElement('hidden', 'user');
         $mform->setDefault('user', $user);
         $mform->setType('user', PARAM_INT);
+
+        $mform->addElement('hidden', 'itemtype');
+        $mform->setDefault('itemtype', $itemtype);
+        $mform->setType('itemtype', PARAM_TEXT);
+
+
+        $mform->addElement('hidden', 'itemid');
+        $mform->setDefault('itemid', $itemid);
+        $mform->setType('itemid', PARAM_INT);
+
 
         if ($popoutaction) {
             $this->add_action_buttons();
@@ -114,6 +126,7 @@ class ltool_note_info extends moodleform {
         $this->add_action_buttons();
     }
 }
+
 /**
  * Defines the ltool notes nodes for my profile navigation tree.
  *
@@ -189,18 +202,36 @@ function ltool_note_output_fragment_get_note_form($args) {
     require_once($CFG->dirroot . '/lib/editorlib.php');
     $editorhtml = '';
     $editor = editors_get_preferred_editor();
-    $editor->use_editor("usernotes", array('autosave' => false));
+
+    // Generate a unique ID for the editor to prevent content caching
+    $editorid = "usernotes_" . time();
+    $editor->use_editor($editorid, array('autosave' => false));
+
+    $editor->set_text('');
 
     $editorhtml .= html_writer::start_tag('div', array('class' => 'ltoolusernotes'));
     $editorhtml .= html_writer::start_tag('form', array('method' => 'post', 'action' => $args['pageurl'], 'class' => 'mform'));
 
     $editorhtml .= html_writer::tag('textarea', '',
-    array('id' => "usernotes", 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => 20, 'cols' => 100));
+        array('id' => $editorid, 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => 20, 'cols' => 100));
 
     $editorhtml .= html_writer::tag('input', '', array(
         'type' => 'hidden',
         'name' => 'course',
         'value' => $args['course'],
+    ));
+
+    $editorhtml .= html_writer::tag('input', '', array(
+        'type' => 'hidden',
+        'name' => 'itemtype',
+        'value' => isset($args['itemtype']) ? $args['itemtype'] : '',
+    ));
+
+
+    $editorhtml .= html_writer::tag('input', '', array(
+        'type' => 'hidden',
+        'name' => 'itemid',
+        'value' => isset($args['itemid']) ? $args['itemid'] : 0,
     ));
 
     $editorhtml .= html_writer::tag('input', '', array(
@@ -274,14 +305,21 @@ function ltool_note_get_contextuser_notes($args) {
     $listrecords = [];
     $sql = "SELECT * FROM {ltool_note_data}
     WHERE userid = ? AND
-    contextid = ? AND ".
-    $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) .
-    "ORDER BY timecreated DESC";
+    contextid = ? AND ";
     $params = [
         $args['user'],
         $args['contextid'],
-        $args['pageurl']
     ];
+    if (isset($args['itemtype']) && !empty($args['itemtype'])) {
+        $sql .= " itemtype = ? AND itemid = ? AND ";
+        $params[] = $args['itemtype'];
+        $params[] = $args['itemid'];
+    } else {
+        $sql .= " itemtype = '' AND ";
+    }
+    $params[] = $args['pageurl'];
+    $sql .= $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) .
+    " ORDER BY timecreated DESC";
     $records = $DB->get_records_sql($sql, $params);
     $cnt = 1;
     if (!empty($records)) {
@@ -303,7 +341,8 @@ function ltool_note_get_contextuser_notes($args) {
                 if (!empty($notesrecords)) {
                     foreach ($notesrecords as $note) {
                         $list['note'] = !empty($note->note) ? $note->note : '';
-                        $list['time'] = userdate(($note->timemodified), get_string("baseformat", "local_learningtools"), '', false);
+                        $notetime = !empty($note->timemodified) ? $note->timemodified : $note->timecreated;
+                        $list['time'] = userdate(($notetime), get_string("baseformat", "local_learningtools"), '', false);
                         if (has_capability('ltool/note:manageownnote', $context)) {
                             $returnparams = array('returnurl' => $args['pageurl']);
                             $list['delete'] = ltool_note_delete_note_record($note, $returnparams);
@@ -353,9 +392,12 @@ function ltool_note_user_save_notes($contextid, $data) {
     $record->pagetitle = $data['pagetitle'];
     $record->pagetype = $data['pagetype'];
     $record->pageurl = $data['pageurl'];
+    $itemtype = isset($data['itemtype']) ? $data['itemtype'] : '';
+    $itemid = isset($data['itemid']) ? $data['itemid'] : 0;
+    $record->itemtype = $itemtype;
+    $record->itemid = $itemid;
     $record->note = format_text($data['ltnoteeditor'], FORMAT_HTML);
     $record->timecreated = time();
-    $record->timemodified = time();
 
     $notesrecord = $DB->insert_record('ltool_note_data', $record);
     $eventcourseid = local_learningtools_get_eventlevel_courseid($context, $data['course']);
@@ -380,6 +422,14 @@ function ltool_note_user_save_notes($contextid, $data) {
         $data['pagetype'],
         $data['user']
     );
+
+    if (!empty($itemtype)) {
+        $sql .= " AND itemtype = ? AND itemid = ?";
+        $params[] = $itemtype;
+        $params[] = $itemid;
+    } else {
+        $sql .= " AND itemtype = ''";
+    }
     $pageusernotes = $DB->count_records_sql($sql, $params);
     return $pageusernotes;
 }
@@ -461,11 +511,19 @@ function ltool_note_get_userpage_countnotes($args) {
         WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
         AND pagetype = ?
         AND userid = ?";
+
     $params = array(
         $args['pageurl'],
         $args['pagetype'],
         $args['user']
     );
+    if (isset($args['itemtype']) && !empty($args['itemtype'])) {
+        $sql .= " AND itemtype = ? AND itemid = ?";
+        $params[] = $args['itemtype'];
+        $params[] = $args['itemid'];
+    } else {
+        $sql .= " AND itemtype = '' AND itemid = 0";
+    }
     return $DB->count_records_sql($sql, $params);
 }
 

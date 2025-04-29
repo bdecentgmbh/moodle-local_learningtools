@@ -182,22 +182,22 @@ define(['core/str', 'core/ajax', 'core/notification', 'jquery'],
                 let bookmarkmarked = document.getElementById('bookmarks-marked');
                 if (response.bookmarksstatus) {
                     if (button) {
-                        button.addClass('active');
-                        button.addClass('btn-link');
-                        button.find('i').removeClass('fa-bookmark-o').addClass('fa-bookmark');
-                        String.get_string('strbookmarked', 'local_learningtools').then(function(langString) {
-                            button.html(langString);
+                        require(['mod_contentdesigner/elements'], function(Elements) {
+                            var chapterId = formData.itemid;
+                            if (chapterId) {
+                                Elements.refreshContent();
+                            }
                         });
                     } else {
                         bookmarkmarked.classList.add('marked');
                     }
                 } else {
                     if (button) {
-                        button.removeClass('active');
-                        button.removeClass('btn-link');
-                        button.find('i').removeClass('fa-bookmark').addClass('fa-bookmark-o');
-                        String.get_string('strbookmark', 'local_learningtools').then(function(langString) {
-                            button.html(langString);
+                        require(['mod_contentdesigner/elements'], function(Elements) {
+                            var chapterId = formData.itemid;
+                            if (chapterId) {
+                                Elements.refreshContent();
+                            }
                         });
                     } else {
                         bookmarkmarked.classList.remove('marked');

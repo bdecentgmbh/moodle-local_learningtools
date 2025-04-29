@@ -1,5 +1,5 @@
 /* focus mode header */
-.local-learningtools #page header {
+.path-course-view.local-learningtools #page header {
     display: block;
 }
 
@@ -136,7 +136,6 @@ body.local-learningtools.scrolled #goto-top-link,
 footer .btn-footer-popover {
     right: 5rem;
 }
-
 .jsenabled #page.drawers.show-drawer-right .learningtools-action-info .floating-button {
     bottom: 80px;
     right: calc(315px + 2rem);

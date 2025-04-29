@@ -26,6 +26,7 @@ use core_user\output\myprofile\tree;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot. '/local/learningtools/lib.php');
+
 /**
  * Defines ltool bookmarks nodes for my profile navigation tree.
  *
@@ -119,6 +120,8 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
     if ($itemtype == 'chapter') {
         $sql .= " AND itemtype = ? AND itemid = ?";
         $params = array_merge($params , [$itemtype, $itemid]);
+    } else {
+        $sql .= " AND itemtype = ''";
     }
     $bookrecord = $DB->get_record_sql($sql, $params);
 
@@ -167,6 +170,8 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
         if ($itemtype == 'chapter') {
             $selectdelete .= " AND itemtype = ? AND itemid = ?";
             $deletedparams = array_merge($deletedparams, [$itemtype, $itemid]);
+        } else {
+            $selectdelete .= " AND itemtype = ''";
         }
         $DB->delete_records_select('ltool_bookmarks_data', $selectdelete, $deletedparams);
             // Add event to user delete the bookmark.
@@ -247,7 +252,8 @@ function ltool_bookmarks_check_page_bookmarks_exist($contextid, $pageurl, $useri
         FROM {ltool_bookmarks_data}
         WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
         AND contextid = ?
-        AND userid = ?";
+        AND userid = ?
+        AND itemtype = ''";
     $params = array($pageurl, $contextid, $userid);
     if ($DB->record_exists_sql($sql, $params)) {
         $pagebookmarks = true;

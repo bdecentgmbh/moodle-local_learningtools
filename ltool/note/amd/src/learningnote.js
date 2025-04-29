@@ -40,6 +40,15 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 noteSortActionPage(sorttype);
             });
         }
+        // Content designer note.
+        $(document).on('click', '.content-designer-learningtool-note', function(e) {
+            var button = $(this);
+            var itemType = button.data('itemtype');
+            var itemId = button.data('itemid');
+            params.itemtype = itemType;
+            params.itemid = itemId;
+            modalshowHandler(contextid, params, true);
+        });
     }
 
     /**
@@ -71,6 +80,58 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
         }
     }
 
+
+    function modalshowHandler(contextid, params, contentDesigner = false) {
+        var newnote = String.get_string('newnote', 'local_learningtools');
+        $.when(newnote).done(function(localizedEditString) {
+            // Add class.
+            var ltoolnotebody = document.getElementsByTagName('body')[0];
+            if (!ltoolnotebody.classList.contains('learningtool-note')) {
+                ltoolnotebody.classList.add('learningtool-note');
+            }
+
+            ModalFactory.create({
+                title: localizedEditString + getPopoutAction(),
+                type: ModalFactory.types.SAVE_CANCEL,
+                body: getnoteaction(contextid, params),
+                large: true
+            }).then(function(modal) {
+
+                modal.show();
+
+                modal.getRoot().on(ModalEvents.hidden, function() {
+                    modal.destroy();
+                });
+
+                modal.getRoot().on(ModalEvents.save, function(e) {
+                    e.preventDefault();
+                    $(e.target).find("button[data-action=save]").attr("disabled", true);
+                    modal.getRoot().find('form').submit();
+                });
+
+                modal.getRoot().on('submit', 'form', e => {
+                    e.preventDefault();
+                    submitFormData(modal, contextid, params, contentDesigner);
+                });
+
+                document.querySelector("#popout-action").addEventListener('click', function() {
+                    var pageurlobj = params.pageurl.split("&");
+                    var pageurljson = JSON.stringify(pageurlobj);
+                    var url = M.cfg.wwwroot + "/local/learningtools/ltool/note/pop_out.php?contextid=" +
+                    params.contextid + "&pagetype=" + params.pagetype + "&contextlevel=" + params.contextlevel + "&course="
+                    + params.course + "&user=" + params.user + "&pageurl=" + pageurljson + "&pagetitle=" + params.pagetitle
+                    + "&heading=" + params.heading + "&sesskey=" + params.sesskey;
+                    if (params.itemtype) {
+                        url += "&itemtype=" + params.itemtype + "&itemid=" + params.itemid;
+                    }
+                    modal.hide();
+                    window.open(url, '_blank');
+                });
+                return modal;
+            }).catch(notification.exception);
+        });
+    };
+
     /**
      * Display the modal popup.
      * @param {int} contextid context id
@@ -82,53 +143,9 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
         var notesinfo = document.querySelector(".ltnoteinfo #ltnote-action");
         if (notesinfo) {
             notesinfo.addEventListener("click", function() {
-                var newnote = String.get_string('newnote', 'local_learningtools');
-
-                $.when(newnote).done(function(localizedEditString) {
-                    // Add class.
-                    var ltoolnotebody = document.getElementsByTagName('body')[0];
-                    if (!ltoolnotebody.classList.contains('learningtool-note')) {
-                        ltoolnotebody.classList.add('learningtool-note');
-                    }
-
-                    ModalFactory.create({
-                        title: localizedEditString + getPopoutAction(),
-                        type: ModalFactory.types.SAVE_CANCEL,
-                        body: getnoteaction(contextid, params),
-                        large: true
-                    }).then(function(modal) {
-
-                        modal.show();
-
-                        modal.getRoot().on(ModalEvents.hidden, function() {
-                            modal.destroy();
-                        });
-
-                        modal.getRoot().on(ModalEvents.save, function(e) {
-                            e.preventDefault();
-                            $(e.target).find("button[data-action=save]").attr("disabled", true);
-                            modal.getRoot().find('form').submit();
-                        });
-
-                        modal.getRoot().on('submit', 'form', e => {
-                            e.preventDefault();
-                            submitFormData(modal, contextid);
-                        });
-
-                        document.querySelector("#popout-action").addEventListener('click', function() {
-                            var pageurlobj = params.pageurl.split("&");
-                            var pageurljson = JSON.stringify(pageurlobj);
-                            var url = M.cfg.wwwroot + "/local/learningtools/ltool/note/pop_out.php?contextid=" +
-                            params.contextid + "&pagetype=" + params.pagetype + "&contextlevel=" + params.contextlevel + "&course="
-                            + params.course + "&user=" + params.user + "&pageurl=" + pageurljson + "&pagetitle=" + params.pagetitle
-                            + "&heading=" + params.heading + "&sesskey=" + params.sesskey;
-                            modal.hide();
-                            window.open(url, '_blank');
-                        });
-                        return modal;
-                    }).catch(notification.exception);
-                });
-
+                params.itemtype = '';
+                params.itemid = 0;
+                modalshowHandler(contextid, params);
             });
             // Hover color.
             var notehovercolor = notesinfo.getAttribute("data-hovercolor");
@@ -184,8 +201,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
      * @param {int} contextid context id
      * @return {void} ajax respoltoolsnse.
      */
-    function submitFormData(modal, contextid) {
-
+    function submitFormData(modal, contextid, params, contentDesigner = false) {
         var modalform = document.querySelectorAll('.ltoolusernotes form')[0];
         var formData = new URLSearchParams(new FormData(modalform)).toString();
         var notesuccess = String.get_string('successnotemessage', 'local_learningtools');
@@ -195,11 +211,22 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
             done: function(response) {
                 // Insert data into notes badge.
                 if (response) {
-                    var noteinfo = document.querySelector(".ltnoteinfo span");
-                    if (!noteinfo.classList.contains('ticked')) {
-                        noteinfo.classList.add('ticked');
+                    // Check if this is a content designer note by looking for the trigger button
+                    if (contentDesigner) {
+                        // Try to refresh the chapter if content designer is available
+                        require(['mod_contentdesigner/elements'], function(Elements) {
+                            var chapterId = params.itemid;
+                            if (chapterId) {
+                                Elements.refreshContent();
+                            }
+                        });
+                    } else {
+                        var noteinfo = document.querySelector(".ltnoteinfo span");
+                        if (!noteinfo.classList.contains('ticked')) {
+                            noteinfo.classList.add('ticked');
+                        }
+                        noteinfo.innerHTML = response;
                     }
-                    noteinfo.innerHTML = response;
                 }
 
                 modal.hide();
