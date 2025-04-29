@@ -531,7 +531,8 @@ class ltool_note_filter {
                 $list['instance'] = $this->get_instance_note($data);
                 $list['base'] = $this->get_title_note($data, $record);
                 $list['note'] = !empty($record->note) ? $record->note : '';
-                $list['time'] = userdate($record->timemodified, get_string("baseformat", "local_learningtools"), '', false);
+                $notetime = !empty($record->timemodified) ? $record->timemodified : $record->timecreated;
+                $list['time'] = userdate($notetime, get_string("baseformat", "local_learningtools"), '', false);
                 $list['viewurl'] = $this->get_view_url($record);
 
                 if (!empty($this->courseid) && !$this->childid) {
