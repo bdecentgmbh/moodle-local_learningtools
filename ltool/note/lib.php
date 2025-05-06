@@ -631,3 +631,21 @@ function ltool_note_get_module_coursesection($data, $record) {
     $modulename = $record->pagetitle;
     return $coursename.' / '. $section. ' / '. $modulename;
 }
+
+/**
+ * Get the Notes content designer chapter name include with section.
+ * @param object $data instance of the page.
+ * @param object $record notes record
+ * @return string instance of chapter name.
+ */
+function local_learningtools_get_chapter_name($data, $record) {
+    global $DB;
+    $coursename = local_learningtools_get_course_name($data->courseid);
+    $section = local_learningtools_get_mod_section($data->courseid, $data->coursemodule);
+    $chaptertitle = '';
+    if ($chapter = $DB->get_record('cdelement_chapter', ['id' => $record->itemid])) {
+        $chaptertitle = (!empty($chapter->title) ? $chapter->title : '');
+    }
+    $modulename = $record->pagetitle . " | " . $chaptertitle;
+    return $coursename.' / '. $section. ' / '. $modulename;
+}

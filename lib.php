@@ -499,10 +499,8 @@ function local_learningtools_get_instance_tool_view_url($row) {
         $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
     } else if ($data->instance == 'mod') {
         $pageurl = $row->pageurl;
-        if ($row->itemtype == 'chapter') {
-            $pageurl = $row->pageurl . "#chapters-list-" . $row->itemid;
-        }
-        $viewurl = $OUTPUT->single_button($pageurl, get_string('viewactivity', 'local_learningtools'), 'get');
+        $buttonstr = ($row->itemtype == 'chapter') ? 'viewchapter' : 'viewactivity';
+        $viewurl = $OUTPUT->single_button($pageurl, get_string($buttonstr, 'local_learningtools'), 'get');
     } else {
         $viewurl = $OUTPUT->single_button($row->pageurl, get_string('viewpage', 'local_learningtools'), 'get');
     }

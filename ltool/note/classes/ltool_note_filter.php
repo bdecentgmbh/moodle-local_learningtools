@@ -210,7 +210,7 @@ class ltool_note_filter {
         $userparams = $usercondition['params'];
         $sql = "SELECT lnd.coursemodule, lnd.course FROM {ltool_note_data} lnd
         LEFT JOIN {course_modules} cm ON cm.id = lnd.coursemodule
-        WHERE $usersql AND cm.deletioninprogress != 0 AND lnd.course = :course AND lnd.coursemodule != 0
+        WHERE $usersql AND cm.deletioninprogress = 0 AND lnd.course = :course AND lnd.coursemodule != 0
         GROUP BY lnd.coursemodule, lnd.course";
         $params = [
             'course' => $this->selectcourse,
@@ -661,9 +661,13 @@ class ltool_note_filter {
             $title = local_learningtools_get_course_name($data->courseid);
         } else if ($data->instance == 'mod') {
             $title = ltool_note_get_module_coursesection($data, $record);
+            if ($record->itemtype == 'chapter') {
+                $title = local_learningtools_get_chapter_name($data, $record);
+            }
         } else {
             $title = $record->pagetitle;
         }
         return $title;
     }
 }
+

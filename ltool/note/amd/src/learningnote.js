@@ -217,6 +217,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                         require(['mod_contentdesigner/elements'], function(Elements) {
                             var chapterId = params.itemid;
                             if (chapterId) {
+                                Elements.removeWarning();
                                 Elements.refreshContent();
                             }
                         });

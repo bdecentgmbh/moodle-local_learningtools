@@ -72,11 +72,12 @@ define(['core/str', 'core/ajax', 'core/notification', 'jquery'],
             var coursemodule = button.data('coursemodule');
             var contextlevel = button.data('contextlevel');
             var pagetype = button.data('pagetype');
+            var pageurl = button.data('pageurl');
             // Prepare the parameters for the bookmark.
             var contextId = M.cfg.contextid;
             var params = {
                 pagetitle: document.title,
-                pageurl: window.location.href,
+                pageurl: pageurl,
                 pageid: 0,
                 itemtype: itemType,
                 itemid: itemId,
@@ -185,6 +186,7 @@ define(['core/str', 'core/ajax', 'core/notification', 'jquery'],
                         require(['mod_contentdesigner/elements'], function(Elements) {
                             var chapterId = formData.itemid;
                             if (chapterId) {
+                                Elements.removeWarning();
                                 Elements.refreshContent();
                             }
                         });
@@ -196,6 +198,7 @@ define(['core/str', 'core/ajax', 'core/notification', 'jquery'],
                         require(['mod_contentdesigner/elements'], function(Elements) {
                             var chapterId = formData.itemid;
                             if (chapterId) {
+                                Elements.removeWarning();
                                 Elements.refreshContent();
                             }
                         });

@@ -120,8 +120,13 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
     if ($itemtype == 'chapter') {
         $sql .= " AND itemtype = ? AND itemid = ?";
         $params = array_merge($params , [$itemtype, $itemid]);
+        $chaptertitle = '';
+        if ($chapter = $DB->get_record('cdelement_chapter', ['id' => $itemid])) {
+            $chaptertitle = (!empty($chapter->title) ? $chapter->title : '');
+        }
     } else {
         $sql .= " AND itemtype = ''";
+        $chaptertitle = '';
     }
     $bookrecord = $DB->get_record_sql($sql, $params);
 
@@ -138,7 +143,7 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
             $record->coursemodule = 0;
         }
         $record->pagetype = $data['pagetype'];
-        $record->pagetitle = $data['pagetitle'];
+        $record->pagetitle = $data['pagetitle'] . " | " . $chaptertitle;
         $record->pageurl = $data['pageurl'];
         $record->timecreated = time();
         $record->itemtype = $itemtype;
@@ -165,7 +170,7 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
         $notificationtype = 'success';
     } else {
         $selectdelete = $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255).
-            "AND contextid = ? AND userid = ?";
+            " AND contextid = ? AND userid = ?";
         $deletedparams = [$data['pageurl'], $contextid, $data['user']];
         if ($itemtype == 'chapter') {
             $selectdelete .= " AND itemtype = ? AND itemid = ?";
@@ -174,7 +179,8 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
             $selectdelete .= " AND itemtype = ''";
         }
         $DB->delete_records_select('ltool_bookmarks_data', $selectdelete, $deletedparams);
-            // Add event to user delete the bookmark.
+
+        // Add event to user delete the bookmark.
         $relateduserid = ($bookrecord->userid != $USER->id) ? $USER->id : 0;
         $eventcourseid = local_learningtools_get_eventlevel_courseid($context, $data['course']);
         $event = \ltool_bookmarks\event\ltbookmarks_deleted::create([
