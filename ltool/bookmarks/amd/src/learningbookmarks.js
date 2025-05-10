@@ -22,7 +22,7 @@
  */
 
 define(['core/str', 'core/ajax', 'core/notification', 'jquery'],
-    function(String, Ajax, notification, $, str) {
+    function(String, Ajax, notification, $) {
 
     /* global ltools, pagebookmarks */
 

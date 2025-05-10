@@ -45,8 +45,10 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
             var button = $(this);
             var itemType = button.data('itemtype');
             var itemId = button.data('itemid');
+            var pageurl = button.data('pageurl');
             params.itemtype = itemType;
             params.itemid = itemId;
+            params.pageurl = pageurl;
             modalshowHandler(contextid, params, true);
         });
     }
@@ -143,8 +145,8 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
         var notesinfo = document.querySelector(".ltnoteinfo #ltnote-action");
         if (notesinfo) {
             notesinfo.addEventListener("click", function() {
-                params.itemtype = '';
-                params.itemid = 0;
+                params.itemtype= '';
+                params.itemid= 0;
                 modalshowHandler(contextid, params);
             });
             // Hover color.
