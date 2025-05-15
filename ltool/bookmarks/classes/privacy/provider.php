@@ -57,6 +57,8 @@ class provider implements
             'pagetype' => 'privacy:metadata:bookmarks:pagetype',
             'pagetitle' => 'privacy:metadata:bookmarks:pagetitle',
             'pageurl' => 'privacy:metadata:bookmarks:pageurl',
+            'itemtype' => 'privacy:metadata:bookmarks:itemtype',
+            'itemid' => 'privacy:metadata:bookmarks:itemid',
             'timemodified' => 'privacy:metadata:bookmarks:timemodified'
         ];
         $collection->add_database_table('ltool_bookmarks_data', $bookmarksmetadata, 'privacy:metadata:bookmarksmetadata');
@@ -205,6 +207,8 @@ class provider implements
                 'pagetitle' => $record->pagetitle,
                 'pagetype' => $record->pagetype,
                 'pageurl' => $record->pageurl,
+                'itemtype' => $record->itemtype,
+                'itemid' => $record->itemid,
                 'timecreated' => ($record->timecreated) ? transform::datetime($record->timecreated) : '-',
             ];
         }, $records);
