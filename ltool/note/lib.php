@@ -75,11 +75,9 @@ class ltool_email_popoutform extends moodleform {
         $mform->setDefault('itemtype', $itemtype);
         $mform->setType('itemtype', PARAM_TEXT);
 
-
         $mform->addElement('hidden', 'itemid');
         $mform->setDefault('itemid', $itemid);
         $mform->setType('itemid', PARAM_INT);
-
 
         if ($popoutaction) {
             $this->add_action_buttons();
@@ -203,7 +201,7 @@ function ltool_note_output_fragment_get_note_form($args) {
     $editorhtml = '';
     $editor = editors_get_preferred_editor();
 
-    // Generate a unique ID for the editor to prevent content caching
+    // Generate a unique ID for the editor to prevent content caching.
     $editorid = "usernotes_" . time();
     $editor->use_editor($editorid, array('autosave' => false));
 
@@ -226,7 +224,6 @@ function ltool_note_output_fragment_get_note_form($args) {
         'name' => 'itemtype',
         'value' => isset($args['itemtype']) ? $args['itemtype'] : '',
     ));
-
 
     $editorhtml .= html_writer::tag('input', '', array(
         'type' => 'hidden',
@@ -364,6 +361,7 @@ function ltool_note_get_contextuser_notes($args) {
     $template['usernotes'] = true;
     return $OUTPUT->render_from_template('ltool_note/usernotes', $template);
 }
+
 /**
  * Save the user notes.
  * @param int $contextid contextid

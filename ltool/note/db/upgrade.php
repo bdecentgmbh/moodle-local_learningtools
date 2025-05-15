@@ -51,7 +51,6 @@ function xmldb_ltool_note_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022022600, 'ltool', 'note');
     }
 
-
     if ($oldversion < 2025041701) {
         // Modify the note table to support itemtype and itemid.
         $table = new xmldb_table('ltool_note_data');

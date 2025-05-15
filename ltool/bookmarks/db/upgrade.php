@@ -49,12 +49,11 @@ function xmldb_ltool_bookmarks_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022022600, 'ltool', 'bookmarks');
     }
 
-
     if ($oldversion < 2025041700) {
         // Modify the bookmarks table to support itemtype and itemid.
         $table = new xmldb_table('ltool_bookmarks_data');
 
-        // Add itemtype field if it doesn't exist
+        // Add itemtype field if it doesn't exist.
         $field = new xmldb_field('itemtype', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, 'page', 'pageurl');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
