@@ -38,6 +38,8 @@ $pagetype = optional_param('pagetype', '', PARAM_ALPHANUMEXT);
 $urlparams = optional_param('pageurl', '', PARAM_TEXT);
 $pagetitle = optional_param('pagetitle', '', PARAM_TEXT);
 $pageheading = optional_param('heading' , '', PARAM_TEXT);
+$itemtype = optional_param('itemtype' , '', PARAM_TEXT);
+$itemid = optional_param('itemid' , 0, PARAM_INT);
 $jsonurlparams = json_decode($urlparams);
 if ($USER->id != $user) {
     redirect(new moodle_url('/'));
@@ -65,6 +67,8 @@ $params['pagetype'] = $pagetype;
 $params['pageurl'] = $pageurl;
 $params['pagetitle'] = $pagetitle;
 $params['pageheading'] = $pageheading;
+$params['itemtype'] = $itemtype;
+$params['itemid'] = $itemid;
 
 list($context, $course, $cm) = get_context_info_array($contextid);
 $url = new moodle_url('/local/learningtools/ltool/note/pop_out.php');

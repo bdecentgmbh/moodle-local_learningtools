@@ -210,7 +210,7 @@ class ltool_note_filter {
         $userparams = $usercondition['params'];
         $sql = "SELECT lnd.coursemodule, lnd.course FROM {ltool_note_data} lnd
         LEFT JOIN {course_modules} cm ON cm.id = lnd.coursemodule
-        WHERE $usersql AND cm.deletioninprogress != 0 AND lnd.course = :course AND lnd.coursemodule != 0
+        WHERE $usersql AND cm.deletioninprogress = 0 AND lnd.course = :course AND lnd.coursemodule != 0
         GROUP BY lnd.coursemodule, lnd.course";
         $params = [
             'course' => $this->selectcourse,
@@ -531,7 +531,8 @@ class ltool_note_filter {
                 $list['instance'] = $this->get_instance_note($data);
                 $list['base'] = $this->get_title_note($data, $record);
                 $list['note'] = !empty($record->note) ? $record->note : '';
-                $list['time'] = userdate($record->timemodified, get_string("baseformat", "local_learningtools"), '', false);
+                $notetime = !empty($record->timemodified) ? $record->timemodified : $record->timecreated;
+                $list['time'] = userdate($notetime, get_string("baseformat", "local_learningtools"), '', false);
                 $list['viewurl'] = $this->get_view_url($record);
 
                 if (!empty($this->courseid) && !$this->childid) {
@@ -660,9 +661,13 @@ class ltool_note_filter {
             $title = local_learningtools_get_course_name($data->courseid);
         } else if ($data->instance == 'mod') {
             $title = ltool_note_get_module_coursesection($data, $record);
+            if ($record->itemtype == 'chapter') {
+                $title = local_learningtools_get_chapter_name($data, $record);
+            }
         } else {
             $title = $record->pagetitle;
         }
         return $title;
     }
 }
+

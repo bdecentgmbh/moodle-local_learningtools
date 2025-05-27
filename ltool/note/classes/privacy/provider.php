@@ -60,6 +60,8 @@ class provider implements
             'pagetitle' => 'privacy:metadata:note:pagetitle',
             'pageurl' => 'privacy:metadata:note:pageurl',
             'note' => 'privacy:metadata:note:note',
+            'itemtype' => 'privacy:metadata:note:itemtype',
+            'itemid' => 'privacy:metadata:note:itemid',
             'timecreated' => 'privacy:metadata:note:timecreated',
             'timemodified' => 'privacy:metadata:note:timemodified'
         ];
@@ -207,6 +209,8 @@ class provider implements
                 'pagetype' => $note->pagetype,
                 'pageurl' => $note->pageurl,
                 'note' => $note->note,
+                'itemtype' => $note->itemtype,
+                'itemid' => $note->itemid,
                 'timecreated' => ($note->timecreated) ? transform::datetime($note->timecreated) : '-',
                 'timemodified' => ($note->timemodified) ? transform::datetime($note->timemodified) : '-',
             ];

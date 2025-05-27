@@ -89,6 +89,7 @@ $string['sortbydate'] = "Sort by date";
 $string['sortbycourse'] = "Sort by course";
 $string['viewcourse'] = "View course";
 $string['viewactivity'] = "View Activity";
+$string['viewchapter'] = "View Chapter";
 $string['deletemessage'] = 'Delete Message';
 $string['deletemsgcheckfull'] = 'Are you absolutely sure you want to completely delete the bookmarks, including their bookmarks and other bookmarks data?';
 $string['deletednotmessage'] = 'Could not delete bookmarks!';
@@ -98,6 +99,9 @@ $string['bookmarkstoolcategory'] = "Tool Bookmarks";
 $string['coursebookmarks'] = "Course Bookmarks";
 $string['successbookmarkmessage'] = "This page bookmarked successfully and you can view the bookmarks under profile / learning tools / bookmarks.";
 $string['removebookmarkmessage'] = "This page bookmark removed and you can view the bookmarks under profile / learning tools / bookmarks.";
+
+$string['successchapterbookmarkmessage'] = "This chapter bookmarked successfully and you can view the bookmarks under profile / learning tools / bookmarks.";
+$string['removechapterbookmarkmessage'] = "This chapter bookmark removed and you can view the bookmarks under profile / learning tools / bookmarks.";
 
 // Notes strings.
 
@@ -198,7 +202,6 @@ $string['visitpage'] = "Visit page";
 $string['successtoolschedule'] = "Schedule added the user calendar";
 
 // Time management.
-
 $string['timemanagement'] = 'Time management';
 $string['timemanagementheader'] = 'Time management for {$a->name}';
 $string['print'] = "Print";
@@ -242,5 +245,7 @@ $string['baseformat'] = '%B %d, %Y, %I:%M %p';
 $string['strftimemonthdateyear'] = '%B, %dth %Y';
 $string['strftimeyearmonth'] = '%Y/%m/%d';
 $string['strftimemonthnamedate'] = '%B %d, %Y';
-$string['subplugintype_ltool'] = "Learning Tools";
-$string['subplugintype_ltool_plural'] = "ltools";
+$string['subplugintype_ltool'] = "Learning Tool";
+$string['subplugintype_ltool_plural'] = 'Learning Tools';
+$string['strbookmarked'] = "<i class='fa fa-bookmark'></i> Bookmarked";
+$string['strbookmark'] = "<i class='fa fa-bookmark'></i> Bookmark";
