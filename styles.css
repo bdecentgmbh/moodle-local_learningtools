@@ -30,6 +30,7 @@ body.local-learningtools.scrolled #goto-top-link,
     z-index: 1005;
     transition: 0.2s;
 }
+
 .learningtools-action-info .floating-button > button {
     width: 50px;
     height: 50px;
@@ -42,45 +43,56 @@ body.local-learningtools.scrolled #goto-top-link,
     position: relative;
     transition: all .5s ease;
 }
+
 .learningtools-action-info .floating-button > button:focus {
     border: 0;
     box-shadow: none;
     outline: none;
 }
+
 .learningtools-action-info .floating-button > button i {
     font-size: 20px;
     color: #fff;
 }
+
 .learningtools-action-info .floating-button > button:hover {
     box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.5);
 }
+
 .learningtools-action-info .floating-button .list-learningtools {
     display: none;
     transition: all .5s ease;
 }
+
 .learningtools-action-info .floating-button.sticky-tool > .show + button {
     position: absolute;
     top: 0;
     transition: all .5s ease;
 }
+
 .learningtools-action-info .floating-button.sticky-tool > .show + button i:before {
     content: '\f103';
 }
+
 .learningtools-action-info .floating-button .list-learningtools.show {
     padding-top: 55px;
     display: block;
     transition: all .5s ease;
 }
+
 .learningtools-action-info .floating-button > div > div {
     margin-bottom: 5px;
     position: relative;
 }
+
 .learningtools-action-info .floating-button .list-learningtools > div {
     transform: scale(0);
 }
+
 .learningtools-action-info .floating-button .list-learningtools.show > div {
     transform: scale(1);
 }
+
 .learningtools-action-info .floating-button > div > div button {
     width: 50px;
     height: 50px;
@@ -90,6 +102,7 @@ body.local-learningtools.scrolled #goto-top-link,
     box-shadow: 2px 5px 5px rgb(0, 0, 0, .2);
     position: relative;
 }
+
 .learningtools-action-info .floating-button > div > div button span {
     width: 25px;
     height: 15px;
@@ -102,17 +115,20 @@ body.local-learningtools.scrolled #goto-top-link,
     top: 0;
     right: -5px;
 }
+
 .learningtools-action-info .floating-button > div > div button:focus {
     border: 0;
     box-shadow: none;
     outline: none;
 }
+
 .learningtools-action-info .floating-button > div > div p {
     position: absolute;
     top: 0;
     right: 60px;
     display: none;
 }
+
 .learningtools-action-info .floating-button > div > div:hover p {
     min-width: 130px;
     color: #fff;
@@ -136,8 +152,69 @@ body.local-learningtools.scrolled #goto-top-link,
 footer .btn-footer-popover {
     right: 5rem;
 }
+
 .jsenabled #page.drawers.show-drawer-right .learningtools-action-info .floating-button {
     bottom: 80px;
     right: calc(315px + 2rem);
     transition: 0.2s;
+}
+
+.ltool-navigation.tertiary-navigation.full-width-bottom-border {
+    padding-bottom: 35px;
+    margin-bottom: 30px;
+}
+
+.ltool-navigation.tertiary-navigation.full-width-bottom-border .row {
+    gap: 20px;
+}
+
+.ltool-navigation.tertiary-navigation.ltool-navigation .navitem {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.tertiary-navigation .navitem:first-child {
+    margin-right: 10px;
+}
+
+.ltool-navigation.tertiary-navigation.ltool-navigation .navitem-divider {
+    margin: 10px;
+}
+
+.ltool-navigation .ltnote-sectionfilter,
+.ltool-navigation .ltnote-activityfilter {
+    max-width: 200px;
+    width: 100%;
+}
+
+.ltool-navigation .ltnote-sectionfilter label,
+.ltool-navigation .ltnote-activityfilter label,
+.ltool-navigation .note-print-block label {
+    font-size: 12px;
+    color: #000;
+    opacity: .5;
+    margin-bottom: 0;
+}
+
+.ltool-navigation .ltnote-sectionfilter select,
+.ltool-navigation .ltnote-activityfilter select,
+.ltool-navigation .ltnote-sectionfilter select:focus,
+.ltool-navigation .ltnote-activityfilter select:focus {
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.ltool-navigation [data-region="searchplaceholder"],
+.ltool-navigation .ltnote-activityfilter + .navitem-divider {
+    display: none;
+}
+
+.ltool-navigation .note-print-block {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }

@@ -27,8 +27,7 @@ namespace ltool_note;
  * Note subplugin for learningtools phpunit test cases defined.
  * @runTestsInSeparateProcesses
  */
-class ltool_note_test extends \advanced_testcase {
-
+final class ltool_note_test extends \advanced_testcase {
 
     /**
      * Summary of context
@@ -108,7 +107,7 @@ class ltool_note_test extends \advanced_testcase {
             'contextid' => $data['contextid'],
             'pagetype' => $data['pagetype'],
             'user' => $data['user'],
-            'pageurl' => $data['pageurl']
+            'pageurl' => $data['pageurl'],
         ];
         $count = ltool_note_get_userpage_countnotes($args);
         $this->assertEquals(2, $count);
@@ -136,7 +135,6 @@ class ltool_note_test extends \advanced_testcase {
         $notecount = \ltool_note\external::save_usernote($this->context->id, $data);
         $this->assertEquals(2, $notecount);
     }
-
 
     /**
      * Generate and fetch data for create new note instnace.

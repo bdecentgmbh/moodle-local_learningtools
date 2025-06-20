@@ -58,7 +58,7 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
     global $PAGE, $CFG;
     $context = context_system::instance();
-    $ltoolsjs = array();
+    $ltoolsjs = [];
     // Content of fab button html.
     $fabbuttonhtml = json_encode(local_learningtools_get_learningtools_info());
     $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
@@ -68,7 +68,7 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
     if (isloggedin() && !isguestuser()) {
         $loggedin = true;
     }
-    $viewcapability = array('loggedin' => $loggedin);
+    $viewcapability = ['loggedin' => $loggedin];
     $PAGE->requires->js_call_amd('local_learningtools/learningtoolsinfo', 'init', $viewcapability);
     // List of subplugins.
     // Load available subplugins javascript.
@@ -140,7 +140,7 @@ function local_learningtools_get_moduleid($contextid, $contextlevel) {
 function local_learningtools_get_coursemodule_id($record) {
     global $DB;
 
-    $contextinfo = $DB->get_record('context', array('id' => $record->contextid, 'contextlevel' => $record->contextlevel));
+    $contextinfo = $DB->get_record('context', ['id' => $record->contextid, 'contextlevel' => $record->contextlevel]);
     return isset($contextinfo->instanceid) ? $contextinfo->instanceid : 0;
 }
 /**
@@ -164,7 +164,7 @@ function local_learningtools_get_courses_name($courses, $url = '', $selectcourse
                 $list = [];
                 $list['id'] = $course->id;
                 $list['name'] = $course->get_formatted_name();
-                $urlparams = array('selectcourse' => $course->id);
+                $urlparams = ['selectcourse' => $course->id];
                 if ($userid) {
                     $urlparams['userid'] = $userid;
                 }
@@ -220,11 +220,11 @@ function local_learningtools_get_course_categoryname($courseid) {
  */
 function local_learningtools_get_module_name($data, $mod = false) {
     global $DB;
-    $coursemoduleinfo = $DB->get_record('course_modules', array('id' => $data->coursemodule));
+    $coursemoduleinfo = $DB->get_record('course_modules', ['id' => $data->coursemodule]);
     if (empty($coursemoduleinfo)) {
         return "";
     }
-    $moduleinfo = $DB->get_record('modules', array('id' => $coursemoduleinfo->module));
+    $moduleinfo = $DB->get_record('modules', ['id' => $coursemoduleinfo->module]);
     if ($moduleinfo) {
         if ($mod) {
             return $moduleinfo->name;
@@ -236,7 +236,6 @@ function local_learningtools_get_module_name($data, $mod = false) {
     return "";
 }
 
-
 /**
  * Get the course module current section.
  * @param int $courseid course id
@@ -246,7 +245,7 @@ function local_learningtools_get_module_name($data, $mod = false) {
 function local_learningtools_get_mod_section($courseid, $modid) {
     global $DB;
 
-    $sections = $DB->get_records('course_sections', array('course' => $courseid));
+    $sections = $DB->get_records('course_sections', ['course' => $courseid]);
     $sectionname = [];
     $sectionmod = [];
     if (!empty($sections)) {
@@ -281,7 +280,6 @@ function local_learningtools_get_mod_section($courseid, $modid) {
     return '';
 }
 
-
 /**
  * Get list of available sub plugins.
  *
@@ -289,7 +287,7 @@ function local_learningtools_get_mod_section($courseid, $modid) {
  */
 function local_learningtools_get_subplugins() {
     global $DB, $PAGE, $SITE;
-    $learningtools = $DB->get_records('local_learningtools_products', array('status' => 1), 'sort');
+    $learningtools = $DB->get_records('local_learningtools_products', ['status' => 1], 'sort');
     if (!empty($learningtools)) {
         foreach ($learningtools as $tool) {
             $plugin = 'ltool_'.$tool->shortname;
@@ -302,7 +300,6 @@ function local_learningtools_get_subplugins() {
     }
     return [];
 }
-
 
 /**
  * Display fab button html.
@@ -389,17 +386,17 @@ function local_learningtools_get_learningtools_info() {
     }
     $fabbackiconcolor = get_config('local_learningtools', 'fabiconbackcolor');
     $fabiconcolor = get_config('local_learningtools', 'fabiconcolor');
-    $content .= html_writer::start_tag('div', array('class' => 'learningtools-action-info'));
-    $content .= html_writer::start_tag('div', array('class' => "floating-button $stickyclass"));
-    $content .= html_writer::start_tag('div', array('class' => 'list-learningtools'));
+    $content .= html_writer::start_tag('div', ['class' => 'learningtools-action-info']);
+    $content .= html_writer::start_tag('div', ['class' => "floating-button $stickyclass"]);
+    $content .= html_writer::start_tag('div', ['class' => 'list-learningtools']);
     $content .= $contentinner;
     $content .= html_writer::end_tag('div');
-            $content .= html_writer::start_tag('button', array("class" => "btn btn-primary",
-            'id' => 'tool-action-button', 'style' => "background:$fabbackiconcolor;") );
-    $content .= html_writer::start_tag('i', array('class' => $fabiconclass, 'style' => "color:$fabiconcolor;"));
+            $content .= html_writer::start_tag('button', ["class" => "btn btn-primary",
+            'id' => 'tool-action-button', 'style' => "background:$fabbackiconcolor;"] );
+    $content .= html_writer::start_tag('i', ['class' => $fabiconclass, 'style' => "color:$fabiconcolor;"]);
     $content .= html_writer::end_tag('i');
     $content .= html_writer::end_tag("button");
-        $content .= html_writer::start_tag('div', array('class' => 'sticky-tools-list'));
+        $content .= html_writer::start_tag('div', ['class' => 'sticky-tools-list']);
         $content .= $stickytools;
         $content .= html_writer::end_tag('div');
     $content .= html_writer::end_tag('div');
@@ -434,7 +431,6 @@ function local_learningtools_get_stickytool_status() {
     }
     return $stickystatus;
 }
-
 
 /**
  * Get the students in course.
@@ -495,7 +491,7 @@ function local_learningtools_get_instance_tool_view_url($row) {
         return '';
     }
     if ($data->instance == 'course') {
-        $courseurl = new moodle_url('/course/view.php', array('id' => $data->courseid));
+        $courseurl = new moodle_url('/course/view.php', ['id' => $data->courseid]);
         $viewurl = $OUTPUT->single_button($courseurl, get_string('viewcourse', 'local_learningtools'), 'get');
     } else if ($data->instance == 'mod') {
         $pageurl = $row->pageurl;
@@ -530,7 +526,7 @@ function local_learningtools_get_eventlevel_courseid($context, $courseid) {
 function local_learningtools_add_learningtools_plugin($plugin) {
     global $DB;
     $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
-    if (!$DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
+    if (!$DB->record_exists('local_learningtools_products', ['shortname' => $plugin]) ) {
         $existrecords = $DB->get_records('local_learningtools_products', null);
         $maxrecord = $DB->get_record_sql('SELECT MAX(sort) AS value FROM {local_learningtools_products}', null);
         $sortval = !empty($existrecords) ? $maxrecord->value + 1 : 1;
@@ -551,8 +547,8 @@ function local_learningtools_add_learningtools_plugin($plugin) {
  */
 function local_learningtools_delete_ltool_table($plugin) {
     global $DB;
-    if ($DB->record_exists('local_learningtools_products', array('shortname' => $plugin)) ) {
-        $DB->delete_records('local_learningtools_products', array('shortname' => $plugin));
+    if ($DB->record_exists('local_learningtools_products', ['shortname' => $plugin]) ) {
+        $DB->delete_records('local_learningtools_products', ['shortname' => $plugin]);
     }
 }
 
@@ -615,4 +611,17 @@ function local_learningtools_can_visible_tool_incourse() {
         }
     }
     return $access;
+}
+
+/**
+ * Add Learning Tools to the course secondary navigation.
+ *
+ * @param navigation_node $navigation The navigation node to extend
+ * @param stdClass $course The course object
+ * @param context $context The course context
+ */
+function local_learningtools_extend_navigation_course($navigation, $course, $context) {
+    $url = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $course->id]);
+    $navigation->add(get_string('learningtools', 'local_learningtools'), $url, navigation_node::TYPE_SETTING, null, null,
+            new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools')));
 }

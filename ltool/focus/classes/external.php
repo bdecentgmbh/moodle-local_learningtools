@@ -40,9 +40,9 @@ class external extends \external_api {
     public static function save_userfocusmode_parameters() {
 
         return new \external_function_parameters(
-            array(
+            [
                 'status' => new \external_value(PARAM_INT, 'The user focus mode status'),
-            )
+            ]
         );
     }
 
@@ -57,7 +57,7 @@ class external extends \external_api {
         $context = \context_system::instance();
         require_capability('ltool/focus:createfocus', $context);
         $params = self::validate_parameters(self::save_userfocusmode_parameters(),
-            array('status' => $status));
+            ['status' => $status]);
         $SESSION->focusmode = $params['status'];
         return $status;
     }

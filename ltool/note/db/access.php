@@ -23,45 +23,45 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-    'ltool/note:createnote' => array(
+$capabilities = [
+    'ltool/note:createnote' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    ),
-    'ltool/note:viewownnote' => array(
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
+    'ltool/note:viewownnote' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    ),
-    'ltool/note:manageownnote' => array(
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
+    'ltool/note:manageownnote' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    ),
-    'ltool/note:viewnote' => array(
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
+    'ltool/note:viewnote' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes'   => array(
+        'archetypes'   => [
             'manager'  => CAP_ALLOW,
-        )
-    ),
+        ],
+    ],
 
-    'ltool/note:managenote' => array(
+    'ltool/note:managenote' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-    ),
+    ],
 
     // Add more capabilities here ...
-);
+];

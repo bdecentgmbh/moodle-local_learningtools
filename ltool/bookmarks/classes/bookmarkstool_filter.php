@@ -134,7 +134,6 @@ class bookmarkstool_filter {
         return $template;
     }
 
-
     /**
      * Displays the Bookmarks sort selector info.
      * @return string bookmarks sort html.
@@ -143,10 +142,10 @@ class bookmarkstool_filter {
         global $OUTPUT;
 
         $template = [];
-        $coursesortparams = array('sort' => 'course');
+        $coursesortparams = ['sort' => 'course'];
         $coursesortparams = array_merge($this->urlparams, $coursesortparams);
 
-        $datesortparams = array('sort' => 'date');
+        $datesortparams = ['sort' => 'date'];
         $datesortparams = array_merge($this->urlparams, $datesortparams);
 
         $dateselect = '';
@@ -331,8 +330,8 @@ class bookmarkstool_filter {
             if (has_capability($capability, $context, $particularuser)) {
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
-                $deleteparams = array('delete' => $row->id, 'sesskey' => sesskey(),
-                'courseid' => $this->courseid);
+                $deleteparams = ['delete' => $row->id, 'sesskey' => sesskey(),
+                'courseid' => $this->courseid];
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
                 $url = new moodle_url($returnurl, $deleteparams);
                 $strdelete = get_string('delete');
@@ -345,7 +344,7 @@ class bookmarkstool_filter {
             if (has_capability('ltool/bookmarks:manageownbookmarks', $context)) {
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
-                $deleteparams = array('delete' => $row->id, 'sesskey' => sesskey());
+                $deleteparams = ['delete' => $row->id, 'sesskey' => sesskey()];
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
                 $url = new moodle_url($returnurl, $deleteparams);;
                 $strdelete = get_string('delete');

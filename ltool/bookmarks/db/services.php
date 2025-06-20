@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$functions = array(
-    'ltool_bookmarks_save_userbookmarks' => array(
+$functions = [
+    'ltool_bookmarks_save_userbookmarks' => [
         'classname'   => 'ltool_bookmarks\external',
         'methodname'  => 'save_userbookmarks',
         'description' => 'Save the user Bookmarks',
@@ -33,5 +33,5 @@ $functions = array(
         'capabilities' => 'ltool/bookmarks:createbookmarks',
         'ajax'          => true,
         'loginrequired' => true,
-    ),
-);
+    ],
+];

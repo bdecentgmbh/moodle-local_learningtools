@@ -45,11 +45,11 @@ if ($hassiteconfig) {
         $name = "local_learningtools/fabbuttonvisible";
         $title = get_string('visiblelearningtools', 'local_learningtools');
         $desc = get_string('fabbuttonvisible_desc', 'local_learningtools');
-        $choices = array(
+        $choices = [
             'all' => get_string('everywhere', 'local_learningtools'),
             'allcourses' => get_string('allcourses', 'local_learningtools'),
-            'specificcate' => get_string('specificcate', 'local_learningtools')
-        );
+            'specificcate' => get_string('specificcate', 'local_learningtools'),
+        ];
         $default = 1;
         $setting = new admin_setting_configselect($name, $title, $desc, 'all', $choices);
         $page->add($setting);
@@ -69,7 +69,7 @@ if ($hassiteconfig) {
         $page->add($setting);
 
         // Disable specific activity types.
-        $modules = $DB->get_records_menu('modules', array('visible' => 1), '', 'id,name');
+        $modules = $DB->get_records_menu('modules', ['visible' => 1], '', 'id,name');
         $modules[0] = get_string('none');
         ksort($modules);
         if (!empty($modules)) {

@@ -24,6 +24,6 @@
 
 defined("MOODLE_INTERNAL") || die();
 
-$string['pluginname'] = "Learning Tools Focus mode";
 $string['focus:createfocus'] = "Create the Focus tool";
+$string['pluginname'] = "Learning Tools Focus mode";
 $string['privacy:metadata'] = 'The Focus tool only displays existing data.';

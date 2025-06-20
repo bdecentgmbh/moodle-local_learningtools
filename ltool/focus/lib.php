@@ -44,9 +44,9 @@ function ltool_focus_load_focus_config() {
     $disableclass = 'disable-focus d-none';
     $focuscsshtml = '<link id="ltool-focuscss" rel="stylesheet" type="text/css" href="">';
     $PAGE->add_header_action($focuscsshtml);
-    $focusdisable = html_writer::start_tag('div', array('id' => 'disable-focusmode', 'class' => $disableclass));
-    $focusdisable .= html_writer::start_tag('button', array('class' => 'btn btn-primary'));
-    $focusdisable .= html_writer::tag('i', '', array('class' => 'fa fa-close'));
+    $focusdisable = html_writer::start_tag('div', ['id' => 'disable-focusmode', 'class' => $disableclass]);
+    $focusdisable .= html_writer::start_tag('button', ['class' => 'btn btn-primary']);
+    $focusdisable .= html_writer::tag('i', '', ['class' => 'fa fa-close']);
     $focusdisable .= html_writer::end_tag('button');
     $focusdisable .= html_writer::end_tag('div');
     $PAGE->add_header_action($focusdisable);
@@ -67,7 +67,7 @@ function ltool_focus_get_focus_css_url() {
             $filename = $file->get_filename();
         }
     }
-    // TODO: FILE EXISTS CHECK.
+    // Todo: FILE EXISTS CHECK.
     if ($fs->file_exists($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
     $fileinfo['itemid'], $fileinfo['filepath'], $filename)) {
         $url = moodle_url::make_pluginfile_url($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
@@ -85,7 +85,7 @@ function ltool_focus_load_js_config() {
     global $PAGE, $SESSION;
     if (isset($SESSION->focusmode)) {
         $focusmode = $SESSION->focusmode;
-        $PAGE->requires->js_call_amd('ltool_focus/focus', 'init', array('focusmode' => $focusmode));
+        $PAGE->requires->js_call_amd('ltool_focus/focus', 'init', ['focusmode' => $focusmode]);
     }
 }
 
@@ -115,14 +115,14 @@ function ltool_focus_create_focus_temp_cssfile() {
  * @return array file info
  */
 function ltool_focus_get_focus_css_fileinfo() {
-    $fileinfo = array(
+    $fileinfo = [
         'contextid' => context_system::instance()->id,
         'component' => 'ltool_focus',
         'filearea' => 'focuscss',
         'itemid' => 0,
         'filepath' => '/',
-        'filename' => 'focus_'.time().'.css'
-    );
+        'filename' => 'focus_'.time().'.css',
+    ];
     return $fileinfo;
 }
 
@@ -185,4 +185,3 @@ function ltool_focus_focusmode_actions() {
     }
     ltool_focus_load_focus_config();
 }
-

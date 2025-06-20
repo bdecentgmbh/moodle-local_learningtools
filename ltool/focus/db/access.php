@@ -23,14 +23,14 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'ltool/focus:createfocus' => array(
+    'ltool/focus:createfocus' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    )
-);
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
+];

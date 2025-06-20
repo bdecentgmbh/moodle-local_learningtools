@@ -27,8 +27,7 @@ namespace ltool_bookmarks;
  * Bookmarks subplugin for learningtools phpunit test cases defined.
  * @runTestsInSeparateProcesses
  */
-class ltool_bookmarks_test extends \advanced_testcase {
-
+final class ltool_bookmarks_test extends \advanced_testcase {
 
     /**
      * Summary of context

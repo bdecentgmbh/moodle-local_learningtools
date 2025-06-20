@@ -21,6 +21,7 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(dirname(__FILE__).'/../../../../config.php');
 require_login();
 require_once(dirname(__FILE__).'/lib.php');
@@ -37,9 +38,10 @@ $courseid = optional_param('courseid', 0, PARAM_INT);
 $childid = optional_param('userid', 0, PARAM_INT);
 $teacher = optional_param('teacher', 0, PARAM_INT);
 $returnurl = optional_param('returnurl', '', PARAM_URL);
+$view = optional_param('view', 0, PARAM_INT);
 
 if ($edit) {
-    $editedrecord = $DB->get_record('ltool_note_data', array('id' => $edit));
+    $editedrecord = $DB->get_record('ltool_note_data', ['id' => $edit]);
     if (empty($editedrecord)) {
         redirect(new moodle_url('/'));
     }
@@ -68,10 +70,14 @@ if ($courseid && !$childid) {
     }
 }
 
-
 $baseurl = new moodle_url('/local/learningtools/ltool/note/list.php', $urlparams);
 $baseurl = !empty($returnurl) ? $returnurl : $baseurl;
 $pageurl = new moodle_url('/local/learningtools/ltool/note/editlist.php', $urlparams);
+
+if ($view) {
+    $baseurl = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $view]);
+    $returnurl = $baseurl;
+}
 
 // If user is logged in, then use profile navigation in breadcrumbs.
 if ($profilenode = $PAGE->settingsnav->find('myprofile', null)) {
@@ -89,30 +95,32 @@ if ($edit && confirm_sesskey()) {
         redirect($baseurl);
     } else if ($fromdata = $editorform->get_data()) {
         $usernote = $fromdata->noteeditor['text'];
-        $exitnote = $DB->get_record('ltool_note_data', array('id' => $edit));
+        $exitnote = $DB->get_record('ltool_note_data', ['id' => $edit]);
         if ($exitnote) {
             if ($usernote != $exitnote->note) {
-                    $DB->set_field('ltool_note_data', 'note', $usernote, array('id' => $edit));
-                    $DB->set_field('ltool_note_data', 'timemodified', time(), array('id' => $edit));
-                    $editeventcontext = context::instance_by_id($exitnote->contextid, MUST_EXIST);
-                    $eventcourseid = local_learningtools_get_eventlevel_courseid($editeventcontext, $exitnote->course);
-                    // Add event to user edit the note.
-                    $editeventparams = [
-                        'objectid' => $exitnote->id,
-                        'courseid' => $eventcourseid,
-                        'context' => $editeventcontext,
-                        'other' => [
-                            'pagetype' => $exitnote->pagetype,
-                        ]
-                    ];
+                $DB->set_field('ltool_note_data', 'note', $usernote, ['id' => $edit]);
+                if ($DB->record_exists('ltool_note_data', ['id' => $edit])) {
+                    $DB->set_field('ltool_note_data', 'timemodified', time(), ['id' => $edit]);
+                }
+                $editeventcontext = context::instance_by_id($exitnote->contextid, MUST_EXIST);
+                $eventcourseid = local_learningtools_get_eventlevel_courseid($editeventcontext, $exitnote->course);
+                // Add event to user edit the note.
+                $editeventparams = [
+                    'objectid' => $exitnote->id,
+                    'courseid' => $eventcourseid,
+                    'context' => $editeventcontext,
+                    'other' => [
+                        'pagetype' => $exitnote->pagetype,
+                    ],
+                ];
 
-                    if ($childid) {
-                        $editeventparams = array_merge($editeventparams, ['relateduserid' => $childid]);
-                    }
-                    $event = \ltool_note\event\ltnote_edited::create($editeventparams);
-                    $event->trigger();
-                    redirect($baseurl, get_string('successeditnote', 'local_learningtools'),
-                        null, \core\output\notification::NOTIFY_SUCCESS);
+                if ($childid) {
+                    $editeventparams = array_merge($editeventparams, ['relateduserid' => $childid]);
+                }
+                $event = \ltool_note\event\ltnote_edited::create($editeventparams);
+                $event->trigger();
+                redirect($baseurl, get_string('successeditnote', 'local_learningtools'),
+                    null, \core\output\notification::NOTIFY_SUCCESS);
             }
         }
         redirect($baseurl);
@@ -124,4 +132,3 @@ if ($edit && confirm_sesskey()) {
     }
 
 }
-

@@ -22,28 +22,24 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined("MOODLE_INTERNAL") || die();
+defined("MOODLE_INTERNAL") || die();
 
-$string['pluginname'] = "Learning Tools Bookmarks";
+$string['bookmarks'] = "Bookmarks";
 $string['bookmarks:createbookmarks'] = "Create the bookmarks.";
-$string['bookmarks:viewownbookmarks'] = "View the  own bookmarks.";
+$string['bookmarks:managebookmarks'] = "Manage the others boomarks.";
 $string['bookmarks:manageownbookmarks'] = "Manage the own bookmarks.";
 $string['bookmarks:viewbookmarks'] = "View the others bookmarks.";
-$string['bookmarks:managebookmarks'] = "Manage the others boomarks.";
-$string['bookmarks'] = "Bookmarks";
-
-// Privacy API Metadata.
-$string['privacy:metadata:bookmarks:userid'] = 'The ID of the user';
+$string['bookmarks:viewownbookmarks'] = "View the  own bookmarks.";
+$string['pluginname'] = "Learning Tools Bookmarks";
+$string['privacy:metadata:bookmarks:contextid'] = 'The Context ID of the bookmark page';
+$string['privacy:metadata:bookmarks:contextlevel'] = 'The Context level of the bookmark page';
 $string['privacy:metadata:bookmarks:course'] = 'The ID of the course';
 $string['privacy:metadata:bookmarks:coursemodule'] = 'The ID of the course module if user bookmarked the course modules page';
-$string['privacy:metadata:bookmarks:contextlevel'] = 'The Context level of the bookmark page';
-$string['privacy:metadata:bookmarks:contextid'] = 'The Context ID of the bookmark page';
-$string['privacy:metadata:bookmarks:pagetype'] = 'Bookmarked pagetype';
 $string['privacy:metadata:bookmarks:pagetitle'] = 'Page title of Bookmarked page';
+$string['privacy:metadata:bookmarks:pagetype'] = 'Bookmarked pagetype';
 $string['privacy:metadata:bookmarks:pageurl'] = 'Bookmarked page url';
-$string['privacy:metadata:bookmarks:itemtype'] = 'Bookmarked item type';
-$string['privacy:metadata:bookmarks:itemid'] = 'Bookmarked item id';
 $string['privacy:metadata:bookmarks:timecreated'] = 'Time of the bookmarks created';
 $string['privacy:metadata:bookmarks:timemodified'] = 'Time of the bookmarks modified';
+$string['privacy:metadata:bookmarks:userid'] = 'The ID of the user';
 $string['privacy:metadata:bookmarksmetadata'] = 'List of users data stored in bookmarks subplugin';
 $string['privacybookmarks'] = 'Learning tools - Bookmarks';

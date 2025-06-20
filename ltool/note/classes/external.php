@@ -39,10 +39,10 @@ class external extends \external_api {
     public static function save_usernote_parameters() {
 
         return new \external_function_parameters(
-            array(
+            [
                 'contextid' => new \external_value(PARAM_INT, 'The context id for the course'),
-                'formdata' => new \external_value(PARAM_RAW, 'The data from the user notes')
-            )
+                'formdata' => new \external_value(PARAM_RAW, 'The data from the user notes'),
+            ]
         );
     }
 
@@ -57,7 +57,7 @@ class external extends \external_api {
         require_once($CFG->dirroot.'/local/learningtools/ltool/note/lib.php');
         require_login();
         $validparams = self::validate_parameters(self::save_usernote_parameters(),
-            array('contextid' => $contextid, 'formdata' => $formdata));
+            ['contextid' => $contextid, 'formdata' => $formdata]);
         $context = \context_system::instance();
         require_capability("ltool/note:createnote", $context);
         // Parse serialize form data.

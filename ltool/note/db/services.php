@@ -23,8 +23,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$functions = array(
-    'ltool_note_save_usernote' => array(
+$functions = [
+    'ltool_note_save_usernote' => [
         'classname'   => 'ltool_note\external',
         'methodname'  => 'save_usernote',
         'description' => 'Save the user note',
@@ -32,5 +32,5 @@ $functions = array(
         'capabilities' => 'ltool/note:createnote',
         'ajax'          => true,
         'loginrequired' => true,
-    ),
-);
+    ],
+];
