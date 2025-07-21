@@ -22,7 +22,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core\output\html_writer;
 use core_user\output\myprofile\tree;
 defined('MOODLE_INTERNAL') || die();
 
@@ -208,68 +207,68 @@ function ltool_note_output_fragment_get_note_form($args) {
 
     $editor->set_text('');
 
-    $editorhtml .= html_writer::start_tag('div', ['class' => 'ltoolusernotes']);
-    $editorhtml .= html_writer::start_tag('form', ['method' => 'post', 'action' => $args['pageurl'], 'class' => 'mform']);
+    $editorhtml .= \html_writer::start_tag('div', ['class' => 'ltoolusernotes']);
+    $editorhtml .= \html_writer::start_tag('form', ['method' => 'post', 'action' => $args['pageurl'], 'class' => 'mform']);
 
-    $editorhtml .= html_writer::tag('textarea', '',
+    $editorhtml .= \html_writer::tag('textarea', '',
         ['id' => $editorid, 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => 20, 'cols' => 100]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'course',
         'value' => $args['course'],
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'itemtype',
         'value' => isset($args['itemtype']) ? $args['itemtype'] : '',
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'itemid',
         'value' => isset($args['itemid']) ? $args['itemid'] : 0,
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'contextid',
         'value' => $args['contextid'],
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'contextlevel',
         'value' => $args['contextlevel'],
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'pagetype',
         'value' => $args['pagetype'],
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'pagetitle',
         'value' => $args['pagetitle'],
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'pageurl',
         'value' => $args['pageurl'],
     ]);
 
-    $editorhtml .= html_writer::tag('input', '', [
+    $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
         'name' => 'user',
         'value' => $args['user'],
     ]);
 
-    $editorhtml .= html_writer::end_tag('form');
-    $editorhtml .= html_writer::end_tag('div');
+    $editorhtml .= \html_writer::end_tag('form');
+    $editorhtml .= \html_writer::end_tag('div');
     $editorhtml .= ltool_note_load_context_notes($args);
     return $editorhtml;
 }
@@ -283,9 +282,9 @@ function ltool_note_load_context_notes($args) {
     $editorhtml = '';
     $context = context_system::instance();
     if (ltool_note_get_userpage_countnotes($args) && has_capability('ltool/note:viewownnote', $context)) {
-        $editorhtml .= html_writer::start_tag('div', ['class' => 'list-context-existnotes']);
+        $editorhtml .= \html_writer::start_tag('div', ['class' => 'list-context-existnotes']);
         $editorhtml .= ltool_note_get_contextuser_notes($args);
-        $editorhtml .= html_writer::end_tag('div');
+        $editorhtml .= \html_writer::end_tag('div');
     }
     return $editorhtml;
 }
@@ -446,7 +445,7 @@ function ltool_note_edit_note_record($row, $params = []) {
     $optionyes = ['edit' => $row->id, 'sesskey' => sesskey()];
     $optionyes = array_merge($optionyes, $params);
     $url = new moodle_url($returnurl, $optionyes);
-    $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
+    $buttons[] = \html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
     $buttonhtml = implode(' ', $buttons);
     return $buttonhtml;
 
@@ -467,7 +466,7 @@ function ltool_note_delete_note_record($row, $params = []) {
     $optionyes = ['delete' => $row->id, 'sesskey' => sesskey()];
     $optionyes = array_merge($optionyes, $params);
     $url = new moodle_url($returnurl, $optionyes);
-    $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
+    $buttons[] = \html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
     $buttonhtml = implode(' ', $buttons);
     return $buttonhtml;
 }

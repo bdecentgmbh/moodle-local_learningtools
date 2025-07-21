@@ -46,7 +46,7 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
         if ($iscurrentuser) {
             if (!empty($course)) {
                 $coursecontext = context_course::instance($course->id);
-                $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php',  ['courseid' => $course->id,
+                $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', ['courseid' => $course->id,
                     'userid' => $userid]);
                 $bookmarksnode = new core_user\output\myprofile\node('learningtools',
                     'bookmarks', get_string('coursebookmarks', 'local_learningtools'),
