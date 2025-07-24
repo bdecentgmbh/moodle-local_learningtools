@@ -24,13 +24,13 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array(
-    array(
+$observers = [
+    [
     'eventname' => 'core\event\course_deleted',
     'callback' => '\ltool_note\event_observer::note_coursedata_deleteaction',
-    ),
-    array(
+    ],
+    [
     'eventname' => 'core\event\course_module_deleted',
     'callback' => '\ltool_note\event_observer::note_moduledata_deleteaction',
-    )
-);
+    ],
+];

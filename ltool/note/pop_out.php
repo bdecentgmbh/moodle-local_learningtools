@@ -87,7 +87,6 @@ $PAGE->set_title($pagetitle);
 $PAGE->set_heading($pageheading);
 $PAGE->set_pagetype($pagetype);
 
-
 if ($contextid && $courseid && $user && $contextlevel
     && $pagetype && $pageurl) {
     $params['popoutaction'] = true;
@@ -108,4 +107,3 @@ if ($contextid && $courseid && $user && $contextlevel
         echo $OUTPUT->footer();
     }
 }
-

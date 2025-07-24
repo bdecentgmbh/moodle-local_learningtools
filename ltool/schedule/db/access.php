@@ -23,17 +23,17 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'ltool/schedule:createschedule' => array(
+    'ltool/schedule:createschedule' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes'   => array(
+        'archetypes'   => [
             'manager' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'student' => CAP_ALLOW
-        )
-    )
-);
+            'student' => CAP_ALLOW,
+        ],
+    ],
+];

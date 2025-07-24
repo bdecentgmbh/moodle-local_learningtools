@@ -15,27 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy implementation for learning tools parent plugin
+ * Renderer for learning tools
  *
- * @package   local_learningtools
- * @copyright 2021, bdecent gmbh bdecent.de
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_learningtools
+ * @copyright  2023 Your Name
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace local_learningtools\privacy;
+
+namespace local_learningtools\output;
+
+use plugin_renderer_base;
+use stdClass;
 
 /**
- * The local_learningtools parent plugin does not store any data. Subplugin stores user data.
+ * Renderer class for learning tools.
  */
-class provider implements \core_privacy\local\metadata\null_provider {
-
+class renderer extends plugin_renderer_base {
     /**
-     * Get the language string identifier with the component's language
-     * file to explain why this plugin stores no data.
+     * Renders the action bar for a given page.
      *
-     * @return  string
+     * @param general_action_bar $actionbar
+     * @return string The HTML output
      */
-    public static function get_reason(): string {
-
-        return 'privacy:metadata';
+    public function render_action_bar(general_action_bar $actionbar): string {
+        $data = $actionbar->export_for_template($this);
+        return $this->render_from_template($actionbar->get_template(), $data);
     }
 }

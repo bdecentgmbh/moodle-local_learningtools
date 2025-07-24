@@ -68,7 +68,6 @@ if ($courseid || $selectcourse) {
     }
 }
 
-
 if ($coursebase) {
 
     $title = get_string('coursenotes', 'local_learningtools');
@@ -90,7 +89,6 @@ $PAGE->set_context($setcontext);
 $PAGE->set_pagelayout('base');
 $PAGE->set_url('/local/learningtools/ltool/note/list.php');
 $PAGE->set_title($title);
-
 
 $urlparams = [];
 $pageparams = [];
@@ -171,8 +169,8 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
 
-        $optionsyes = array('delete' => $delete, 'confirm' => md5($delete),
-            'sesskey' => sesskey());
+        $optionsyes = ['delete' => $delete, 'confirm' => md5($delete),
+            'sesskey' => sesskey()];
         $optionsyes = array_merge($optionsyes, $urlparams);
         $deleteurl = new moodle_url($pageurl, $optionsyes);
         $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
@@ -182,7 +180,7 @@ if ($delete && confirm_sesskey()) {
         die;
 
     } else if (data_submitted()) {
-        $deleterecord = $DB->get_record('ltool_note_data', array('id' => $delete));
+        $deleterecord = $DB->get_record('ltool_note_data', ['id' => $delete]);
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
         if ($DB->delete_records('ltool_note_data', ['id' => $delete])) {
             $eventcourseid = local_learningtools_get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
@@ -192,7 +190,7 @@ if ($delete && confirm_sesskey()) {
                 'context' => $deleteeventcontext,
                 'other' => [
                     'pagetype' => $deleterecord->pagetype,
-                ]
+                ],
             ];
             if ($childid) {
                 $deleteeventparams = array_merge($deleteeventparams, ['relateduserid' => $childid]);
@@ -224,8 +222,8 @@ echo $OUTPUT->header();
 
 if ($userbase) {
     $usercontext = context_user::instance($userbase);
-    $userinfo = $DB->get_record('user', array('id' => $userbase));
-    $headerinfo = array('heading' => fullname($userinfo), 'user' => $userinfo, 'usercontext' => $usercontext);
+    $userinfo = $DB->get_record('user', ['id' => $userbase]);
+    $headerinfo = ['heading' => fullname($userinfo), 'user' => $userinfo, 'usercontext' => $usercontext];
     echo $OUTPUT->context_header($headerinfo, 2);
 }
 echo $OUTPUT->heading($title);

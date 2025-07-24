@@ -22,13 +22,13 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$capabilities = array(
-    'local/learningtools:studentcontroller' => array(
+$capabilities = [
+    'local/learningtools:studentcontroller' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes'   => array(
-            'student' => CAP_ALLOW
-        )
-    )
-);
+        'archetypes'   => [
+            'student' => CAP_ALLOW,
+        ],
+    ],
+];

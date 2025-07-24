@@ -101,7 +101,7 @@ function ltool_schedule_load_js_config() {
     $params['pageurl'] = $PAGE->url->out(false);
     $params['course'] = $PAGE->course->id;
     $params['cm'] = !empty($PAGE->cm->id) ? $PAGE->cm->id : 0;
-    $PAGE->requires->js_call_amd('ltool_schedule/schedule', 'init', array($params));
+    $PAGE->requires->js_call_amd('ltool_schedule/schedule', 'init', [$params]);
 }
 
 /**
@@ -111,7 +111,7 @@ function ltool_schedule_load_js_config() {
  * @return string display form
  */
 function ltool_schedule_output_fragment_get_schedule_form($args) {
-    $schedulebox = html_writer::start_tag('div', array('id' => 'ltoolschedule-editorbox'));
+    $schedulebox = html_writer::start_tag('div', ['id' => 'ltoolschedule-editorbox']);
     $mform = new ltool_schedule_editbox(null, $args);
     $schedulebox .= $mform->render();
     $schedulebox .= html_writer::end_tag('div');
@@ -153,4 +153,3 @@ function ltool_schedule_output_fragment_set_calendar_event($args) {
         }
     }
 }
-

@@ -21,27 +21,33 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal_events', 'core/ajax', 'core/notification'],
-    function($, ModalFactory, String, Fragment, ModalEvents, Ajax, notification) {
+define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal_events', 'core/ajax', 'core/notification', 'core/utils', "core/config"],
+    function ($, ModalFactory, String, Fragment, ModalEvents, Ajax, notification, Utils, Config) {
 
-    /* global ltools */
+    /* global ltools, ltool_note_config */
+
+    // Store reference to print window
+    var printWindow = null
 
     /**
      * Controls notes tool action.
      * @param {int} contextid context id
-     * @param {object} params notes info params
      */
-    function learningToolNoteAction(contextid, params) {
+    function learningToolNoteAction(contextid) {
+        // Get configuration from global variable
+        const params = window.ltool_note_config || {}
+
         showModalLttool(contextid, params);
         var sorttypefilter = document.querySelector(".ltnote-sortfilter i#notessorttype");
         if (sorttypefilter) {
-            sorttypefilter.addEventListener("click", function() {
+            sorttypefilter.addEventListener("click", function () {
                 var sorttype = this.getAttribute('data-type');
                 noteSortActionPage(sorttype);
             });
         }
+
         // Content designer note.
-        $(document).on('click', '.content-designer-learningtool-note', function(e) {
+        $(document).on('click', '.content-designer-learningtool-note', function (e) {
             var button = $(this);
             var itemType = button.data('itemtype');
             var itemId = button.data('itemid');
@@ -51,7 +57,107 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
             params.pageurl = pageurl;
             modalshowHandler(contextid, params, true);
         });
+
+        var noteprintblock = document.querySelector(".note-print-block");
+        if (noteprintblock) {
+            noteprintblock.addEventListener("click", notePrintHandler.bind(contextid, params));
+        }
+
+        const clearIcon = document.querySelector('.ltool-navigation [data-action="clearsearch"]');
+        var searchinput = document.querySelector('.ltool-navigation [data-action="search"]');
+
+        if (clearIcon) {
+            clearIcon.addEventListener('click', () => {
+                searchinput.value = '';
+                searchinput.focus();
+                clearSearch(clearIcon);
+                // Load default content without search
+                performSearch("", contextid, params);
+            });
+        }
+
+        if (searchinput) {
+            searchinput.addEventListener('input', Utils.debounce(() => {
+                if (searchinput.value === '') {
+                    clearSearch(clearIcon);
+                    // Load default content without search
+                    performSearch("", contextid, params);
+                } else {
+                    activeSearch(clearIcon);
+                    var search = searchinput.value.trim();
+                    // If you have a search function, you can call it here.
+                    console.log(searchinput.value.trim());
+                    performSearch(search, contextid, params);
+                }
+            }, 1000));
+        }
+
     }
+
+    /**
+     * Perform search and update the notes list
+     * @param {string} searchTerm The search term
+     * @param {int} contextid The context ID
+     * @param {object} params The parameters
+     */
+    function performSearch(searchTerm, contextid, params) {
+        var notesContainer = document.querySelector(".ltool-notes-container, .note-list-container, .ltool-notes-grid")
+
+        if (!notesContainer) {
+            // If no container found, reload page with search parameter
+            var currentUrl = new URL(window.location.href)
+            currentUrl.searchParams.set("search", searchTerm)
+            window.location.href = currentUrl.toString()
+            return
+        }
+
+        // Show loading indicator
+        notesContainer.innerHTML =
+            '<div class="text-center p-4"><i class="fa fa-spinner fa-spin fa-2x"></i><p class="mt-2">Searching notes...</p></div>'
+
+        // Prepare fragment parameters
+        var fragmentParams = {
+            courseid: params.course,
+            search: searchTerm,
+            sectionid: 0,
+            activity: 0,
+            filter: "",
+            print: false,
+        }
+
+        // Load search results using fragment
+        Fragment.loadFragment("ltool_note", "get_notes_list", contextid, fragmentParams)
+            .then((html) => {
+                notesContainer.innerHTML = html
+                // Update URL without reloading page
+                var currentUrl = new URL(window.location.href)
+                currentUrl.searchParams.set("search", searchTerm)
+                window.history.pushState({}, "", currentUrl.toString())
+            })
+            .catch((error) => {
+                console.error("Search error:", error)
+                notesContainer.innerHTML =
+                    '<div class="alert alert-danger">Error loading search results. Please try again.</div>'
+            })
+    }
+
+    /**
+     * Reset the search icon and trigger the init for the block.
+     *
+     * @param {HTMLElement} clearIcon Our closing icon to manipulate.
+     */
+    const clearSearch = (clearIcon) => {
+        clearIcon.classList.add('d-none');
+    };
+
+    /**
+     * Change the searching icon to its' active state.
+     *
+     * @param {HTMLElement} clearIcon Our closing icon to manipulate.
+     */
+    const activeSearch = (clearIcon) => {
+        clearIcon.classList.remove('d-none');
+    };
 
     /**
      * Clean the url parameters.
@@ -85,7 +191,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
 
     function modalshowHandler(contextid, params, contentDesigner = false) {
         var newnote = String.get_string('newnote', 'local_learningtools');
-        $.when(newnote).done(function(localizedEditString) {
+        $.when(newnote).done(function (localizedEditString) {
             // Add class.
             var ltoolnotebody = document.getElementsByTagName('body')[0];
             if (!ltoolnotebody.classList.contains('learningtool-note')) {
@@ -97,15 +203,15 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 type: ModalFactory.types.SAVE_CANCEL,
                 body: getnoteaction(contextid, params),
                 large: true
-            }).then(function(modal) {
+            }).then(function (modal) {
 
                 modal.show();
 
-                modal.getRoot().on(ModalEvents.hidden, function() {
+                modal.getRoot().on(ModalEvents.hidden, function () {
                     modal.destroy();
                 });
 
-                modal.getRoot().on(ModalEvents.save, function(e) {
+                modal.getRoot().on(ModalEvents.save, function (e) {
                     e.preventDefault();
                     $(e.target).find("button[data-action=save]").attr("disabled", true);
                     modal.getRoot().find('form').submit();
@@ -116,13 +222,13 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                     submitFormData(modal, contextid, params, contentDesigner);
                 });
 
-                document.querySelector("#popout-action").addEventListener('click', function() {
+                document.querySelector("#popout-action").addEventListener('click', function () {
                     var pageurlobj = params.pageurl.split("&");
                     var pageurljson = JSON.stringify(pageurlobj);
                     var url = M.cfg.wwwroot + "/local/learningtools/ltool/note/pop_out.php?contextid=" +
-                    params.contextid + "&pagetype=" + params.pagetype + "&contextlevel=" + params.contextlevel + "&course="
-                    + params.course + "&user=" + params.user + "&pageurl=" + pageurljson + "&pagetitle=" + params.pagetitle
-                    + "&heading=" + params.heading + "&sesskey=" + params.sesskey;
+                        params.contextid + "&pagetype=" + params.pagetype + "&contextlevel=" + params.contextlevel + "&course="
+                        + params.course + "&user=" + params.user + "&pageurl=" + pageurljson + "&pagetitle=" + params.pagetitle
+                        + "&heading=" + params.heading + "&sesskey=" + params.sesskey;
                     if (params.itemtype) {
                         url += "&itemtype=" + params.itemtype + "&itemid=" + params.itemid;
                     }
@@ -144,16 +250,16 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
 
         var notesinfo = document.querySelector(".ltnoteinfo #ltnote-action");
         if (notesinfo) {
-            notesinfo.addEventListener("click", function() {
-                params.itemtype= '';
-                params.itemid= 0;
+            notesinfo.addEventListener("click", function () {
+                params.itemtype = '';
+                params.itemid = 0;
                 modalshowHandler(contextid, params);
             });
             // Hover color.
             var notehovercolor = notesinfo.getAttribute("data-hovercolor");
             var notefontcolor = notesinfo.getAttribute("data-fontcolor");
             if (notehovercolor && notefontcolor) {
-                notesinfo.addEventListener("mouseover", function() {
+                notesinfo.addEventListener("mouseover", function () {
                     document.querySelector('#ltnoteinfo p').style.background = notehovercolor;
                     document.querySelector('#ltnoteinfo p').style.color = notefontcolor;
                 });
@@ -193,7 +299,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
      */
     function getPopoutAction() {
         var popouthtml = "<div class='popout-block'><button type='submit' id='popout-action'"
-        + "name='popoutsubmit'>Pop out</button> <i class='fa fa-window-restore'></i></div>";
+            + "name='popoutsubmit'>Pop out</button> <i class='fa fa-window-restore'></i></div>";
         return popouthtml;
     }
 
@@ -209,14 +315,14 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
         var notesuccess = String.get_string('successnotemessage', 'local_learningtools');
         Ajax.call([{
             methodname: 'ltool_note_save_usernote',
-            args: {contextid: contextid, formdata: formData},
-            done: function(response) {
+            args: { contextid: contextid, formdata: formData },
+            done: function (response) {
                 // Insert data into notes badge.
                 if (response) {
                     // Check if this is a content designer note by looking for the trigger button
                     if (contentDesigner) {
                         // Try to refresh the chapter if content designer is available
-                        require(['mod_contentdesigner/elements'], function(Elements) {
+                        require(['mod_contentdesigner/elements'], function (Elements) {
                             var chapterId = params.itemid;
                             if (chapterId) {
                                 Elements.removeWarning();
@@ -233,7 +339,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 }
 
                 modal.hide();
-                $.when(notesuccess).done(function(localizedEditString) {
+                $.when(notesuccess).done(function (localizedEditString) {
                     notification.addNotification({
                         message: localizedEditString,
                         type: "success"
@@ -241,7 +347,7 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 });
 
                 if (ltools.disappertimenotify != 0) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         document.querySelector("span.notifications").innerHTML = "";
                     }, ltools.disappertimenotify);
                 }
@@ -262,9 +368,63 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
         }
         return Fragment.loadFragment('ltool_note', 'get_note_form', contextid, params);
     }
+
+    /**
+     * Handle print action
+     * @param {object} args Configuration arguments
+     */
+    function notePrintHandler(args) {
+      // Prevent multiple print windows
+      if (printWindow && !printWindow.closed) {
+        printWindow.focus()
+        return true
+      }
+
+      // Create URL for print page
+      var printUrl = Config.wwwroot + "/local/learningtools/ltool/note/print.php"
+      var params = new URLSearchParams()
+
+      params.append("contextid", args.contextid)
+      params.append("courseid", args.course || 0)
+      params.append("sesskey", args.sesskey)
+
+      // Add current filter parameters if they exist
+      var currentUrl = new URL(window.location.href)
+      var search = currentUrl.searchParams.get("search") || ""
+      var filter = currentUrl.searchParams.get("filter") || ""
+      var sectionid = currentUrl.searchParams.get("sectionid") || 0
+      var activity = currentUrl.searchParams.get("activity") || 0
+
+      if (search) params.append("search", search)
+      if (filter) params.append("filter", filter)
+      if (sectionid) params.append("sectionid", sectionid)
+      if (activity) params.append("activity", activity)
+
+      var fullUrl = printUrl + "?" + params.toString()
+
+      // Open print page in new window and store reference
+      printWindow = window.open(
+        fullUrl,
+        "printNotes",
+        "width=1000,height=700,scrollbars=yes,resizable=yes,toolbar=no,location=no,status=no",
+      )
+
+      // Focus the print window
+      if (printWindow) {
+        printWindow.focus()
+      }
+
+      return true
+    }
+
+    function getnotescontents(contextid, params) {
+        return Fragment.loadFragment('ltool_note', 'get_notes_contents', contextid, params);
+    }
+
     return {
-        init: function(contextid, params) {
-            learningToolNoteAction(contextid, params);
-        }
+
+        init: (contextid) => {
+            learningToolNoteAction(contextid);
+        },
     };
 });

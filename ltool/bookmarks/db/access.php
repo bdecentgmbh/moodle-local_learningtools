@@ -22,47 +22,47 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-$capabilities = array(
+$capabilities = [
 
-    'ltool/bookmarks:createbookmarks' => array(
+    'ltool/bookmarks:createbookmarks' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    ),
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
 
-    'ltool/bookmarks:viewownbookmarks' => array(
+    'ltool/bookmarks:viewownbookmarks' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    ),
-    'ltool/bookmarks:manageownbookmarks' => array(
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
+    'ltool/bookmarks:manageownbookmarks' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes'   => array(
-            'user' => CAP_ALLOW
-        )
-    ),
+        'archetypes'   => [
+            'user' => CAP_ALLOW,
+        ],
+    ],
 
-    'ltool/bookmarks:viewbookmarks' => array(
+    'ltool/bookmarks:viewbookmarks' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes'   => array(
+        'archetypes'   => [
             'manager'  => CAP_ALLOW,
-        )
-    ),
+        ],
+    ],
 
-    'ltool/bookmarks:managebookmarks' => array(
+    'ltool/bookmarks:managebookmarks' => [
         'riskbitmask' => RISK_SPAM,
         'captype'      => 'read',
         'contextlevel' => CONTEXT_COURSE,
-    ),
+    ],
     // Add more capabilities here ...
-);
+];

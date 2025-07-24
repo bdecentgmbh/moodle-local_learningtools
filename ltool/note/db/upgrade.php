@@ -79,6 +79,23 @@ function xmldb_ltool_note_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2025041701, 'ltool', 'note');
     }
 
+    if ($oldversion < 2025061800) {
+        // Modify the note table to support itemtype and itemid.
+        $table = new xmldb_table('ltool_note_data');
+
+        // Add print field if it doesn't exist.
+        $field = new xmldb_field('printstatus', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'itemid');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Update existing records to use the new fields.
+        $DB->execute("UPDATE {ltool_note_data} SET printstatus = 0");
+
+         // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2025061800, 'ltool', 'note');
+
+    }
+
     return true;
 }
-

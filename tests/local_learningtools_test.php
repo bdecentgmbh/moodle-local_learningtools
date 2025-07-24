@@ -26,7 +26,7 @@ namespace local_learningtools;
 /**
  * local learning tools main primary plugin phpunit test cases defined.
  */
-class local_learningtools_test extends \advanced_testcase {
+final class local_learningtools_test extends \advanced_testcase {
 
     /**
      * Summary of course
@@ -67,7 +67,7 @@ class local_learningtools_test extends \advanced_testcase {
         $this->mod = $this->generator->create_module('page', [
             'course' => $this->course->id,
             'title' => 'Test page',
-            'content' => 'Test page content'
+            'content' => 'Test page content',
         ]);
     }
 

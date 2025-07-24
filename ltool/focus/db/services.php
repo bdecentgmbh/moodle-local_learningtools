@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$functions = array(
-    'ltool_focus_save_userfocusmode' => array(
+$functions = [
+    'ltool_focus_save_userfocusmode' => [
         'classname'   => 'ltool_focus\external',
         'methodname'  => 'save_userfocusmode',
         'description' => 'Save the user focus mode',
@@ -33,5 +33,5 @@ $functions = array(
         'capabilities' => 'ltool/focus:createfocus',
         'ajax'          => true,
         'loginrequired' => true,
-    ),
-);
+    ],
+];

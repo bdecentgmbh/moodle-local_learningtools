@@ -26,10 +26,10 @@ namespace ltool_bookmarks\privacy;
 use context;
 
 use core_privacy\local\metadata\collection;
-use \core_privacy\local\request\contextlist;
-use \core_privacy\local\request\userlist;
-use \core_privacy\local\request\approved_userlist;
-use \core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\contextlist;
+use core_privacy\local\request\userlist;
+use core_privacy\local\request\approved_userlist;
+use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
@@ -87,7 +87,7 @@ class provider implements
      * @param  int         $userid      The user to search.
      * @return contextlist $contextlist The list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid) : contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new \core_privacy\local\request\contextlist();
 
         if (self::user_has_bookmark_data($userid)) {

@@ -40,10 +40,10 @@ class external extends \external_api {
     public static function save_userbookmarks_parameters() {
 
         return new \external_function_parameters(
-            array(
+            [
                 'contextid' => new \external_value(PARAM_INT, 'The context id for the course'),
-                'formdata' => new \external_value(PARAM_RAW, 'The data from the user bookmarks')
-            )
+                'formdata' => new \external_value(PARAM_RAW, 'The data from the user bookmarks'),
+            ]
         );
     }
 
@@ -60,7 +60,7 @@ class external extends \external_api {
         $context = \context_system::instance();
         require_capability('ltool/bookmarks:createbookmarks', $context);
         $params = self::validate_parameters(self::save_userbookmarks_parameters(),
-                        array('contextid' => $contextid, 'formdata' => $formdata));
+                        ['contextid' => $contextid, 'formdata' => $formdata]);
         // Parse serialize form data.
         $data = json_decode($params['formdata']);
         $data = (array) $data;
@@ -75,11 +75,11 @@ class external extends \external_api {
     public static function save_userbookmarks_returns() {
 
         return new \external_single_structure(
-            array(
+            [
                 'bookmarksstatus' => new \external_value(PARAM_BOOL, 'save bookmarks status'),
                 'bookmarksmsg' => new \external_value(PARAM_TEXT, 'bookmarks message'),
-                'notificationtype' => new \external_value(PARAM_TEXT, 'Notification type')
-            )
+                'notificationtype' => new \external_value(PARAM_TEXT, 'Notification type'),
+            ]
         );
     }
 }

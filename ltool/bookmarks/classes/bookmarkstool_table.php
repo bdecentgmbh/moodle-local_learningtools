@@ -57,8 +57,8 @@ class bookmarkstool_table extends \table_sql {
         $this->urlparams = $urlparams;
         $this->teacher = $teacher;
 
-        $columns = array();
-        $headers = array();
+        $columns = [];
+        $headers = [];
 
         $columns[] = 'icon';
         $headers[] = get_string('bookicon', 'local_learningtools');
@@ -191,8 +191,8 @@ class bookmarkstool_table extends \table_sql {
                 $strdelete = get_string('delete');
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
-                $deleteparams = array('delete' => $row->id, 'sesskey' => sesskey(),
-                    'courseid' => $this->courseid);
+                $deleteparams = ['delete' => $row->id, 'sesskey' => sesskey(),
+                    'courseid' => $this->courseid];
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
                 $url = new moodle_url($returnurl, $deleteparams);
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
@@ -205,7 +205,7 @@ class bookmarkstool_table extends \table_sql {
                 $strdelete = get_string('delete');
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
-                $deleteparams = array('delete' => $row->id, 'sesskey' => sesskey());
+                $deleteparams = ['delete' => $row->id, 'sesskey' => sesskey()];
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
                 $url = new moodle_url($returnurl, $deleteparams);;
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));

@@ -21,6 +21,7 @@
  * @copyright bdecent GmbH 2021
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once(dirname(__FILE__).'/../../../../config.php');
 require_login();
 require_once(dirname(__FILE__).'/lib.php');
@@ -36,6 +37,7 @@ $PAGE->set_heading($SITE->fullname);
 $delete      = optional_param('delete', 0, PARAM_INT);
 $returnurl  = optional_param('returnurl', '', PARAM_URL);
 $confirm    = optional_param('confirm', '', PARAM_ALPHANUM);
+$view = optional_param('view', 0, PARAM_INT);
 // Require access the page.
 ltool_note_require_deletenote_cap($delete);
 // If user is logged in, then use profile navigation in breadcrumbs.
@@ -46,13 +48,18 @@ $PAGE->navbar->add($title);
 
 $pageurl = new moodle_url('/local/learningtools/ltool/note/deletelist.php');
 
+if ($view) {
+    $baseurl = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $view]);
+    $returnurl = $baseurl;
+}
+
 if ($delete && confirm_sesskey()) {
 
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
 
-        $deleteoptions = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey());
+        $deleteoptions = ['delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey()];
         $deleteoptions = array_merge($deleteoptions, ['returnurl' => $returnurl]);
         $deletenoteurl = new moodle_url($pageurl, $deleteoptions);
         $deletenotebutton = new single_button($deletenoteurl, get_string('delete'), 'post');
@@ -62,8 +69,7 @@ if ($delete && confirm_sesskey()) {
         die;
 
     } else if (data_submitted()) {
-
-        $deleterecord = $DB->get_record('ltool_note_data', array('id' => $delete));
+        $deleterecord = $DB->get_record('ltool_note_data', ['id' => $delete]);
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
         if ($DB->delete_records('ltool_note_data', ['id' => $delete])) {
             $eventcourseid = local_learningtools_get_eventlevel_courseid($deleteeventcontext, $deleterecord->course);
@@ -73,7 +79,7 @@ if ($delete && confirm_sesskey()) {
                 'context' => $deleteeventcontext,
                 'other' => [
                     'pagetype' => $deleterecord->pagetype,
-                ]
+                ],
             ];
 
             // Add event to user delete the bookmark.

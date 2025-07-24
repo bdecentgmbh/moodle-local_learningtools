@@ -161,7 +161,7 @@ if ($delete && confirm_sesskey()) {
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
-        $optionsyes = array('delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey());
+        $optionsyes = ['delete' => $delete, 'confirm' => md5($delete), 'sesskey' => sesskey()];
         $optionsyes = array_merge($optionsyes, $urlparams);
         $deleteurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', $optionsyes);
         $deletebutton = new single_button($deleteurl, get_string('delete'), 'post');
@@ -180,7 +180,7 @@ if ($delete && confirm_sesskey()) {
                 'context' => $deleteeventcontext,
                 'other' => [
                     'pagetype' => $deleterecord->pagetype,
-                ]
+                ],
             ];
 
             if ($childid) {
@@ -206,8 +206,8 @@ echo $OUTPUT->header();
 if ($userbase) {
 
     $usercontext = context_user::instance($userbase);
-    $userinfo = $DB->get_record('user', array('id' => $userbase));
-    $headerinfo = array('heading' => fullname($userinfo), 'user' => $userinfo, 'usercontext' => $usercontext);
+    $userinfo = $DB->get_record('user', ['id' => $userbase]);
+    $headerinfo = ['heading' => fullname($userinfo), 'user' => $userinfo, 'usercontext' => $usercontext];
     echo $OUTPUT->context_header($headerinfo, 2);
 }
 
@@ -230,7 +230,6 @@ if (!empty($courseid) && !$childid) {
     $sqlparams['userid'] = $USER->id;
 }
 
-
 $blockinstance = new \ltool_bookmarks\bookmarkstool_filter($USER->id, $courseid, $childid, $teacher, $urlparams, $baseurl);
 
 if (!$courseid) {
@@ -244,7 +243,6 @@ if ($selectcourse) {
     $sqlparams = array_merge($sqlparams, $courseparams);
     $urlparams['selectcourse'] = $selectcourse;
 }
-
 
 $templatecontent['sortfilter'] = $blockinstance->get_sort_instance();
 $maindata = $blockinstance->get_main_body($sqlconditions, $sqlparams, $sort, $sorttype, $page, $perpage);

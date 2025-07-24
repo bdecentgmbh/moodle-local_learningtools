@@ -1,0 +1,93 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template ltool_note/notes_list
+
+    Example context (json):
+    {
+
+    }
+}}
+
+<div class="ltool-notes-container">
+    <div class="ltool-notes-grid">
+        {{#hasnotes}}
+            {{#notes}}
+                <div class="note-card">
+                    <div class="note-content">
+                        {{{content}}}
+                    </div>
+                    <div class="note-footer">
+                        <div class="note-title-block">
+                            <div class="note-context">
+                                <span>{{{contextname}}}</span>
+                            </div>
+                            {{^hasprint}}
+                                <div class="note-actions dropdown">
+                                    <button class="btn btn-secondary" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="icon fa fa-ellipsis-vertical fa-fw "></i>
+                                    </button>
+                                    <div class="dropdown-menu  dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                                        <a href="{{{editurl}}}" class="dropdown-item">
+                                            {{#pix}}i/settings, core, {{#str}}edit{{/str}}{{/pix}}
+                                            <span class="menu-action-edit-text">{{#str}}edit{{/str}}</span>
+                                        </a>
+                                        <a href="{{{deleteurl}}}" class="dropdown-item">
+                                            {{#pix}}t/delete, core, {{#str}}delete{{/str}}{{/pix}}
+                                            <span class="menu-action-delete-text">{{#str}}delete{{/str}}</span>
+                                        </a>
+                                        <a href="{{{contexturl}}}" class="dropdown-item">
+                                            <i class="icon fa fa-pager fa-fw "></i>
+                                            <span class="menu-action-text">{{#str}}view{{/str}}</span>
+                                        </a>
+                                        {{#printstatus}}
+                                            <a href="{{{showurl}}}" class="dropdown-item">
+                                                {{#pix}}t/hide, core,{{#str}}show{{/str}}{{/pix}}
+                                                <span class="menu-action-show-text">{{#str}}showprint, local_learningtools{{/str}}</span>
+                                            </a>
+                                        {{/printstatus}}
+
+                                        {{^printstatus}}
+                                            <a href="{{{hideurl}}}" class="dropdown-item">
+                                                {{#pix}}t/show, core,{{#str}}hide{{/str}}{{/pix}}
+                                                <span class="menu-action-hide-text">{{#str}}hideprint, local_learningtools{{/str}}</span>
+                                            </a>
+                                        {{/printstatus}}
+                                    </div>
+                                </div>
+                            {{/hasprint}}
+                        </div>
+                        <div class="note-title">
+                            <a href="{{{contexturl}}}">
+                                <span class="note-module-text">{{name}}</span>
+                            </a>
+                        </div>
+                        <div class="note-timestamp">
+                            <i class="fa fa-clock"></i> {{{time}}}
+                        </div>
+                    </div>
+                </div>
+            {{/notes}}
+        {{/hasnotes}}
+        {{^hasnotes}}
+            <div class="alert alert-info">
+                {{#str}}nonotes, ltool_note{{/str}}
+            </div>
+        {{/hasnotes}}
+    </div>
+</div>
+

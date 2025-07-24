@@ -22,8 +22,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- defined("MOODLE_INTERNAL") || die();
+defined("MOODLE_INTERNAL") || die();
 
 $string['pluginname'] = "Learning Tools Schedule";
-$string['schedule:createschedule'] = "Create the Schedule tool";
 $string['privacy:metadata'] = 'The Schedule tool only displays existing users data.';
+$string['schedule:createschedule'] = "Create the Schedule tool";
