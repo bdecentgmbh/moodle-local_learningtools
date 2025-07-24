@@ -454,7 +454,6 @@
 
 /* Simple print styles - back to basics */
 @media print {
-    .ltool-note-print-header,
     .ltool-note-print-actions,
     .ltool-note-print-btn,
     .no-print {
