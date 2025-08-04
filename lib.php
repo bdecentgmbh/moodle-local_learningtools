@@ -621,7 +621,9 @@ function local_learningtools_can_visible_tool_incourse() {
  * @param context $context The course context
  */
 function local_learningtools_extend_navigation_course($navigation, $course, $context) {
-    $url = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $course->id]);
-    $navigation->add(get_string('learningtools', 'local_learningtools'), $url, navigation_node::TYPE_SETTING, null, null,
-            new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools')));
+    if (isloggedin() && !isguestuser()) {
+        $url = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $course->id]);
+        $navigation->add(get_string('notes', 'local_learningtools'), $url, navigation_node::TYPE_SETTING, null, null,
+                new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools')));
+    }
 }
