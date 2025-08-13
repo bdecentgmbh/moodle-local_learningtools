@@ -273,7 +273,7 @@ class general_action_bar {
             $params['sectionid'] = $this->sectionid;
         }
 
-        $sql .= " GROUP BY cm.id, cm.course";
+        $sql .= " ORDER BY cm.id, cm.course";
 
         $records = $DB->get_records_sql($sql, $params);
         $data = [];
