@@ -58,9 +58,14 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
     global $PAGE, $CFG;
     $context = context_system::instance();
+
     $ltoolsjs = [];
     // Content of fab button html.
-    $fabbuttonhtml = json_encode(local_learningtools_get_learningtools_info());
+    $learningtoolsinfo = local_learningtools_get_learningtools_info();
+    $fabbuttonhtml = !empty($learningtoolsinfo) ? json_encode($learningtoolsinfo) : false;
+    if ($fabbuttonhtml === false) {
+        return;
+    }
     $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
     $PAGE->requires->data_for_js('ltools', $ltoolsjs);
     $PAGE->requires->data_for_js('fabbuttonhtml', $fabbuttonhtml, true);
@@ -621,7 +626,9 @@ function local_learningtools_can_visible_tool_incourse() {
  * @param context $context The course context
  */
 function local_learningtools_extend_navigation_course($navigation, $course, $context) {
-    $url = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $course->id]);
-    $navigation->add(get_string('learningtools', 'local_learningtools'), $url, navigation_node::TYPE_SETTING, null, null,
-            new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools')));
+    if (isloggedin() && !isguestuser()) {
+        $url = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $course->id]);
+        $navigation->add(get_string('notes', 'local_learningtools'), $url, navigation_node::TYPE_SETTING, null, null,
+                new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools')));
+    }
 }
