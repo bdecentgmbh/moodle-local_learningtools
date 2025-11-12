@@ -58,12 +58,14 @@ function local_learningtools_myprofile_navigation(tree $tree, $user, $iscurrentu
 function local_learningtools_extend_settings_navigation($settingnav, $context) {
     global $PAGE, $CFG;
     $context = context_system::instance();
-    if (empty($PAGE->course) || empty($PAGE->context) || $PAGE->context->contextlevel !== CONTEXT_COURSE) {
-        return;
-    }    
+
     $ltoolsjs = [];
     // Content of fab button html.
-    $fabbuttonhtml = json_encode(local_learningtools_get_learningtools_info());
+    $learningtoolsinfo = local_learningtools_get_learningtools_info();
+    $fabbuttonhtml = !empty($learningtoolsinfo) ? json_encode($learningtoolsinfo) : false;
+    if ($fabbuttonhtml === false) {
+        return;
+    }
     $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
     $PAGE->requires->data_for_js('ltools', $ltoolsjs);
     $PAGE->requires->data_for_js('fabbuttonhtml', $fabbuttonhtml, true);
