@@ -69,8 +69,8 @@ Feature: Check the Note ltool listing and notes add/edit delete and list viewes.
   @javascript
   Scenario: Access Notes Listing from Learning Tools Navigation.
     Given I am on the "Course 1" course page logged in as student1
-    And I should see "Learning Tools" in the ".secondary-navigation" "css_element"
-    And I click on "Learning Tools" "link" in the ".secondary-navigation" "css_element"
+    And I should see "Notes" in the ".secondary-navigation" "css_element"
+    And I click on "Notes" "link" in the ".secondary-navigation" "css_element"
     And I should see "Module Test note 1" in the ".note-card:nth-child(1) .note-content p" "css_element"
     And I should see "Module: Page" in the ".note-card:nth-child(1) .note-context span" "css_element"
     And I should see "PageName1" in the ".note-card:nth-child(1) .note-title span" "css_element"
@@ -82,8 +82,8 @@ Feature: Check the Note ltool listing and notes add/edit delete and list viewes.
   Scenario: Notes Listing page actions.
     # Edit the notes on the listing page.
     Given I am on the "Course 1" course page logged in as student1
-    And I should see "Learning Tools" in the ".secondary-navigation" "css_element"
-    And I click on "Learning Tools" "link" in the ".secondary-navigation" "css_element"
+    And I should see "Notes" in the ".secondary-navigation" "css_element"
+    And I click on "Notes" "link" in the ".secondary-navigation" "css_element"
     And I should see "Module Test note 1" in the ".note-card:nth-child(1) .note-content p" "css_element"
     And I should see "Module: Page" in the ".note-card:nth-child(1) .note-context span" "css_element"
     And I should see "PageName1" in the ".note-card:nth-child(1) .note-title span" "css_element"
@@ -130,8 +130,8 @@ Feature: Check the Note ltool listing and notes add/edit delete and list viewes.
     And I set the field "ltnoteeditor" to "Section Test note 4"
     And I press "Save changes"
     And I am on the "Course 1" course page
-    And I should see "Learning Tools" in the ".secondary-navigation" "css_element"
-    And I click on "Learning Tools" "link" in the ".secondary-navigation" "css_element"
+    And I should see "Notes" in the ".secondary-navigation" "css_element"
+    And I click on "Notes" "link" in the ".secondary-navigation" "css_element"
     And I should see "Section" in the ".ltnote-sectionfilter label" "css_element"
     When I select "Section 3" from the "section-filter" singleselect
     And I should see "Section Test note 4" in the ".note-card:nth-child(1) .note-content p" "css_element"
@@ -162,8 +162,8 @@ Feature: Check the Note ltool listing and notes add/edit delete and list viewes.
     And I press "Save changes"
     Then I should see "Notes added successfully"
     And I am on the "Course 1" course page
-    And I should see "Learning Tools" in the ".secondary-navigation" "css_element"
-    And I click on "Learning Tools" "link" in the ".secondary-navigation" "css_element"
+    And I should see "Notes" in the ".secondary-navigation" "css_element"
+    And I click on "Notes" "link" in the ".secondary-navigation" "css_element"
     And I should see "Activity" in the ".ltnote-activityfilter label" "css_element"
     When I select "PageName1" from the "activity-filter" singleselect
     And I should see "Module Test note 1" in the ".note-card:nth-child(1) .note-content p" "css_element"
@@ -182,8 +182,8 @@ Feature: Check the Note ltool listing and notes add/edit delete and list viewes.
   @javascript
   Scenario: Notes search check.
     Given I am on the "Course 1" course page logged in as student1
-    And I should see "Learning Tools" in the ".secondary-navigation" "css_element"
-    And I click on "Learning Tools" "link" in the ".secondary-navigation" "css_element"
+    And I should see "Notes" in the ".secondary-navigation" "css_element"
+    And I click on "Notes" "link" in the ".secondary-navigation" "css_element"
     # Activity type based search.
     When I set the field "Search my notes" to "page"
     And I should see "Module Test note 1" in the ".note-card:nth-child(1) .note-content p" "css_element"
@@ -197,7 +197,7 @@ Feature: Check the Note ltool listing and notes add/edit delete and list viewes.
     And I set the field "ltnoteeditor" to "Quiz module Test note 1"
     And I press "Save changes"
     And I am on the "Course 1" course page
-    And I click on "Learning Tools" "link" in the ".secondary-navigation" "css_element"
+    And I click on "Notes" "link" in the ".secondary-navigation" "css_element"
     # Activity name based search.
     When I set the field "Search my notes" to "Quiz1"
     And I should see "Quiz module Test note 1" in the ".note-card:nth-child(1) .note-content p" "css_element"
