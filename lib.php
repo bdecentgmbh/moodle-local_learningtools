@@ -632,7 +632,7 @@ function local_learningtools_extend_navigation_course($navigation, $course, $con
             $url,
             navigation_node::TYPE_SETTING,
             null,
-            null,
+            'ltool_notes',
             new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools'))
         );
     }

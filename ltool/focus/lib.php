@@ -197,6 +197,11 @@ function ltool_focus_output_fragment_load_focus_mode($args) {
     global $SESSION;
     $status = $args['status'];
     $SESSION->focusmode = $status;
+    if ($status) {
+        $SESSION->focussesskey = sesskey();
+    } else {
+        unset($SESSION->focussesskey);
+    }
     return $status;
 }
 
@@ -209,6 +214,13 @@ function ltool_focus_focusmode_actions() {
     global $SESSION;
     if (!isset($SESSION->focusmode)) {
         $SESSION->focusmode = 0;
+    } else if ($SESSION->focusmode) {
+        // Reset focus if the stored sesskey no longer matches — this means a new login occurred
+        // and the session was regenerated, so focus should start disabled.
+        $currentsesskey = sesskey();
+        if (!isset($SESSION->focussesskey) || $SESSION->focussesskey !== $currentsesskey) {
+            $SESSION->focusmode = 0;
+        }
     }
     ltool_focus_load_focus_config();
 }
