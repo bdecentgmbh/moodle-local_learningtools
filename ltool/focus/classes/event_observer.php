@@ -44,4 +44,14 @@ class event_observer {
             }
         }
     }
+
+    /**
+     * Reset focus mode when a user logs in so each session starts with focus disabled.
+     * @param object $event event data
+     * @return void
+     */
+    public static function ltool_focus_user_loggedin($event) {
+        global $SESSION;
+        $SESSION->focusmode = 0;
+    }
 }

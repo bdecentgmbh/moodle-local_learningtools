@@ -20,8 +20,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- define(['jquery', 'core/fragment', 'core/modal_factory', 'core/str', 'core/modal_events', 'core/notification'],
- function($, Fragment, ModalFactory, String, ModalEvents, Notification) {
+ define(['jquery', 'core/fragment', 'core/modal_save_cancel', 'core/str', 'core/modal_events', 'core/notification'],
+ function($, Fragment, ModalSaveCancel, String, ModalEvents, Notification) {
 
     /* global ltools */
 
@@ -52,48 +52,49 @@
     LearningToolSchedule.prototype.displaySchedulebox = function(params) {
         var self = this;
         var strschedule = String.get_string('schedule', 'local_learningtools');
-        return ModalFactory.create({
-            title: strschedule,
-            type: ModalFactory.types.SAVE_CANCEL,
-            body: self.getScheduleAction(params),
-            large: true
-        }).then(function(modal) {
-            modal.getRoot().on(ModalEvents.save, e => {
-                // Trigger a form submission, so that any mform elements can do final tricks before the form submission
-                // is processed.
-                // The actual submit even tis captured in the next handler.
-                e.preventDefault();
-                $(e.target).find("button[data-action=save]").attr("disabled", true);
-                modal.getRoot().find('form').submit();
-            });
+        $.when(strschedule).done(function(localizedTitle) {
+            ModalSaveCancel.create({
+                title: localizedTitle,
+                body: self.getScheduleAction(params),
+                large: true
+            }).then(function(modal) {
+                modal.getRoot().on(ModalEvents.save, e => {
+                    // Trigger a form submission, so that any mform elements can do final tricks before the form submission
+                    // is processed.
+                    // The actual submit event is captured in the next handler.
+                    e.preventDefault();
+                    $(e.target).find("button[data-action=save]").attr("disabled", true);
+                    modal.getRoot().find('form').submit();
+                });
 
-            modal.getRoot().on('submit', 'form', e => {
-                e.preventDefault();
-                var schedulenameinfo = document.querySelectorAll("#ltoolschedule-editorbox input[name='schedulename']")[0];
-                if (schedulenameinfo.value) {
-                    self.submitFormData(params.contextid);
-                    var successinfo = String.get_string('successtoolschedule', 'local_learningtools');
-                    $.when(successinfo).done(function(localizedEditString) {
-                        Notification.addNotification({
-                            message: localizedEditString,
-                            type: "success"
+                modal.getRoot().on('submit', 'form', e => {
+                    e.preventDefault();
+                    var schedulenameinfo = document.querySelectorAll("#ltoolschedule-editorbox input[name='schedulename']")[0];
+                    if (schedulenameinfo.value) {
+                        self.submitFormData(params.contextid);
+                        var successinfo = String.get_string('successtoolschedule', 'local_learningtools');
+                        $.when(successinfo).done(function(localizedEditString) {
+                            Notification.addNotification({
+                                message: localizedEditString,
+                                type: "success"
+                            });
                         });
-                    });
-                    if (ltools.disappertimenotify != 0) {
-                        setTimeout(function() {
-                            document.querySelector("span.notifications").innerHTML = "";
-                        }, ltools.disappertimenotify);
+                        if (ltools.disappertimenotify != 0) {
+                            setTimeout(function() {
+                                document.querySelector("span.notifications").innerHTML = "";
+                            }, ltools.disappertimenotify);
+                        }
                     }
-                }
-                modal.hide();
-            });
+                    modal.hide();
+                });
 
-            modal.getRoot().on(ModalEvents.hidden, function() {
-                modal.destroy();
-            });
-            modal.show();
-            return modal;
-        }).fail(Notification.exception);
+                modal.getRoot().on(ModalEvents.hidden, function() {
+                    modal.destroy();
+                });
+                modal.show();
+                return modal;
+            }).catch(Notification.exception);
+        });
 
     };
 

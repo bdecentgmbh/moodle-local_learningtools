@@ -26,7 +26,11 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = [
     [
-    'eventname' => 'core\event\config_log_created',
-    'callback' => '\ltool_focus\event_observer::ltool_focus_changeconfig',
+        'eventname' => 'core\event\config_log_created',
+        'callback' => '\ltool_focus\event_observer::ltool_focus_changeconfig',
+    ],
+    [
+        'eventname' => '\core\event\user_loggedin',
+        'callback' => '\ltool_focus\event_observer::ltool_focus_user_loggedin',
     ],
 ];
