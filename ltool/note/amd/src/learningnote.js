@@ -21,8 +21,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal_events', 'core/ajax', 'core/notification', 'core/utils', "core/config"],
-    function ($, ModalFactory, String, Fragment, ModalEvents, Ajax, notification, Utils, Config) {
+define(['jquery', 'core/modal_save_cancel', 'core/str', 'core/fragment', 'core/modal_events', 'core/ajax', 'core/notification', 'core/utils', "core/config"],
+    function ($, ModalSaveCancel, String, Fragment, ModalEvents, Ajax, notification, Utils, Config) {
 
     /* global ltools, ltool_note_config */
 
@@ -198,9 +198,8 @@ define(['jquery', 'core/modal_factory', 'core/str', 'core/fragment', 'core/modal
                 ltoolnotebody.classList.add('learningtool-note');
             }
 
-            ModalFactory.create({
+            ModalSaveCancel.create({
                 title: localizedEditString + getPopoutAction(),
-                type: ModalFactory.types.SAVE_CANCEL,
                 body: getnoteaction(contextid, params),
                 large: true
             }).then(function (modal) {

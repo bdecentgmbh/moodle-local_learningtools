@@ -34,7 +34,7 @@
 			{{! Course fitler block }}
 			{{#coursefilter}}
 			<div class="course-block">
-				<select class="form-control" id="course-select" onchange="location = this.value;">
+				<select class="form-select" id="course-select" onchange="location = this.value;">
 					<option value="{{pageurl}}"> 
 						{{#str}} allcourses, local_learningtools {{/str}}
 					</option>
@@ -51,7 +51,7 @@
 			{{#sortfilter}} 
 			<div class="sort-block">
 				<i class="{{iclass}}" id="bookmarkssorttype" data-type={{sorttype}}></i>
-				<select class="form-control" id="sort-select" onchange="location = this.value;">
+				<select class="form-select" id="sort-select" onchange="location = this.value;">
 					<option value="{{datesort}}" {{dateselect}}> 
 						{{#str}} sortbydate, local_learningtools {{/str}}
 					</option>

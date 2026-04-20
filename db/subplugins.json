@@ -1,4 +1,7 @@
 {
+    "subplugintypes": {
+        "ltool": "ltool"
+    },
     "plugintypes": {
         "ltool": "local\/learningtools\/ltool"
     }

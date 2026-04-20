@@ -47,10 +47,11 @@ class behat_focus extends behat_base {
      */
     public function i_check_focus_mode_enable(): void {
         $footerjs = "
+            var footer = document.getElementById('page-footer');
             return (
-                Y.one('#page-footer') &&
-                Y.one('#page-footer').getComputedStyle('display') == 'none'
-            )
+                footer !== null &&
+                window.getComputedStyle(footer).display == 'none'
+            );
         ";
 
         if (!$this->evaluate_script($footerjs)) {
@@ -67,10 +68,11 @@ class behat_focus extends behat_base {
      */
     public function i_check_focus_mode_disable(): void {
         $footerjs = "
+            var footer = document.getElementById('page-footer');
             return (
-                Y.one('#page-footer') &&
-                Y.one('#page-footer').getComputedStyle('display') !== 'none'
-            )
+                footer !== null &&
+                window.getComputedStyle(footer).display !== 'none'
+            );
         ";
         if (!$this->evaluate_script($footerjs)) {
             throw new ExpectationException("Doesn't disable the focus mode", $this->getSession());
