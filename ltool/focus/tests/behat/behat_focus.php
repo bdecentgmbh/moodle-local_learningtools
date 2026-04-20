@@ -45,15 +45,12 @@ class behat_focus extends behat_base {
      * @throws ExpectationException
      */
     public function i_check_focus_mode_enable(): void {
-        $footerjs = "
-            var footer = document.getElementById('page-footer');
-            return (
-                footer !== null &&
-                window.getComputedStyle(footer).display == 'none'
-            );
+        $focusjs = "
+            var focusBlock = document.querySelector('.ltoolfocus-info');
+            return (focusBlock !== null && focusBlock.classList.contains('enable'));
         ";
 
-        if (!$this->evaluate_script($footerjs)) {
+        if (!$this->evaluate_script($focusjs)) {
             throw new ExpectationException("Doesn't enable the focus mode", $this->getSession());
         }
     }
@@ -66,14 +63,11 @@ class behat_focus extends behat_base {
      * @throws ExpectationException
      */
     public function i_check_focus_mode_disable(): void {
-        $footerjs = "
-            var footer = document.getElementById('page-footer');
-            return (
-                footer !== null &&
-                window.getComputedStyle(footer).display !== 'none'
-            );
+        $focusjs = "
+            var focusBlock = document.querySelector('.ltoolfocus-info');
+            return (focusBlock === null || !focusBlock.classList.contains('enable'));
         ";
-        if (!$this->evaluate_script($footerjs)) {
+        if (!$this->evaluate_script($focusjs)) {
             throw new ExpectationException("Doesn't disable the focus mode", $this->getSession());
         }
     }

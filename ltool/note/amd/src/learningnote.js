@@ -221,7 +221,7 @@ define(['jquery', 'core/modal_save_cancel', 'core/str', 'core/fragment', 'core/m
                     submitFormData(modal, contextid, params, contentDesigner);
                 });
 
-                document.querySelector("#popout-action").addEventListener('click', function () {
+                modal.getRoot().on('click', '#popout-action', function () {
                     var pageurlobj = params.pageurl.split("&");
                     var pageurljson = JSON.stringify(pageurlobj);
                     var url = M.cfg.wwwroot + "/local/learningtools/ltool/note/pop_out.php?contextid=" +
