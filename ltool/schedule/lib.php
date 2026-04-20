@@ -23,8 +23,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
-require_once($CFG->libdir.'/formslib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once($CFG->libdir . '/formslib.php');
 
 /**
  * Define user edit the schedulebox form.
@@ -126,14 +126,14 @@ function ltool_schedule_output_fragment_get_schedule_form($args) {
  */
 function ltool_schedule_output_fragment_set_calendar_event($args) {
     global $CFG, $USER;
-    require_once($CFG->dirroot.'/calendar/lib.php');
+    require_once($CFG->dirroot . '/calendar/lib.php');
     parse_str($args['formdata'], $formdata);
     if (!empty($formdata)) {
         if ($formdata['schedulename']) {
             // Create a calender event.
             if (!empty($formdata['scheduledesc'])) {
                 $visitpage = html_writer::link($formdata['pageurl'], get_string('visitpage', 'local_learningtools'));
-                $scheduledesc = $formdata['scheduledesc'] .' '. $visitpage;
+                $scheduledesc = $formdata['scheduledesc'] . ' ' . $visitpage;
             } else {
                 $scheduledesc = '';
             }
@@ -145,8 +145,13 @@ function ltool_schedule_output_fragment_set_calendar_event($args) {
             $event->groupid = 0;
             $event->userid = $USER->id;
             $timestart = $formdata['scheduletimestart'];
-            $event->timestart = make_timestamp($timestart['year'], $timestart['month'], $timestart['day'],
-            $timestart['hour'], $timestart['minute']);
+            $event->timestart = make_timestamp(
+                $timestart['year'],
+                $timestart['month'],
+                $timestart['day'],
+                $timestart['hour'],
+                $timestart['minute']
+            );
             $event->timeduration = !empty($formdata['scheduleduration']) ? $formdata['scheduleduration'] * MINSECS : 0;
             $event->visible = 1;
             calendar_event::create($event);

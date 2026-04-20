@@ -28,7 +28,6 @@ namespace ltool_bookmarks\event;
  * Bookmarks tool create event.
  */
 class ltbookmarks_created extends \core\event\base {
-
     /**
      * Init method.
      */
@@ -69,5 +68,4 @@ class ltbookmarks_created extends \core\event\base {
             throw new \coding_exception('The \'pagetype\' value must be set in other.');
         }
     }
-
 }

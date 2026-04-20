@@ -26,7 +26,7 @@ namespace ltool_focus;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/externallib.php');
+require_once($CFG->libdir . '/externallib.php');
 
 /**
  * define external class.
@@ -56,8 +56,10 @@ class external extends \external_api {
         require_login();
         $context = \context_system::instance();
         require_capability('ltool/focus:createfocus', $context);
-        $params = self::validate_parameters(self::save_userfocusmode_parameters(),
-            ['status' => $status]);
+        $params = self::validate_parameters(
+            self::save_userfocusmode_parameters(),
+            ['status' => $status]
+        );
         $SESSION->focusmode = $params['status'];
         return $status;
     }

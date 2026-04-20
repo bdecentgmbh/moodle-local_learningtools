@@ -25,7 +25,7 @@ use core_user\output\myprofile\tree;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
 
 /**
  * Defines ltool bookmarks nodes for my profile navigation tree.
@@ -48,15 +48,24 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
                 $coursecontext = context_course::instance($course->id);
                 $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', ['courseid' => $course->id,
                     'userid' => $userid]);
-                $bookmarksnode = new core_user\output\myprofile\node('learningtools',
-                    'bookmarks', get_string('coursebookmarks', 'local_learningtools'),
-                null, $bookmarksurl);
+                $bookmarksnode = new core_user\output\myprofile\node(
+                    'learningtools',
+                    'bookmarks',
+                    get_string('coursebookmarks', 'local_learningtools'),
+                    null,
+                    $bookmarksurl
+                );
                 $tree->add_node($bookmarksnode);
             } else {
                 if (has_capability('ltool/bookmarks:viewownbookmarks', $context)) {
                     $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
-                    $bookmarksnode = new core_user\output\myprofile\node('learningtools', 'bookmarks',
-                        get_string('bookmarks', 'local_learningtools'), null, $bookmarksurl);
+                    $bookmarksnode = new core_user\output\myprofile\node(
+                        'learningtools',
+                        'bookmarks',
+                        get_string('bookmarks', 'local_learningtools'),
+                        null,
+                        $bookmarksurl
+                    );
                     $tree->add_node($bookmarksnode);
                 }
             }
@@ -76,14 +85,17 @@ function ltool_bookmarks_myprofile_navigation(tree $tree, $user, $iscurrentuser,
             } else if (!empty($course) && !empty($userid)) {
                 $coursecontext = context_course::instance($course->id);
                 if (has_capability('ltool/bookmarks:viewbookmarks', $coursecontext)) {
-
                     $bookmarksurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php', ['courseid' => $course->id,
                         'userid' => $userid,
                         'teacher' => 1,
                     ]);
-                    $bookmarksnode = new core_user\output\myprofile\node('learningtools',
-                        'bookmarks', get_string('coursebookmarks', 'local_learningtools'),
-                    null, $bookmarksurl);
+                    $bookmarksnode = new core_user\output\myprofile\node(
+                        'learningtools',
+                        'bookmarks',
+                        get_string('coursebookmarks', 'local_learningtools'),
+                        null,
+                        $bookmarksurl
+                    );
                     $tree->add_node($bookmarksnode);
                 }
             }
@@ -113,13 +125,13 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
 
     $sql = "SELECT *
         FROM {ltool_bookmarks_data}
-        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
+        WHERE " . $DB->sql_compare_text('pageurl', 255) . " = " . $DB->sql_compare_text('?', 255) . "
         AND contextid = ?
         AND userid = ?";
     $params = [$data['pageurl'], $contextid, $data['user']];
     if ($itemtype == 'chapter') {
         $sql .= " AND itemtype = ? AND itemid = ?";
-        $params = array_merge($params , [$itemtype, $itemid]);
+        $params = array_merge($params, [$itemtype, $itemid]);
         $chaptertitle = '';
         if ($chapter = $DB->get_record('cdelement_chapter', ['id' => $itemid])) {
             $chaptertitle = (!empty($chapter->title) ? $chapter->title : '');
@@ -169,7 +181,7 @@ function ltool_bookmarks_user_save_bookmarks($contextid, $data) {
         $bookmarksstatus = !empty($bookmarksrecord) ? true : false;
         $notificationtype = 'success';
     } else {
-        $selectdelete = $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255).
+        $selectdelete = $DB->sql_compare_text('pageurl', 255) . " = " . $DB->sql_compare_text('?', 255) .
             " AND contextid = ? AND userid = ?";
         $deletedparams = [$data['pageurl'], $contextid, $data['user']];
         if ($itemtype == 'chapter') {
@@ -256,7 +268,7 @@ function ltool_bookmarks_check_page_bookmarks_exist($contextid, $pageurl, $useri
     $pagebookmarks = false;
     $sql = "SELECT id
         FROM {ltool_bookmarks_data}
-        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) . "
+        WHERE " . $DB->sql_compare_text('pageurl', 255) . " = " . $DB->sql_compare_text('?', 255) . "
         AND contextid = ?
         AND userid = ?
         AND itemtype = ''";
@@ -323,5 +335,5 @@ function ltool_bookmarks_delete_module_bookmarks($module) {
 function ltool_bookmarks_get_bookmarks_module_coursesection($data) {
     $coursename = local_learningtools_get_course_name($data->courseid);
     $section = local_learningtools_get_mod_section($data->courseid, $data->coursemodule);
-    return $coursename.' / '. $section;
+    return $coursename . ' / ' . $section;
 }

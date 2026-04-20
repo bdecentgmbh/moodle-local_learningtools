@@ -26,7 +26,7 @@
 
 require_once(__DIR__ . '/../../../../../../lib/behat/behat_base.php');
 
-use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use Behat\Mink\Exception\ExpectationException;
 
 /**
  * Test cases custom function for focus tool Focus-mode.
@@ -37,7 +37,6 @@ use Behat\Mink\Exception\ExpectationException as ExpectationException;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_focus extends behat_base {
-
     /**
      * Check that the focus mode enable.
      *

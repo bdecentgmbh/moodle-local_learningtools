@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/../../../../config.php');
+require_once(dirname(__FILE__) . '/../../../../config.php');
 require_login();
-require_once(dirname(__FILE__).'/lib.php');
+require_once(dirname(__FILE__) . '/lib.php');
 
 $context = context_system::instance();
 
@@ -54,7 +54,6 @@ if ($view) {
 }
 
 if ($delete && confirm_sesskey()) {
-
     if ($confirm != md5($delete)) {
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('deletemessage', 'local_learningtools'));
@@ -67,7 +66,6 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->confirm(get_string('deletemsgcheckfull', 'local_learningtools'), $deletenotebutton, $pageurl);
         echo $OUTPUT->footer();
         die;
-
     } else if (data_submitted()) {
         $deleterecord = $DB->get_record('ltool_note_data', ['id' => $delete]);
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
@@ -87,12 +85,20 @@ if ($delete && confirm_sesskey()) {
             $event->trigger();
 
             \core\session\manager::gc(); // Remove stale sessions.
-            redirect($returnurl, get_string('successdeletemessage', 'local_learningtools'),
-             null, \core\output\notification::NOTIFY_SUCCESS);
+            redirect(
+                $returnurl,
+                get_string('successdeletemessage', 'local_learningtools'),
+                null,
+                \core\output\notification::NOTIFY_SUCCESS
+            );
         } else {
             \core\session\manager::gc(); // Remove stale sessions.
-            redirect($returnurl, get_string('deletednotmessage', 'local_learningtools'),
-            null, \core\output\notification::NOTIFY_ERROR);
+            redirect(
+                $returnurl,
+                get_string('deletednotmessage', 'local_learningtools'),
+                null,
+                \core\output\notification::NOTIFY_ERROR
+            );
         }
     }
 }

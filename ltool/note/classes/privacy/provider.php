@@ -25,7 +25,6 @@ namespace ltool_note\privacy;
 
 use stdClass;
 use context;
-
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
@@ -42,7 +41,6 @@ class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
-
     /**
      * Get list of the data privacy summary meta strings.
      *
@@ -127,7 +125,7 @@ class provider implements
         global $DB;
         $context = $userlist->get_context();
         if ($context instanceof \context_user) {
-            list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+            [$userinsql, $userinparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             if (!empty($userinparams)) {
                 $sql = "userid {$userinsql}";
                 $DB->delete_records_select('ltool_note_data', $sql, $userinparams);
@@ -198,7 +196,7 @@ class provider implements
             return;
         }
         // Generate the notes list to export.
-        $exportdata = array_map(function($note) {
+        $exportdata = array_map(function ($note) {
             $modulename = ($note->coursemodule) ? get_coursemodule_from_id('', $note->coursemodule)->name : '-';
             return [
                 'contextlevel' => $note->contextlevel,
@@ -221,9 +219,7 @@ class provider implements
             // Fetch the generic module data for the note.
             $contextdata = helper::get_context_data($context, $user);
             $contextdata = (object)array_merge((array)$contextdata, $exportdata);
-            writer::with_context($context)->export_data([get_string('privacynote', 'ltool_note').' '.$user->id], $contextdata);
+            writer::with_context($context)->export_data([get_string('privacynote', 'ltool_note') . ' ' . $user->id], $contextdata);
         }
-
     }
-
 }

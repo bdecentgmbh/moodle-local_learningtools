@@ -28,7 +28,6 @@ namespace ltool_bookmarks;
  * @runTestsInSeparateProcesses
  */
 final class ltool_bookmarks_test extends \advanced_testcase {
-
     /**
      * Summary of context
      * @var object
@@ -132,7 +131,7 @@ final class ltool_bookmarks_test extends \advanced_testcase {
     public function get_bookmarks_info($toolobj, $tool) {
         global $CFG, $USER, $COURSE;
         $data = $toolobj->get_tool_info();
-        $data['toolurl'] = "$CFG->wwwroot/local/learningtools/ltool/$tool->shortname/$tool->shortname"."_info.php";
+        $data['toolurl'] = "$CFG->wwwroot/local/learningtools/ltool/$tool->shortname/$tool->shortname" . "_info.php";
         $data['id'] = $tool->shortname;
         $data['user'] = $USER->id;
         $data['course'] = $this->context->instanceid;
@@ -145,8 +144,11 @@ final class ltool_bookmarks_test extends \advanced_testcase {
         $data['ltbookmark'] = true;
         $data['pagetitle'] = $this->page->title;
         $data['bookmarkhovername'] = get_string('addbookmark', 'local_learningtools');
-        $data['pagebookmarks'] = ltool_bookmarks_check_page_bookmarks_exist($this->page->context->id, $this->page->pagetype,
-            $USER->id);
+        $data['pagebookmarks'] = ltool_bookmarks_check_page_bookmarks_exist(
+            $this->page->context->id,
+            $this->page->pagetype,
+            $USER->id
+        );
         return $data;
     }
 }

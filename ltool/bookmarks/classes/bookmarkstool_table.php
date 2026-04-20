@@ -33,14 +33,13 @@ use context_user;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
-require_once($CFG->libdir. '/tablelib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once($CFG->libdir . '/tablelib.php');
 
 /**
  * Bookmarks table.
  */
 class bookmarkstool_table extends \table_sql {
-
     /**
      * Fetch bookmarks list.
      * @param mixed $tableid idendifiy unique table id
@@ -178,7 +177,6 @@ class bookmarkstool_table extends \table_sql {
             if ($this->courseid && !$this->child) {
                 $context = context_course::instance($this->courseid);
             } else if ($this->child) {
-
                 if ($this->teacher) {
                     $context = context_course::instance($this->courseid);
                 } else {
@@ -199,7 +197,6 @@ class bookmarkstool_table extends \table_sql {
                 $buttonhtml = implode(' ', $buttons);
                 return $buttonhtml;
             }
-
         } else {
             if (has_capability('ltool/bookmarks:manageownbookmarks', $context)) {
                 $strdelete = get_string('delete');
@@ -207,7 +204,8 @@ class bookmarkstool_table extends \table_sql {
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
                 $deleteparams = ['delete' => $row->id, 'sesskey' => sesskey()];
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
-                $url = new moodle_url($returnurl, $deleteparams);;
+                $url = new moodle_url($returnurl, $deleteparams);
+                ;
                 $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
                 $buttonhtml = implode(' ', $buttons);
                 return $buttonhtml;

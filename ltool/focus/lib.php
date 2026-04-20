@@ -23,7 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
 
 /**
  * Learning tools focus template function.
@@ -61,17 +61,38 @@ function ltool_focus_get_focus_css_url() {
     $fs = get_file_storage();
     $fileinfo = ltool_focus_get_focus_css_fileinfo();
     $filename = $fileinfo['filename'];
-    if ($files = $fs->get_area_files($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-    $fileinfo['itemid'])) {
+    if (
+        $files = $fs->get_area_files(
+            $fileinfo['contextid'],
+            $fileinfo['component'],
+            $fileinfo['filearea'],
+            $fileinfo['itemid']
+        )
+    ) {
         foreach ($files as $file) {
             $filename = $file->get_filename();
         }
     }
     // Todo: FILE EXISTS CHECK.
-    if ($fs->file_exists($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-    $fileinfo['itemid'], $fileinfo['filepath'], $filename)) {
-        $url = moodle_url::make_pluginfile_url($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-            $fileinfo['itemid'], $fileinfo['filepath'], $filename, false);
+    if (
+        $fs->file_exists(
+            $fileinfo['contextid'],
+            $fileinfo['component'],
+            $fileinfo['filearea'],
+            $fileinfo['itemid'],
+            $fileinfo['filepath'],
+            $filename
+        )
+    ) {
+        $url = moodle_url::make_pluginfile_url(
+            $fileinfo['contextid'],
+            $fileinfo['component'],
+            $fileinfo['filearea'],
+            $fileinfo['itemid'],
+            $fileinfo['filepath'],
+            $filename,
+            false
+        );
     }
     return $url;
 }
@@ -98,8 +119,14 @@ function ltool_focus_create_focus_temp_cssfile() {
     $fs = get_file_storage();
     $fileinfo = ltool_focus_get_focus_css_fileinfo();
     $focusmodecss = get_config('ltool_focus', 'focusmodecss');
-    if ($files = $fs->get_area_files($fileinfo['contextid'], $fileinfo['component'], $fileinfo['filearea'],
-        $fileinfo['itemid'])) {
+    if (
+        $files = $fs->get_area_files(
+            $fileinfo['contextid'],
+            $fileinfo['component'],
+            $fileinfo['filearea'],
+            $fileinfo['itemid']
+        )
+    ) {
         foreach ($files as $file) {
             if ($file) {
                 $file->delete();
@@ -121,7 +148,7 @@ function ltool_focus_get_focus_css_fileinfo() {
         'filearea' => 'focuscss',
         'itemid' => 0,
         'filepath' => '/',
-        'filename' => 'focus_'.time().'.css',
+        'filename' => 'focus_' . time() . '.css',
     ];
     return $fileinfo;
 }

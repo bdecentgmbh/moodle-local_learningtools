@@ -26,7 +26,7 @@ namespace ltool_bookmarks;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/externallib.php');
+require_once($CFG->libdir . '/externallib.php');
 
 /**
  * define external class.
@@ -56,11 +56,13 @@ class external extends \external_api {
     public static function save_userbookmarks($contextid, $formdata) {
         global $CFG, $USER;
         require_login();
-        require_once($CFG->dirroot.'/local/learningtools/ltool/bookmarks/lib.php');
+        require_once($CFG->dirroot . '/local/learningtools/ltool/bookmarks/lib.php');
         $context = \context_system::instance();
         require_capability('ltool/bookmarks:createbookmarks', $context);
-        $params = self::validate_parameters(self::save_userbookmarks_parameters(),
-                        ['contextid' => $contextid, 'formdata' => $formdata]);
+        $params = self::validate_parameters(
+            self::save_userbookmarks_parameters(),
+            ['contextid' => $contextid, 'formdata' => $formdata]
+        );
         // Parse serialize form data.
         $data = json_decode($params['formdata']);
         $data = (array) $data;

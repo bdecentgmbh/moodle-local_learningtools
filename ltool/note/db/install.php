@@ -28,7 +28,7 @@
  */
 function xmldb_ltool_note_install() {
     global $CFG;
-    require_once($CFG->dirroot. '/local/learningtools/lib.php');
+    require_once($CFG->dirroot . '/local/learningtools/lib.php');
     $plugin = 'note';
     local_learningtools_add_learningtools_plugin($plugin);
 }

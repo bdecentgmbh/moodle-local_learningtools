@@ -22,18 +22,21 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 global $CFG;
 
 if ($hassiteconfig) {
-    $ADMIN->add('localplugins', new admin_category('local_learningtools',
-            get_string('pluginname', 'local_learningtools', null, true)));
+    $ADMIN->add('localplugins', new admin_category(
+        'local_learningtools',
+        get_string('pluginname', 'local_learningtools', null, true)
+    ));
 
-    $page = new admin_settingpage('local_learningtools_settings',
-            get_string('learningtoolssettings', 'local_learningtools', null, true));
+    $page = new admin_settingpage(
+        'local_learningtools_settings',
+        get_string('learningtoolssettings', 'local_learningtools', null, true)
+    );
 
     if ($ADMIN->fulltree) {
-
         $page->add(new admin_setting_configtext(
             'local_learningtools/notificationdisapper',
             new lang_string('notificationdisappertitle', 'local_learningtools'),
@@ -92,16 +95,21 @@ if ($hassiteconfig) {
         $default = "#fff";
         $setting = new admin_setting_configcolourpicker($name, $title, '', $default);
         $page->add($setting);
-        $page->add(new admin_setting_heading('learningtoolsusermenu',
+        $page->add(new admin_setting_heading(
+            'learningtoolsusermenu',
             new lang_string('ltoolsusermenu', 'local_learningtools'),
-            new lang_string('ltoolusermenu_help', 'local_learningtools')));
-        $page->add(new admin_setting_description('bookmarksusermenu',
+            new lang_string('ltoolusermenu_help', 'local_learningtools')
+        ));
+        $page->add(new admin_setting_description(
+            'bookmarksusermenu',
             new lang_string('bookmarksusermenu', 'local_learningtools'),
-            new lang_string('bookmarksusermenu_help', 'local_learningtools')));
-        $page->add(new admin_setting_description('notesusermenu',
+            new lang_string('bookmarksusermenu_help', 'local_learningtools')
+        ));
+        $page->add(new admin_setting_description(
+            'notesusermenu',
             new lang_string('notesusermenu', 'local_learningtools'),
-            new lang_string('notesusermenu_help', 'local_learningtools')));
-
+            new lang_string('notesusermenu_help', 'local_learningtools')
+        ));
     }
     $ADMIN->add('local_learningtools', $page);
     unset($page);
@@ -112,7 +120,9 @@ if ($hassiteconfig) {
         }
     }
     $page = null;
-    $ADMIN->add('local_learningtools', new admin_externalpage('local_learningtools_lttool',
+    $ADMIN->add('local_learningtools', new admin_externalpage(
+        'local_learningtools_lttool',
         get_string('learningtoolsltool', 'local_learningtools'),
-        "$CFG->wwwroot/local/learningtools/learningtoolslist.php"));
+        "$CFG->wwwroot/local/learningtools/learningtoolslist.php"
+    ));
 }

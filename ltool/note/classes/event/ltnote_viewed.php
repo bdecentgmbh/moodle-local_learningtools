@@ -29,7 +29,6 @@ namespace ltool_note\event;
  * Notes tool call to notes view event.
  */
 class ltnote_viewed extends \core\event\base {
-
     /**
      * Init method.
      */

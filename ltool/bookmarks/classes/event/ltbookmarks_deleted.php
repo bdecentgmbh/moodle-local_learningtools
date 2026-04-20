@@ -29,7 +29,6 @@ namespace ltool_bookmarks\event;
  * Bookmarks tool delete the event.
  */
 class ltbookmarks_deleted extends \core\event\base {
-
     /**
      * Init method.
      */

@@ -24,13 +24,12 @@
  */
 namespace ltool_focus;
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__DIR__).'/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Event observer class define.
  */
 class event_observer {
-
     /**
      * Callback function will delete the course in the table.
      * @param object $event event data
