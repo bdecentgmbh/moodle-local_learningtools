@@ -161,7 +161,9 @@ body.local-learningtools.scrolled #goto-top-link,
     color: #fff;
 }
 
-#page-footer .btn-footer-popover {
+/* Shift the footer popover icon left only when the bottom-right floating button is shown
+   (not for the bottom-left button or the navbar drawer). */
+body:has(.learningtools-action-info:not(.floating-button-left)) #page-footer .btn-footer-popover {
     right: 5rem;
 }
 
@@ -228,31 +230,38 @@ body.local-learningtools.scrolled #goto-top-link,
     min-height: 110px;
 }
 
-/* Show each note's date with the edit/delete actions on a single row. */
-.learningtools-drawer-app .lt-drawer-notes .content-block .title-block,
-.learningtools-drawer-app .lt-drawer-notes .content-block .action-block {
+/*
+ * Note list items, shared by the drawer and the "Take notes" modal (.list-context-existnotes).
+ * Show each note's date with its edit/delete actions on one row, keep that row tight to the
+ * note text above it, and space consecutive notes apart so a date reads as belonging to the
+ * note above rather than the note below.
+ */
+.list-context-existnotes .content-block .title-block,
+.list-context-existnotes .content-block .action-block {
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
 }
 
-.learningtools-drawer-app .lt-drawer-notes .content-block .action-block {
+.list-context-existnotes .content-block .action-block {
     margin-left: 0.5rem;
     gap: 0.5rem;
 }
 
-/* Keep each note's text tight to its own date row, and space consecutive notes apart,
-   so a date row reads as belonging to the note above it rather than the note below. */
-.learningtools-drawer-app .lt-drawer-notes .card-body {
+.list-context-existnotes .card-body {
     padding: 0;
     margin-bottom: 1rem;
 }
 
-.learningtools-drawer-app .lt-drawer-notes .desc-block {
+.list-context-existnotes .card-body:last-child {
+    margin-bottom: 0;
+}
+
+.list-context-existnotes .content-block .desc-block {
     margin-bottom: 0.25rem;
 }
 
-.learningtools-drawer-app .lt-drawer-notes .desc-block > :last-child {
+.list-context-existnotes .content-block .desc-block > :last-child {
     margin-bottom: 0;
 }
 
