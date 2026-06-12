@@ -61,6 +61,13 @@ class external extends \external_api {
             ['status' => $status]
         );
         $SESSION->focusmode = $params['status'];
+        // Track the sesskey that enabled focus mode so ltool_focus_focusmode_actions() can tell a
+        // genuine in-session focus state from stale session data left over after a new login.
+        if ($params['status']) {
+            $SESSION->focussesskey = sesskey();
+        } else {
+            unset($SESSION->focussesskey);
+        }
         return $status;
     }
 

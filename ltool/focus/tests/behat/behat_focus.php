@@ -45,10 +45,12 @@ class behat_focus extends behat_base {
      * @throws ExpectationException
      */
     public function i_check_focus_mode_enable(): void {
-        $focusjs = "
-            var link = document.querySelector('link#ltool-focuscss');
-            return (link !== null && link.getAttribute('href') !== null && link.getAttribute('href') !== '');
-        ";
+        // Note: the script must be a single expression. The php-webdriver Mink driver prepends
+        // "return " when the script does not already start with it, so a multi-statement script
+        // (var ...; return ...;) would become invalid JavaScript and silently evaluate to null.
+        $focusjs = "document.querySelector('link#ltool-focuscss') !== null"
+            . " && document.querySelector('link#ltool-focuscss').getAttribute('href') !== null"
+            . " && document.querySelector('link#ltool-focuscss').getAttribute('href') !== ''";
 
         if (!$this->evaluate_script($focusjs)) {
             throw new ExpectationException("Doesn't enable the focus mode", $this->getSession());
@@ -63,10 +65,10 @@ class behat_focus extends behat_base {
      * @throws ExpectationException
      */
     public function i_check_focus_mode_disable(): void {
-        $focusjs = "
-            var link = document.querySelector('link#ltool-focuscss');
-            return (link === null || link.getAttribute('href') === null || link.getAttribute('href') === '');
-        ";
+        // Single expression on purpose: see i_check_focus_mode_enable() for the reason.
+        $focusjs = "document.querySelector('link#ltool-focuscss') === null"
+            . " || document.querySelector('link#ltool-focuscss').getAttribute('href') === null"
+            . " || document.querySelector('link#ltool-focuscss').getAttribute('href') === ''";
         if (!$this->evaluate_script($focusjs)) {
             throw new ExpectationException("Doesn't disable the focus mode", $this->getSession());
         }

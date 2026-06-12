@@ -360,10 +360,10 @@ class ltool_note_filter {
         }
 
         if ($this->selectcourse) {
-            $coursesql .= 'AND course = :course';
+            $coursesql .= ' AND course = :course';
             $params['course'] = $this->selectcourse;
             if ($this->activity) {
-                $coursesql .= 'AND coursemodule = :activity';
+                $coursesql .= ' AND coursemodule = :activity';
                 $params['activity'] = $this->activity;
             }
         }

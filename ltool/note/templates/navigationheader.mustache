@@ -40,7 +40,7 @@
     </div>
     <div class="navitem-divider"></div>
 
-    <div class="navitem d-flex align-items-center gap-2">
+    <div class="navitem ltnote-sectionfilter">
         <label for="section-filter" class="mb-0">{{#str}}section{{/str}}</label>
         <select id="section-filter" class="form-select form-select-sm" onchange="location = this.value;">
             <option value="{{{viewpageurl}}}">{{#str}}allsections, local_learningtools{{/str}}</option>
@@ -51,7 +51,7 @@
     </div>
     <div class="navitem-divider"></div>
 
-    <div class="navitem d-flex align-items-center gap-2">
+    <div class="navitem ltnote-activityfilter">
         <label for="activity-filter" class="mb-0">{{#str}}activity{{/str}}</label>
         <select id="activity-filter" class="form-select form-select-sm" onchange="window.location.href=this.value">
             <option value="{{viewpageurl}}">{{#str}}allactiviies, local_learningtools{{/str}}</option>
@@ -62,7 +62,7 @@
     </div>
     <div class="navitem-divider"></div>
 
-    <div class="navitem align-self-center">
+    <div class="navitem note-print-block ms-auto align-self-center">
         <a href="javascript:void(0);" class="btn btn-secondary btn-sm" id="ltnote-print-button" title="{{#str}}printlayout, local_learningtools{{/str}}">
             <i class="fa fa-print"></i> <span>{{#str}}printlayout, local_learningtools{{/str}}</span>
         </a>
