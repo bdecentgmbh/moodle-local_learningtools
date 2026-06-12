@@ -15,17 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * Hook callbacks registration for local_learningtools.
  *
  * @package   local_learningtools
- * @copyright bdecent GmbH 2022
+ * @copyright 2026, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
-$plugin->version = 2026061200;
-$plugin->release = 'v1.3';
-$plugin->requires = 2025041400; // Moodle 5.0.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [500, 502];
+$callbacks = [
+    [
+        'hook' => \core\hook\output\after_standard_main_region_html_generation::class,
+        'callback' => \local_learningtools\hook_callbacks::class . '::add_learningtools_drawer',
+    ],
+];

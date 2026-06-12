@@ -26,9 +26,10 @@
 {{! Popup Notes list }}
 {{#usernotes}}
   <div class="usernotes-mainbody" id="accordion"> 
-    {{#records}} 
-    	<div class="card">
-          {{! Card header }}
+    {{#records}}
+    	<div class="{{#grouped}}card{{/grouped}}">
+          {{! Card header - only shown when notes span more than one day }}
+          {{#grouped}}
           <div class="card-header" id="headingOne">
             <h5 class="mb-0">
               <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapse-{{range}}" aria-expanded="true" aria-controls="collapse-{{range}}">
@@ -36,9 +37,10 @@
               </button>
             </h5>
           </div>
+          {{/grouped}}
           {{! End of Card header }}
 
-          <div id="collapse-{{range}}" class="collapse {{#active}}show{{/active}}" aria-labelledby="headingOne" data-bs-parent="#accordion">
+          <div id="collapse-{{range}}" class="{{#grouped}}collapse {{#active}}show{{/active}}{{/grouped}}" aria-labelledby="headingOne" data-bs-parent="#accordion">
           	{{#notes}}
             {{#.}}
             {{! Card body }}
@@ -50,7 +52,7 @@
                 {{! Title block }}
                 <div class="title-block">
                   <div class="details-block">
-                    <span class="calendar-block">{{time}}</span>{{! Calendar block }}
+                    <span class="calendar-block text-muted small">{{time}}</span>{{! Calendar block }}
                   </div>
                 </div>
                 <div class="action-block">
