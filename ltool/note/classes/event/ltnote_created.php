@@ -28,7 +28,6 @@ namespace ltool_note\event;
  * Notes tool call to create the notes event.
  */
 class ltnote_created extends \core\event\base {
-
     /**
      * Init method.
      */
@@ -68,5 +67,4 @@ class ltnote_created extends \core\event\base {
             throw new \coding_exception('The \'pagetype\' value must be set in other.');
         }
     }
-
 }

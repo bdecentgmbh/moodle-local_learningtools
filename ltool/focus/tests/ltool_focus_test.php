@@ -34,7 +34,7 @@ final class ltool_focus_test extends \advanced_testcase {
      */
     public function setup(): void {
         global $CFG;
-        require_once($CFG->dirroot."/local/learningtools/ltool/focus/lib.php");
+        require_once($CFG->dirroot . "/local/learningtools/ltool/focus/lib.php");
         $this->resetAfterTest();
         $this->setAdminUser();
     }

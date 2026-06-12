@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->libdir.'/tablelib.php');
+require_once($CFG->libdir . '/tablelib.php');
 require_login();
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -73,8 +73,8 @@ echo $OUTPUT->heading(get_string('learningtools', 'local_learningtools'));
 // Print the table of all installed ltools plugins.
 $table = new flexible_table('learningtool_products_info');
 $table->define_columns(['name', 'version', 'status', 'updown', 'uninstall']);
-$table->define_headers([$strname, $strversion, $strenable.'/'.$strdisable,
-$strup.'/'.$strdown, $uninstallplug]);
+$table->define_headers([$strname, $strversion, $strenable . '/' . $strdisable,
+$strup . '/' . $strdown, $uninstallplug]);
 $table->define_baseurl($PAGE->url);
 $table->set_attribute('id', 'learningtool-products');
 $table->set_attribute('class', 'learningtool generaltable');
@@ -90,7 +90,7 @@ $learningtools = $DB->get_records('local_learningtools_products', null, 'sort');
 foreach ($learningtools as $tool) {
     $plugin = $tool->shortname;
     $uninstall = '';
-    if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url('ltool_'.$plugin, 'manage')) {
+    if ($uninstallurl = core_plugin_manager::instance()->get_uninstall_url('ltool_' . $plugin, 'manage')) {
         $uninstall = html_writer::link($uninstallurl, get_string('uninstallplugin', 'core_admin'));
     }
     // Plugin version.
@@ -119,15 +119,19 @@ foreach ($learningtools as $tool) {
     // Plugin sort option.
     $updown = '';
     if ($cnt) {
-        $updown .= html_writer::link($PAGE->url->out(false, ['action' => 'up', 'tool' => $plugin, 'sesskey' => sesskey()]),
-            $OUTPUT->pix_icon('t/up', $strup, 'moodle', ['class' => 'iconsmall'])). '';
+        $updown .= html_writer::link(
+            $PAGE->url->out(false, ['action' => 'up', 'tool' => $plugin, 'sesskey' => sesskey()]),
+            $OUTPUT->pix_icon('t/up', $strup, 'moodle', ['class' => 'iconsmall'])
+        ) . '';
     } else {
         $updown .= $spacer;
     }
     if ($cnt < count($learningtools) - 1) {
-        $updown .= '&nbsp;'.html_writer::link($PAGE->url->out(false, ['action' => 'down', 'tool' => $plugin,
-        'sesskey' => sesskey()]),
-            $OUTPUT->pix_icon('t/down', $strdown, 'moodle', ['class' => 'iconsmall']));
+        $updown .= '&nbsp;' . html_writer::link(
+            $PAGE->url->out(false, ['action' => 'down', 'tool' => $plugin,
+            'sesskey' => sesskey()]),
+            $OUTPUT->pix_icon('t/down', $strdown, 'moodle', ['class' => 'iconsmall'])
+        );
     } else {
         $updown .= $spacer;
     }

@@ -25,7 +25,7 @@
 namespace ltool_note;
 
 defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir.'/externallib.php');
+require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Define external class.
@@ -54,10 +54,12 @@ class external extends \external_api {
      */
     public static function save_usernote($contextid, $formdata) {
         global $CFG, $USER;
-        require_once($CFG->dirroot.'/local/learningtools/ltool/note/lib.php');
+        require_once($CFG->dirroot . '/local/learningtools/ltool/note/lib.php');
         require_login();
-        $validparams = self::validate_parameters(self::save_usernote_parameters(),
-            ['contextid' => $contextid, 'formdata' => $formdata]);
+        $validparams = self::validate_parameters(
+            self::save_usernote_parameters(),
+            ['contextid' => $contextid, 'formdata' => $formdata]
+        );
         $context = \context_system::instance();
         require_capability("ltool/note:createnote", $context);
         // Parse serialize form data.

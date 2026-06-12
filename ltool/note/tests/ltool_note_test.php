@@ -28,7 +28,6 @@ namespace ltool_note;
  * @runTestsInSeparateProcesses
  */
 final class ltool_note_test extends \advanced_testcase {
-
     /**
      * Summary of context
      * @var object

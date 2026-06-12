@@ -28,7 +28,6 @@ namespace ltool_note\event;
  * Notes tool call to delete the notes event.
  */
 class ltnote_deleted extends \core\event\base {
-
     /**
      * Init method.
      */

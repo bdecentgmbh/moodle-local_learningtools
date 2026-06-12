@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/../../../../config.php');
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
-require_once($CFG->dirroot.'/local/learningtools/ltool/note/lib.php');
+require_once(dirname(__FILE__) . '/../../../../config.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/ltool/note/lib.php');
 
 $courseid = optional_param('courseid', 0, PARAM_INT);
 $contextid = optional_param('contextid', 0, PARAM_INT);

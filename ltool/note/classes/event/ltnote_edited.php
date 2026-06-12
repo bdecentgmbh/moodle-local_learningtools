@@ -29,7 +29,6 @@ namespace ltool_note\event;
  * Notes tool call to notes edit the event.
  */
 class ltnote_edited extends \core\event\base {
-
     /**
      * Init method.
      */

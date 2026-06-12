@@ -24,24 +24,25 @@
 
 }}
 {{#collapsedcolumns}}
-    <div class="navitem-divider"></div>
-    {{< core/search_input_auto }}
-        {{$additionalattributes}}
-            data-input-element="ltoolnote-list-search-input"
-        {{/additionalattributes}}
-        {{$label}}{{#str}}
-            searchmynotes, local_learningtools
-        {{/str}}{{/label}}
-        {{$placeholder}}{{#str}}
-            searchmynotes, local_learningtools
-        {{/str}}{{/placeholder}}
-    {{/ core/search_input_auto }}
-    <div data-region="searchplaceholder"></div>
+    <div class="navitem">
+        {{< core/search_input_auto }}
+            {{$additionalattributes}}
+                data-input-element="ltoolnote-list-search-input"
+            {{/additionalattributes}}
+            {{$label}}{{#str}}
+                searchmynotes, local_learningtools
+            {{/str}}{{/label}}
+            {{$placeholder}}{{#str}}
+                searchmynotes, local_learningtools
+            {{/str}}{{/placeholder}}
+        {{/ core/search_input_auto }}
+        <div data-region="searchplaceholder"></div>
+    </div>
     <div class="navitem-divider"></div>
 
-    <div class="ltnote-sectionfilter">
-        <label for="section-filter">{{#str}}section{{/str}}</label>
-        <select id="section-filter" class="form-control" onchange="location = this.value;">
+    <div class="navitem ltnote-sectionfilter">
+        <label for="section-filter" class="mb-0">{{#str}}section{{/str}}</label>
+        <select id="section-filter" class="form-select form-select-sm" onchange="location = this.value;">
             <option value="{{{viewpageurl}}}">{{#str}}allsections, local_learningtools{{/str}}</option>
             {{#sections}}
                 <option value="{{{filterurl}}}" {{selected}}>{{sectionname}}</option>
@@ -50,9 +51,9 @@
     </div>
     <div class="navitem-divider"></div>
 
-    <div class="ltnote-activityfilter">
-        <label for="activity-filter">{{#str}}activity{{/str}}</label>
-        <select id="activity-filter" class="form-control" onchange="window.location.href=this.value">
+    <div class="navitem ltnote-activityfilter">
+        <label for="activity-filter" class="mb-0">{{#str}}activity{{/str}}</label>
+        <select id="activity-filter" class="form-select form-select-sm" onchange="window.location.href=this.value">
             <option value="{{viewpageurl}}">{{#str}}allactiviies, local_learningtools{{/str}}</option>
             {{#activities}}
                 <option value="{{filterurl}}" {{selected}}>{{mod}}</option>
@@ -61,9 +62,9 @@
     </div>
     <div class="navitem-divider"></div>
 
-    <div class="note-print-block">
-        <a href="javascript:void(0);" class="btn btn-secondary" id="ltnote-print-button" title="{{#str}}printlayout, local_learningtools{{/str}}">
-            <i class="fa fa-print"></i> <span> {{#str}} printlayout, local_learningtools{{/str}} </span>
+    <div class="navitem note-print-block ms-auto align-self-center">
+        <a href="javascript:void(0);" class="btn btn-secondary btn-sm" id="ltnote-print-button" title="{{#str}}printlayout, local_learningtools{{/str}}">
+            <i class="fa fa-print"></i> <span>{{#str}}printlayout, local_learningtools{{/str}}</span>
         </a>
     </div>
 

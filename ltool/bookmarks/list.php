@@ -22,10 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/../../../../config.php');
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
-require_once(dirname(__FILE__).'/lib.php');
-require_once($CFG->dirroot. '/course/classes/list_element.php');
+require_once(dirname(__FILE__) . '/../../../../config.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once(dirname(__FILE__) . '/lib.php');
+require_once($CFG->dirroot . '/course/classes/list_element.php');
 require_login();
 ltool_bookmarks_require_bookmarks_status();
 
@@ -69,7 +69,6 @@ if ($courseid) {
      $selectcourse = $courseid;
 }
 if ($coursebase) {
-
     $title = get_string('coursebookmarks', 'local_learningtools');
     $setcontext = context_course::instance($coursebase);
     $courseelement = get_course($coursebase);
@@ -104,7 +103,6 @@ if ($courseid && !$childid) {
         require_capability('ltool/bookmarks:managebookmarks', $coursecontext);
     }
 } else if ($childid) {
-
      $urlparams['courseid'] = $courseid;
      $urlparams['userid'] = $childid;
     if ($teacher) {
@@ -191,12 +189,20 @@ if ($delete && confirm_sesskey()) {
 
             $event->trigger();
             \core\session\manager::gc(); // Remove stale sessions.
-            redirect($baseurl, get_string('successdeletemessage', 'local_learningtools'),
-                null, \core\output\notification::NOTIFY_SUCCESS);
+            redirect(
+                $baseurl,
+                get_string('successdeletemessage', 'local_learningtools'),
+                null,
+                \core\output\notification::NOTIFY_SUCCESS
+            );
         } else {
             \core\session\manager::gc(); // Remove stale sessions.
-            redirect($baseurl, get_string('deletednotmessage', 'local_learningtools'),
-                null, \core\output\notification::NOTIFY_ERROR);
+            redirect(
+                $baseurl,
+                get_string('deletednotmessage', 'local_learningtools'),
+                null,
+                \core\output\notification::NOTIFY_ERROR
+            );
         }
     }
 }
@@ -204,7 +210,6 @@ if ($delete && confirm_sesskey()) {
 echo $OUTPUT->header();
 
 if ($userbase) {
-
     $usercontext = context_user::instance($userbase);
     $userinfo = $DB->get_record('user', ['id' => $userbase]);
     $headerinfo = ['heading' => fullname($userinfo), 'user' => $userinfo, 'usercontext' => $usercontext];
@@ -219,8 +224,8 @@ $templatecontent = [];
 if (!empty($courseid) && !$childid) {
     $students = local_learningtools_get_students_incourse($courseid);
     if (!empty($students)) {
-        list($studentcondition, $sqlparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-        $sqlconditions .= 'userid '. $studentcondition;
+        [$studentcondition, $sqlparams] = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
+        $sqlconditions .= 'userid ' . $studentcondition;
     }
 } else if ($childid) {
     $sqlconditions .= 'userid = :childid';

@@ -32,14 +32,13 @@ use context_user;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
-require_once($CFG->dirroot. '/local/learningtools/ltool/note/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/ltool/note/lib.php');
 
 /**
  *  List of the user notes filter action.
  */
 class ltool_note_filter {
-
     /**
      * @var int
      */
@@ -103,8 +102,17 @@ class ltool_note_filter {
      * @param string $pageurl page url
      *
      */
-    public function __construct($userid, $selectcourse, $sort, $activity, $courseid,
-        $childid, $teacher, $urlparams, $pageurl) {
+    public function __construct(
+        $userid,
+        $selectcourse,
+        $sort,
+        $activity,
+        $courseid,
+        $childid,
+        $teacher,
+        $urlparams,
+        $pageurl
+    ) {
 
         $this->userid = $userid;
         $this->selectcourse = $selectcourse;
@@ -115,7 +123,6 @@ class ltool_note_filter {
         $this->teacher = $teacher;
         $this->urlparams = $urlparams;
         $this->pageurl = $pageurl;
-
     }
 
     /**
@@ -132,8 +139,8 @@ class ltool_note_filter {
             if (!$this->childid) {
                 $students = local_learningtools_get_students_incourse($this->courseid);
                 if (!empty($students)) {
-                    list($studentsql, $userparams) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-                    $usersql .= 'lnd.userid '. $studentsql;
+                    [$studentsql, $userparams] = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
+                    $usersql .= 'lnd.userid ' . $studentsql;
                 }
             } else {
                 $usersql = 'lnd.userid = :userid';
@@ -175,8 +182,13 @@ class ltool_note_filter {
             }
         }
 
-        $courses = local_learningtools_get_courses_name(array_unique($courses),
-            '/local/learningtools/ltool/note/list.php', $this->selectcourse, $this->childid, $this->courseid);
+        $courses = local_learningtools_get_courses_name(
+            array_unique($courses),
+            '/local/learningtools/ltool/note/list.php',
+            $this->selectcourse,
+            $this->childid,
+            $this->courseid
+        );
 
         $template['courses'] = $courses;
         $template['coursefilter'] = true;
@@ -231,7 +243,6 @@ class ltool_note_filter {
                 }
                 $data[] = $list;
             }
-
         }
         return $data;
     }
@@ -316,8 +327,8 @@ class ltool_note_filter {
             if (!$this->childid) {
                 $students = local_learningtools_get_students_incourse($this->courseid);
                 if (!empty($students)) {
-                    list($studentsql, $params) = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
-                    $usersql .= 'userid '. $studentsql;
+                    [$studentsql, $params] = $DB->get_in_or_equal($students, SQL_PARAMS_NAMED);
+                    $usersql .= 'userid ' . $studentsql;
                 }
             } else if ($this->childid) {
                     $usersql = 'userid = :userid';
@@ -349,10 +360,10 @@ class ltool_note_filter {
         }
 
         if ($this->selectcourse) {
-            $coursesql .= 'AND course = :course';
+            $coursesql .= ' AND course = :course';
             $params['course'] = $this->selectcourse;
             if ($this->activity) {
-                $coursesql .= 'AND coursemodule = :activity';
+                $coursesql .= ' AND coursemodule = :activity';
                 $params['activity'] = $this->activity;
             }
         }
@@ -364,7 +375,7 @@ class ltool_note_filter {
         $inkeys = array_keys($records);
         // Add the notesgroup into grouped contents.
         if (!empty($inkeys)) {
-            list($insql, $inparams) = $DB->get_in_or_equal($inkeys, SQL_PARAMS_NAMED);
+            [$insql, $inparams] = $DB->get_in_or_equal($inkeys, SQL_PARAMS_NAMED);
             $wherefield = ($field == 'date') ? 'FLOOR(timecreated/86400)' : $field;
             $sql = "SELECT id, $select FROM {ltool_note_data} WHERE $usersql $coursesql AND $wherefield $insql $ordersql";
             $groupparams = array_merge($params, $inparams);
@@ -413,17 +424,21 @@ class ltool_note_filter {
             foreach ($records as $record) {
                 $res = [];
                 if (isset($record->notesgroup)) {
-                    list($dbsql, $dbparam) = $DB->get_in_or_equal(explode(",", $record->notesgroup), SQL_PARAMS_NAMED);
+                    [$dbsql, $dbparam] = $DB->get_in_or_equal(explode(",", $record->notesgroup), SQL_PARAMS_NAMED);
                     $list = $DB->get_records_sql("SELECT * FROM {ltool_note_data} WHERE id $dbsql $sortsql", $dbparam);
                     $res['notes'] = $list;
 
                     if ($this->sort == 'date') {
-                        $head = userdate(($record->date * DAYSECS), get_string('strftimemonthdateyear', 'local_learningtools'),
-                            '', false);
+                        $head = userdate(
+                            ($record->date * DAYSECS),
+                            get_string('strftimemonthdateyear', 'local_learningtools'),
+                            '',
+                            false
+                        );
                     } else if ($this->sort == 'course') {
                         $head = local_learningtools_get_course_name($record->course);
                     } else if ($this->sort == 'activity') {
-                        $module = new stdclass;
+                        $module = new stdclass();
                         $module->coursemodule = $record->coursemodule;
                         $module->courseid = $this->selectcourse;
                         $head = local_learningtools_get_module_name($module);
@@ -442,7 +457,7 @@ class ltool_note_filter {
                     $notes = $this->get_speater_plug($report['notes']);
                     $info['notes'] = $notes;
                     $info['title'] = isset($report['title']) ? $report['title'] : '';
-                    $info['range'] = $cnt.'-block';
+                    $info['range'] = $cnt . '-block';
                     $info['active'] = ($cnt == 1) ? true : false;
                 }
                 $cnt++;
@@ -485,8 +500,12 @@ class ltool_note_filter {
         }
 
         // Pagination.
-        $template['pageingbar'] = $OUTPUT->paging_bar($this->totalnotes,
-            $this->urlparams['page'], $this->urlparams['perpage'], $this->pageurl);
+        $template['pageingbar'] = $OUTPUT->paging_bar(
+            $this->totalnotes,
+            $this->urlparams['page'],
+            $this->urlparams['perpage'],
+            $this->pageurl
+        );
 
         return $OUTPUT->render_from_template('ltool_note/ltnote', $template);
     }
@@ -537,7 +556,6 @@ class ltool_note_filter {
                         $list['delete'] = $this->delete_note_info($record);
                         $list['edit'] = $this->edit_note_info($record);
                     }
-
                 } else if ($this->childid) {
                     if ($this->teacher) {
                         $coursecontext = context_course::instance($this->courseid);
@@ -559,7 +577,6 @@ class ltool_note_filter {
                             }
                         }
                     }
-
                 } else {
                     if (has_capability('ltool/note:manageownnote', $context)) {
                         $list['delete'] = $this->delete_note_info($record);
@@ -588,7 +605,6 @@ class ltool_note_filter {
         $buttons[] = html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
         $buttonhtml = implode(' ', $buttons);
         return $buttonhtml;
-
     }
 
     /**

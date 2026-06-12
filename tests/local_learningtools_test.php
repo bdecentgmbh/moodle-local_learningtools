@@ -27,7 +27,6 @@ namespace local_learningtools;
  * local learning tools main primary plugin phpunit test cases defined.
  */
 final class local_learningtools_test extends \advanced_testcase {
-
     /**
      * Summary of course
      * @var object

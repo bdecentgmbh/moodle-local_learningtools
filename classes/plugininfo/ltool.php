@@ -31,7 +31,6 @@ use admin_settingpage;
  * Ltools subplugin define classes.
  */
 class ltool extends base {
-
     /**
      * Returns the information about plugin availability
      *
@@ -63,7 +62,7 @@ class ltool extends base {
      * @return null|string node name or null if plugin does not create settings node (default)
      */
     public function get_settings_section_name() {
-        return 'ltool'.$this->name.'settings';
+        return 'ltool' . $this->name . 'settings';
     }
     /**
      * Loads plugin settings to the settings tree
@@ -100,9 +99,8 @@ class ltool extends base {
      */
     public function uninstall_cleanup() {
         global $CFG;
-        require_once($CFG->dirroot. "/local/learningtools/lib.php");
+        require_once($CFG->dirroot . "/local/learningtools/lib.php");
         local_learningtools_delete_ltool_table($this->name);
         parent::uninstall_cleanup();
     }
-
 }

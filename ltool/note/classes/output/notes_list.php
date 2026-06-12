@@ -238,7 +238,7 @@ class notes_list implements renderable, templatable {
             ];
 
             if (!empty($note->cmid)) {
-                $module = new stdclass;
+                $module = new stdclass();
                 $module->coursemodule = $note->cmid;
                 $module->courseid = $note->course;
                 $list['name'] = local_learningtools_get_module_name($module);

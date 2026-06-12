@@ -29,7 +29,6 @@ namespace ltool_bookmarks\event;
  * Bookmarks tool call to view event.
  */
 class ltbookmarks_viewed extends \core\event\base {
-
     /**
      * Init method.
      */

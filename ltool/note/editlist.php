@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/../../../../config.php');
+require_once(dirname(__FILE__) . '/../../../../config.php');
 require_login();
-require_once(dirname(__FILE__).'/lib.php');
+require_once(dirname(__FILE__) . '/lib.php');
 
 $context = context_system::instance();
 $title = get_string('note', 'local_learningtools');
@@ -119,8 +119,12 @@ if ($edit && confirm_sesskey()) {
                 }
                 $event = \ltool_note\event\ltnote_edited::create($editeventparams);
                 $event->trigger();
-                redirect($baseurl, get_string('successeditnote', 'local_learningtools'),
-                    null, \core\output\notification::NOTIFY_SUCCESS);
+                redirect(
+                    $baseurl,
+                    get_string('successeditnote', 'local_learningtools'),
+                    null,
+                    \core\output\notification::NOTIFY_SUCCESS
+                );
             }
         }
         redirect($baseurl);
@@ -130,5 +134,4 @@ if ($edit && confirm_sesskey()) {
         $editorform->display();
         echo $OUTPUT->footer();
     }
-
 }

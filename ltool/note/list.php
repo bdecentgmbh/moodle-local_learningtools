@@ -22,9 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/../../../../config.php');
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
-require_once(dirname(__FILE__).'/lib.php');
+require_once(dirname(__FILE__) . '/../../../../config.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once(dirname(__FILE__) . '/lib.php');
 
 require_login();
 ltool_note_require_note_status();
@@ -54,7 +54,6 @@ if ($delete) {
 }
 
 if ($courseid || $selectcourse) {
-
     if ($courseid) {
         $coursebase = $courseid;
     } else if ($selectcourse) {
@@ -69,7 +68,6 @@ if ($courseid || $selectcourse) {
 }
 
 if ($coursebase) {
-
     $title = get_string('coursenotes', 'local_learningtools');
     $setcontext = context_course::instance($coursebase);
     $courseelement = get_course($coursebase);
@@ -80,7 +78,6 @@ if ($coursebase) {
     $setcontext = context_user::instance($childid);
     $title = get_string('note', 'local_learningtools');
 } else {
-
     $setcontext = context_user::instance($USER->id);
     $title = get_string('note', 'local_learningtools');
 }
@@ -107,14 +104,12 @@ if ($activity) {
 }
 
 if ($courseid && !$childid) {
-
     $coursecontext = context_course::instance($courseid);
     $urlparams['courseid'] = $courseid;
     require_capability('ltool/note:viewnote', $coursecontext);
     if ($delete) {
         require_capability('ltool/note:managenote', $coursecontext);
     }
-
 } else if ($childid) {
     $urlparams['courseid'] = $courseid;
     $urlparams['userid'] = $childid;
@@ -143,7 +138,6 @@ if ($courseid && !$childid) {
             }
         }
     }
-
 } else {
     require_capability('ltool/note:viewownnote', $context);
     if ($delete) {
@@ -178,7 +172,6 @@ if ($delete && confirm_sesskey()) {
         echo $OUTPUT->confirm(get_string('deletemsgcheckfull', 'local_learningtools'), $deletebutton, $pageurl);
         echo $OUTPUT->footer();
         die;
-
     } else if (data_submitted()) {
         $deleterecord = $DB->get_record('ltool_note_data', ['id' => $delete]);
         $deleteeventcontext = context::instance_by_id($deleterecord->contextid, MUST_EXIST);
@@ -200,12 +193,20 @@ if ($delete && confirm_sesskey()) {
             $event->trigger();
 
             \core\session\manager::gc(); // Remove stale sessions.
-            redirect($pageurl, get_string('successdeletemessage', 'local_learningtools'),
-                null, \core\output\notification::NOTIFY_SUCCESS);
+            redirect(
+                $pageurl,
+                get_string('successdeletemessage', 'local_learningtools'),
+                null,
+                \core\output\notification::NOTIFY_SUCCESS
+            );
         } else {
             \core\session\manager::gc(); // Remove stale sessions.
-            redirect($pageurl, get_string('deletednotmessage', 'local_learningtools'),
-                null, \core\output\notification::NOTIFY_ERROR);
+            redirect(
+                $pageurl,
+                get_string('deletednotmessage', 'local_learningtools'),
+                null,
+                \core\output\notification::NOTIFY_ERROR
+            );
         }
     }
 }
@@ -228,8 +229,17 @@ if ($userbase) {
 }
 echo $OUTPUT->heading($title);
 
-$blockinstance = new \ltool_note\ltool_note_filter($USER->id, $selectcourse,
-    $sort, $activity, $courseid, $childid, $teacher, $urlparams, $pageurl);
+$blockinstance = new \ltool_note\ltool_note_filter(
+    $USER->id,
+    $selectcourse,
+    $sort,
+    $activity,
+    $courseid,
+    $childid,
+    $teacher,
+    $urlparams,
+    $pageurl
+);
 
 echo $blockinstance->get_main_body();
 echo $OUTPUT->footer();

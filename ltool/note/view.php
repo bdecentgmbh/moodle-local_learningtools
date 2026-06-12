@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/../../../../config.php');
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
+require_once(dirname(__FILE__) . '/../../../../config.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
 
 $id = required_param('id', PARAM_INT); // Course ID.
 $sectionid = optional_param('sectionid', 0, PARAM_INT); // Section ID.
@@ -64,8 +64,15 @@ if ($action == 'hide' && (!empty($noteid))) {
     $DB->set_field('ltool_note_data', 'printstatus', 0, ['id' => $noteid]);
 }
 
-$actionbar = new \local_learningtools\output\general_action_bar($context, $pageurl, 'learningtools', 'notes', $course->id,
-    $sectionid, $activity);
+$actionbar = new \local_learningtools\output\general_action_bar(
+    $context,
+    $pageurl,
+    'learningtools',
+    'notes',
+    $course->id,
+    $sectionid,
+    $activity
+);
 $renderer = $PAGE->get_renderer('local_learningtools');
 
 echo $renderer->render_action_bar($actionbar);

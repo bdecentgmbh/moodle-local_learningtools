@@ -25,15 +25,14 @@
 namespace ltool_schedule;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
 
-require_once(dirname(__DIR__).'/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  *  The class defines the schedule ltool
  */
 class schedule extends \local_learningtools\learningtools {
-
     /**
      * Tool shortname.
      *
@@ -114,4 +113,3 @@ class schedule extends \local_learningtools\learningtools {
         ltool_schedule_load_js_config();
     }
 }
-

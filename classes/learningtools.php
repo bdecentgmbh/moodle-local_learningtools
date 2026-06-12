@@ -27,7 +27,6 @@ namespace local_learningtools;
  * Define learningtools abstract base class to extend by the tools subplugins..
  */
 abstract class learningtools {
-
     /**
      * Tool Name.
      */

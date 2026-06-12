@@ -25,106 +25,10 @@
 use core_user\output\myprofile\tree;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/formslib.php');
-require_once($CFG->dirroot. '/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/ltool/note/form_email_popout.php');
+require_once($CFG->dirroot . '/local/learningtools/ltool/note/form_note_info.php');
 
-/**
- * Define notes form.
- */
-class ltool_email_popoutform extends moodleform {
-    /**
-     * Adds element to form
-     */
-    public function definition() {
-        $mform = $this->_form;
-        $course = $this->_customdata['course'];
-        $contextlevel = $this->_customdata['contextlevel'];
-        $pagetype = $this->_customdata['pagetype'];
-        $pageurl = $this->_customdata['pageurl'];
-        $user = $this->_customdata['user'];
-        $pagetitle = $this->_customdata['pagetitle'];
-        $itemtype = $this->_customdata['itemtype'];
-        $itemid = $this->_customdata['itemid'];
-        $popoutaction = isset($this->_customdata['popoutaction']) ?
-        $this->_customdata['popoutaction'] : '';
-
-        $mform->addElement('editor', 'ltnoteeditor', '', ['autosave' => false]);
-        $mform->addElement('hidden', 'course');
-        $mform->setType('course', PARAM_INT);
-        $mform->setDefault('course', $course);
-        $mform->addElement('hidden', 'contextlevel');
-        $mform->setDefault('contextlevel', $contextlevel);
-        $mform->setType('contextlevel', PARAM_INT);
-
-        $mform->addElement('hidden', 'pagetype');
-        $mform->setDefault('pagetype', $pagetype);
-        $mform->setType('pagetype', PARAM_TEXT);
-
-        $mform->addElement('hidden', 'pagetitle');
-        $mform->setDefault('pagetitle', $pagetitle);
-        $mform->setType('pagetitle', PARAM_TEXT);
-
-        $mform->addElement('hidden', 'pageurl');
-        $mform->setDefault('pageurl', $pageurl);
-        $mform->setType('pageurl', PARAM_URL);
-
-        $mform->addElement('hidden', 'user');
-        $mform->setDefault('user', $user);
-        $mform->setType('user', PARAM_INT);
-
-        $mform->addElement('hidden', 'itemtype');
-        $mform->setDefault('itemtype', $itemtype);
-        $mform->setType('itemtype', PARAM_TEXT);
-
-        $mform->addElement('hidden', 'itemid');
-        $mform->setDefault('itemid', $itemid);
-        $mform->setType('itemid', PARAM_INT);
-
-        if ($popoutaction) {
-            $this->add_action_buttons();
-        }
-
-    }
-}
-
-/**
- * Define user edit the notes form.
- */
-class ltool_note_info extends moodleform {
-    /**
-     * Adds element to form
-     */
-    public function definition() {
-        global $DB;
-
-        $mform = $this->_form;
-        $noteid = $this->_customdata['id'];
-        $courseid = $this->_customdata['courseid'];
-        $returnurl = $this->_customdata['returnurl'];
-
-        $note = $DB->get_record('ltool_note_data', ['id' => $noteid]);
-        $usernote = !empty($note->note) ? $note->note : '';
-        $mform->addElement('editor', 'noteeditor', '')->setValue( ['text' => $usernote]);
-        $mform->addElement('hidden', 'edit');
-        $mform->setType('edit', PARAM_INT);
-        $mform->setDefault('edit', $noteid);
-        if ($courseid) {
-            $mform->addElement('hidden', 'courseid');
-            $mform->setType('courseid', PARAM_INT);
-            $mform->setDefault('courseid', $courseid);
-        }
-
-        if ($returnurl) {
-            $mform->addElement('hidden', 'returnurl');
-            $mform->setType('returnurl', PARAM_URL);
-            $mform->setDefault('returnurl', $returnurl);
-        }
-        $mform->addElement('hidden', 'sesskey');
-        $mform->setType('sesskey', PARAM_ALPHANUMEXT);
-        $mform->setDefault('sesskey', sesskey());
-        $this->add_action_buttons();
-    }
-}
 /**
  * Defines the ltool notes nodes for my profile navigation tree.
  *
@@ -143,21 +47,32 @@ function ltool_note_myprofile_navigation(tree $tree, $user, $iscurrentuser, $cou
         if ($iscurrentuser) {
             if (!empty($course)) {
                 $coursecontext = context_course::instance($course->id);
-                $noteurl = new moodle_url('/local/learningtools/ltool/note/list.php',
-                    ['courseid' => $course->id, 'userid' => $userid]);
-                $notenode = new core_user\output\myprofile\node('learningtools', 'note',
-                    get_string('coursenotes', 'local_learningtools'), null, $noteurl);
+                $noteurl = new moodle_url(
+                    '/local/learningtools/ltool/note/list.php',
+                    ['courseid' => $course->id, 'userid' => $userid]
+                );
+                $notenode = new core_user\output\myprofile\node(
+                    'learningtools',
+                    'note',
+                    get_string('coursenotes', 'local_learningtools'),
+                    null,
+                    $noteurl
+                );
                 $tree->add_node($notenode);
             } else {
                 if (has_capability('ltool/note:viewownnote', $context)) {
                     $noteurl = new moodle_url('/local/learningtools/ltool/note/list.php');
-                    $notenode = new core_user\output\myprofile\node('learningtools', 'note',
-                        get_string('note', 'local_learningtools'), null, $noteurl);
+                    $notenode = new core_user\output\myprofile\node(
+                        'learningtools',
+                        'note',
+                        get_string('note', 'local_learningtools'),
+                        null,
+                        $noteurl
+                    );
                     $tree->add_node($notenode);
                 }
             }
         } else {
-
             if (local_learningtools_is_parentforchild($user->id, 'ltool/note:viewnote')) {
                 $params = ['userid' => $user->id];
                 $title = get_string('note', 'local_learningtools');
@@ -172,14 +87,20 @@ function ltool_note_myprofile_navigation(tree $tree, $user, $iscurrentuser, $cou
             } else if (!empty($course) && !empty($userid)) {
                 $coursecontext = context_course::instance($course->id);
                 if (has_capability('ltool/note:viewnote', $coursecontext)) {
-                    $noteurl = new moodle_url('/local/learningtools/ltool/note/list.php',
-                        ['courseid' => $course->id, 'userid' => $userid, 'teacher' => 1]);
-                    $notenode = new core_user\output\myprofile\node('learningtools', 'note',
-                        get_string('coursenotes', 'local_learningtools'), null, $noteurl);
+                    $noteurl = new moodle_url(
+                        '/local/learningtools/ltool/note/list.php',
+                        ['courseid' => $course->id, 'userid' => $userid, 'teacher' => 1]
+                    );
+                    $notenode = new core_user\output\myprofile\node(
+                        'learningtools',
+                        'note',
+                        get_string('coursenotes', 'local_learningtools'),
+                        null,
+                        $noteurl
+                    );
                     $tree->add_node($notenode);
                 }
             }
-
         }
     }
     return true;
@@ -196,7 +117,7 @@ function ltool_note_output_fragment_get_note_form($args) {
 
     $PAGE->set_url(new moodle_url('/'));
 
-    require_once($CFG->dirroot.'/lib/form/editor.php');
+    require_once($CFG->dirroot . '/lib/form/editor.php');
     require_once($CFG->dirroot . '/lib/editorlib.php');
     $editorhtml = '';
     $editor = editors_get_preferred_editor();
@@ -210,8 +131,11 @@ function ltool_note_output_fragment_get_note_form($args) {
     $editorhtml .= \html_writer::start_tag('div', ['class' => 'ltoolusernotes']);
     $editorhtml .= \html_writer::start_tag('form', ['method' => 'post', 'action' => $args['pageurl'], 'class' => 'mform']);
 
-    $editorhtml .= \html_writer::tag('textarea', '',
-        ['id' => $editorid, 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => 20, 'cols' => 100]);
+    $editorhtml .= \html_writer::tag(
+        'textarea',
+        '',
+        ['id' => $editorid, 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => 20, 'cols' => 100]
+    );
 
     $editorhtml .= \html_writer::tag('input', '', [
         'type' => 'hidden',
@@ -315,7 +239,7 @@ function ltool_note_get_contextuser_notes($args) {
         $sql .= " itemtype = '' AND ";
     }
     $params[] = $args['pageurl'];
-    $sql .= $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) .
+    $sql .= $DB->sql_compare_text('pageurl', 255) . " = " . $DB->sql_compare_text('?', 255) .
     " ORDER BY timecreated DESC";
     $records = $DB->get_records_sql($sql, $params);
     $cnt = 1;
@@ -332,7 +256,7 @@ function ltool_note_get_contextuser_notes($args) {
             $res = [];
             $notes = [];
             if (isset($listrecord['notesgroup'])) {
-                list($dbsql, $dbparam) = $DB->get_in_or_equal($listrecord['notesgroup'], SQL_PARAMS_NAMED);
+                [$dbsql, $dbparam] = $DB->get_in_or_equal($listrecord['notesgroup'], SQL_PARAMS_NAMED);
                 $notesrecords = $DB->get_records_sql("SELECT * FROM {ltool_note_data}
                     WHERE id $dbsql ORDER BY timecreated desc", $dbparam);
                 if (!empty($notesrecords)) {
@@ -350,7 +274,7 @@ function ltool_note_get_contextuser_notes($args) {
                 }
                 $res['notes'] = $notes;
                 $res['title'] = userdate(($time * DAYSECS), get_string('strftimemonthdateyear', 'local_learningtools'), '', false);
-                $res['range'] = $cnt.'-block';
+                $res['range'] = $cnt . '-block';
                 $res['active'] = ($cnt == 1) ? true : false;
             }
             $reports[] = $res;
@@ -412,7 +336,7 @@ function ltool_note_user_save_notes($contextid, $data) {
 
     $sql = "SELECT COUNT(*)
     FROM {ltool_note_data}
-    WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
+    WHERE " . $DB->sql_compare_text('pageurl', 255) . " = " . $DB->sql_compare_text('?', 255) . "
     AND pagetype = ?
     AND userid = ?";
     $params = [
@@ -448,7 +372,6 @@ function ltool_note_edit_note_record($row, $params = []) {
     $buttons[] = \html_writer::link($url, $OUTPUT->pix_icon('t/edit', $stredit));
     $buttonhtml = implode(' ', $buttons);
     return $buttonhtml;
-
 }
 
 /**
@@ -504,7 +427,7 @@ function ltool_note_get_userpage_countnotes($args) {
     global $DB;
     $sql = "SELECT COUNT(*)
         FROM {ltool_note_data}
-        WHERE " . $DB->sql_compare_text('pageurl', 255). " = " . $DB->sql_compare_text('?', 255) ."
+        WHERE " . $DB->sql_compare_text('pageurl', 255) . " = " . $DB->sql_compare_text('?', 255) . "
         AND pagetype = ?
         AND userid = ?";
     $params = [
@@ -639,7 +562,7 @@ function ltool_note_get_module_coursesection($data, $record) {
     $coursename = local_learningtools_get_course_name($data->courseid);
     $section = local_learningtools_get_mod_section($data->courseid, $data->coursemodule);
     $modulename = $record->pagetitle;
-    return $coursename.' / '. $section. ' / '. $modulename;
+    return $coursename . ' / ' . $section . ' / ' . $modulename;
 }
 
 /**
@@ -657,7 +580,7 @@ function local_learningtools_get_chapter_name($data, $record) {
         $chaptertitle = (!empty($chapter->title) ? $chapter->title : '');
     }
     $modulename = $record->pagetitle . " | " . $chaptertitle;
-    return $coursename.' / '. $section. ' / '. $modulename;
+    return $coursename . ' / ' . $section . ' / ' . $modulename;
 }
 
 /**
@@ -668,7 +591,8 @@ function local_learningtools_get_chapter_name($data, $record) {
 function ltool_note_output_fragment_get_notes_contents($args) {
     global $PAGE;
 
-    $pageurl = new \moodle_url($args['pageurl']);;
+    $pageurl = new \moodle_url($args['pageurl']);
+    ;
     $courseid = $pageurl->get_param('id');
     $filter = $pageurl->get_param('filter');
 

@@ -26,7 +26,7 @@
 
 require_once(__DIR__ . '/../../../../../../lib/behat/behat_base.php');
 
-use Behat\Mink\Exception\ExpectationException as ExpectationException;
+use Behat\Mink\Exception\ExpectationException;
 
 /**
  * Test cases custom function for focus tool Focus-mode.
@@ -37,7 +37,6 @@ use Behat\Mink\Exception\ExpectationException as ExpectationException;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class behat_focus extends behat_base {
-
     /**
      * Check that the focus mode enable.
      *
@@ -46,14 +45,14 @@ class behat_focus extends behat_base {
      * @throws ExpectationException
      */
     public function i_check_focus_mode_enable(): void {
-        $footerjs = "
-            return (
-                Y.one('#page-footer') &&
-                Y.one('#page-footer').getComputedStyle('display') == 'none'
-            )
-        ";
+        // Note: the script must be a single expression. The php-webdriver Mink driver prepends
+        // "return " when the script does not already start with it, so a multi-statement script
+        // (var ...; return ...;) would become invalid JavaScript and silently evaluate to null.
+        $focusjs = "document.querySelector('link#ltool-focuscss') !== null"
+            . " && document.querySelector('link#ltool-focuscss').getAttribute('href') !== null"
+            . " && document.querySelector('link#ltool-focuscss').getAttribute('href') !== ''";
 
-        if (!$this->evaluate_script($footerjs)) {
+        if (!$this->evaluate_script($focusjs)) {
             throw new ExpectationException("Doesn't enable the focus mode", $this->getSession());
         }
     }
@@ -66,13 +65,11 @@ class behat_focus extends behat_base {
      * @throws ExpectationException
      */
     public function i_check_focus_mode_disable(): void {
-        $footerjs = "
-            return (
-                Y.one('#page-footer') &&
-                Y.one('#page-footer').getComputedStyle('display') !== 'none'
-            )
-        ";
-        if (!$this->evaluate_script($footerjs)) {
+        // Single expression on purpose: see i_check_focus_mode_enable() for the reason.
+        $focusjs = "document.querySelector('link#ltool-focuscss') === null"
+            . " || document.querySelector('link#ltool-focuscss').getAttribute('href') === null"
+            . " || document.querySelector('link#ltool-focuscss').getAttribute('href') === ''";
+        if (!$this->evaluate_script($focusjs)) {
             throw new ExpectationException("Doesn't disable the focus mode", $this->getSession());
         }
     }

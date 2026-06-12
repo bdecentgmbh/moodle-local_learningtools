@@ -24,7 +24,6 @@
 namespace ltool_bookmarks\privacy;
 
 use context;
-
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\userlist;
@@ -40,7 +39,6 @@ class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
-
     /**
      * List of summary for the stored data.
      *
@@ -59,7 +57,7 @@ class provider implements
             'pageurl' => 'privacy:metadata:bookmarks:pageurl',
             'itemtype' => 'privacy:metadata:bookmarks:itemtype',
             'itemid' => 'privacy:metadata:bookmarks:itemid',
-            'timemodified' => 'privacy:metadata:bookmarks:timemodified'
+            'timemodified' => 'privacy:metadata:bookmarks:timemodified',
         ];
         $collection->add_database_table('ltool_bookmarks_data', $bookmarksmetadata, 'privacy:metadata:bookmarksmetadata');
 
@@ -123,7 +121,7 @@ class provider implements
         global $DB;
         $context = $userlist->get_context();
         if ($context instanceof \context_user) {
-            list($userinsql, $userinparams) = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
+            [$userinsql, $userinparams] = $DB->get_in_or_equal($userlist->get_userids(), SQL_PARAMS_NAMED);
             if (!empty($userinparams)) {
                 $sql = "userid {$userinsql}";
                 $DB->delete_records_select('ltool_bookmarks_data', $sql, $userinparams);
@@ -195,7 +193,7 @@ class provider implements
             return;
         }
 
-        $exportdata = array_map(function($record) {
+        $exportdata = array_map(function ($record) {
 
             $modulename = ($record->coursemodule) ? get_coursemodule_from_id('', $record->coursemodule)->name : '-';
 
@@ -219,7 +217,7 @@ class provider implements
             $contextdata = helper::get_context_data($context, $user);
             $contextdata = (object)array_merge((array)$contextdata, $exportdata);
             writer::with_context($context)->export_data(
-                [get_string('privacybookmarks', 'ltool_bookmarks').' '.$user->id],
+                [get_string('privacybookmarks', 'ltool_bookmarks') . ' ' . $user->id],
                 $contextdata
             );
         }

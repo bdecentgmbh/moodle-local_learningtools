@@ -24,13 +24,12 @@
  */
 namespace ltool_focus;
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__DIR__).'/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  * Event observer class define.
  */
 class event_observer {
-
     /**
      * Callback function will delete the course in the table.
      * @param object $event event data
@@ -44,5 +43,15 @@ class event_observer {
                 ltool_focus_create_focus_temp_cssfile();
             }
         }
+    }
+
+    /**
+     * Reset focus mode when a user logs in so each session starts with focus disabled.
+     * @param object $event event data
+     * @return void
+     */
+    public static function ltool_focus_user_loggedin($event) {
+        global $SESSION;
+        $SESSION->focusmode = 0;
     }
 }

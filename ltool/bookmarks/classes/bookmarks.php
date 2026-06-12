@@ -25,15 +25,14 @@
 namespace ltool_bookmarks;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
 
-require_once(dirname(__DIR__).'/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 
 /**
  *  The class defines the Bookmarks ltool
  */
 class bookmarks extends \local_learningtools\learningtools {
-
     /**
      * Tool shortname.
      *
@@ -83,7 +82,7 @@ class bookmarks extends \local_learningtools\learningtools {
         $data = [];
         $data['name'] = $this->get_tool_name();
         $data['icon'] = $this->get_tool_icon();
-        $data['toolurl'] = "$CFG->wwwroot/local/learningtools/ltool/".$this->shortname."/".$this->shortname."_info.php";
+        $data['toolurl'] = "$CFG->wwwroot/local/learningtools/ltool/" . $this->shortname . "/" . $this->shortname . "_info.php";
         $data['id'] = $this->shortname;
         $data['user'] = $USER->id;
         $data['course'] = $COURSE->id;
@@ -136,5 +135,4 @@ class bookmarks extends \local_learningtools\learningtools {
             return $this->render_template();
         }
     }
-
 }

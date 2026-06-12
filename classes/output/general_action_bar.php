@@ -18,7 +18,6 @@ namespace local_learningtools\output;
 
 use moodle_url;
 use core\output\select_menu;
-use core\output\comboboxsearch;
 
 /**
  * Renderable class for the general action bar in the gradebook pages.
@@ -30,7 +29,6 @@ use core\output\comboboxsearch;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class general_action_bar {
-
     /** @var moodle_url $activeurl The URL that should be set as active in the URL selector element. */
     protected $activeurl;
 
@@ -80,8 +78,15 @@ class general_action_bar {
      * @param int $sectionid Section ID.
      * @param int $activity Activity ID.
      */
-    public function __construct(\context $context, moodle_url $activeurl, string $activetype, string $activeplugin, int $courseid,
-        int $sectionid, int $activity) {
+    public function __construct(
+        \context $context,
+        moodle_url $activeurl,
+        string $activetype,
+        string $activeplugin,
+        int $courseid,
+        int $sectionid,
+        int $activity
+    ) {
         $this->activeurl = $activeurl;
         $this->activetype = $activetype;
         $this->activeplugin = $activeplugin;
@@ -105,31 +110,12 @@ class general_action_bar {
             return [];
         }
 
-        $collapsemenudirection = right_to_left() ? 'dropdown-menu-left' : 'dropdown-menu-right';
-
-        $collapse = new comboboxsearch(
-                true,
-                get_string('collapsedcolumns', 'gradereport_grader', 0),
-                null,
-                'collapse-columns',
-                'collapsecolumn',
-                'collapsecolumndropdown p-3 flex-column ' . $collapsemenudirection,
-                null,
-                true,
-                get_string('aria:dropdowncolumns', 'gradereport_grader'),
-                'collapsedcolumns'
-            );
-
-        $course = get_course($this->courseid);
-
         $sections = $this->get_sections();
         $activities = $this->get_activities();
 
         $viewpageurl = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $this->courseid]);
 
         $collapsedcolumns = [
-            'classes' => 'd-none',
-            'content' => $collapse->export_for_template($output),
             'viewpageurl' => $viewpageurl->out(false),
             'sections' => !empty($sections) ? $sections : [],
             'activities' => !empty($activities) ? $activities : [],
@@ -168,7 +154,6 @@ class general_action_bar {
 
         // Add each subplugin to the menus.
         foreach ($subplugins as $shortname => $toolobj) {
-
             // Check if user has capability to view this tool.
             if ($shortname == 'note') {
                 // Get tool-specific URL if the tool has a navigation method.
@@ -176,12 +161,14 @@ class general_action_bar {
                     $toolurl = $toolobj->get_navigation_url($courseid);
                 } else {
                     // Default URL pattern for tools.
-                    $toolurl = new moodle_url('/local/learningtools/ltool/'.$shortname.'/view.php',
-                        ['id' => $courseid]);
+                    $toolurl = new moodle_url(
+                        '/local/learningtools/ltool/' . $shortname . '/view.php',
+                        ['id' => $courseid]
+                    );
                 }
 
                 // Get tool name.
-                $toolname = get_string('toolname', 'ltool_'.$shortname);
+                $toolname = get_string('toolname', 'ltool_' . $shortname);
 
                 // Add to menus.
                 $menus[$toolurl->out(false)] = $toolname;
@@ -293,7 +280,6 @@ class general_action_bar {
                 }
                 $data[] = $list;
             }
-
         }
         return $data;
     }

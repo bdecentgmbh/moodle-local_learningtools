@@ -25,12 +25,11 @@
 namespace ltool_note;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(dirname(__DIR__).'/lib.php');
+require_once(dirname(__DIR__) . '/lib.php');
 /**
  *  Note ltool define class
  */
 class note extends \local_learningtools\learningtools {
-
     /**
      * Tool shortname.
      *
@@ -76,7 +75,7 @@ class note extends \local_learningtools\learningtools {
      */
     public function get_tool_records() {
         global $DB, $PAGE, $USER, $CFG;
-        require_once($CFG->dirroot.'/local/learningtools/ltool/note/lib.php');
+        require_once($CFG->dirroot . '/local/learningtools/ltool/note/lib.php');
         $args = [];
         $data = [];
         $args['contextid'] = $PAGE->context->id;
@@ -132,5 +131,4 @@ class note extends \local_learningtools\learningtools {
             return $this->render_template();
         }
     }
-
 }

@@ -31,13 +31,29 @@ function xmldb_ltool_bookmarks_upgrade($oldversion) {
     $dbman = $DB->get_manager();
     if ($oldversion < 2021102700) {
         $table = new xmldb_table('learningtools_bookmarks');
-        $field = new xmldb_field('pagetitle', XMLDB_TYPE_CHAR, '500', null,
-        null, null, null, 'pagetype');
+        $field = new xmldb_field(
+            'pagetitle',
+            XMLDB_TYPE_CHAR,
+            '500',
+            null,
+            null,
+            null,
+            null,
+            'pagetype'
+        );
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        $pageurlfield = new xmldb_field('pageurl', XMLDB_TYPE_TEXT, null, null, null, null, null,
-                'pagetitle');
+        $pageurlfield = new xmldb_field(
+            'pageurl',
+            XMLDB_TYPE_TEXT,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'pagetitle'
+        );
         $dbman->change_field_type($table, $pageurlfield);
         upgrade_plugin_savepoint(true, 2021102700, 'ltool', 'bookmarks');
     }

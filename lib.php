@@ -96,7 +96,7 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
  */
 function local_learningtools_check_instanceof_block($record) {
 
-    $data = new stdClass;
+    $data = new stdClass();
     if ($record->contextlevel == CONTEXT_SYSTEM) { // System level.
         $data->instance = 'system';
     } else if ($record->contextlevel == CONTEXT_USER) { // User level.
@@ -105,13 +105,11 @@ function local_learningtools_check_instanceof_block($record) {
         $data->instance = 'course';
         $data->courseid = $record->course;
         $data->contextid = $record->contextid;
-
     } else if ($record->contextlevel == CONTEXT_MODULE) { // Mod level.
         $data->instance = 'mod';
         $data->courseid = $record->course;
         $data->contextid = $record->contextid;
         $data->coursemodule = local_learningtools_get_coursemodule_id($record);
-
     } else if ($record->contextlevel == CONTEXT_BLOCK) { // Context blocklevel.
         $data->instance = 'block';
     } else {
@@ -129,7 +127,7 @@ function local_learningtools_check_instanceof_block($record) {
 function local_learningtools_get_moduleid($contextid, $contextlevel) {
     $coursemodule = 0;
     if ($contextlevel == CONTEXT_MODULE) {
-        $record = new stdClass;
+        $record = new stdClass();
         $record->contextid = $contextid;
         $record->contextlevel = $contextlevel;
         $coursemodule = local_learningtools_get_coursemodule_id($record);
@@ -157,7 +155,7 @@ function local_learningtools_get_coursemodule_id($record) {
  * @param int $usercourseid  course id.
  * @return array list of the course info.
  */
-function local_learningtools_get_courses_name($courses, $url = '', $selectcourse = 0, $userid= 0, $usercourseid = 0) {
+function local_learningtools_get_courses_name($courses, $url = '', $selectcourse = 0, $userid = 0, $usercourseid = 0) {
     $courseids = [];
     $courseinfo = [];
     $courseids = $courses;
@@ -190,7 +188,6 @@ function local_learningtools_get_courses_name($courses, $url = '', $selectcourse
         }
     }
     return $courseinfo;
-
 }
 
 /**
@@ -255,7 +252,6 @@ function local_learningtools_get_mod_section($courseid, $modid) {
     $sectionmod = [];
     if (!empty($sections)) {
         foreach ($sections as $key => $value) {
-
             $sequence = '';
             if (!empty($value->name)) {
                 $sectionname[$value->id] = $value->name;
@@ -270,13 +266,12 @@ function local_learningtools_get_mod_section($courseid, $modid) {
                 $sequence = explode(',', $value->sequence);
             }
             $sectionmod[$value->id] = isset($sequence) ? $sequence : '';
-
         }
     }
     if ($sectionname && $sectionmod) {
         foreach ($sectionmod as $key => $value) {
             if (!empty($value)) {
-                if ( is_numeric(array_search($modid, $value)) ) {
+                if (is_numeric(array_search($modid, $value))) {
                     return $sectionname[$key];
                 }
             }
@@ -295,7 +290,7 @@ function local_learningtools_get_subplugins() {
     $learningtools = $DB->get_records('local_learningtools_products', ['status' => 1], 'sort');
     if (!empty($learningtools)) {
         foreach ($learningtools as $tool) {
-            $plugin = 'ltool_'.$tool->shortname;
+            $plugin = 'ltool_' . $tool->shortname;
             $classname = "\\$plugin\\$tool->shortname";
             if (class_exists($classname)) {
                 $plugins[$tool->shortname] = new $classname();
@@ -347,7 +342,7 @@ function local_learningtools_get_learningtools_info() {
     $stickytools = '';
     if (!empty($subplugins)) {
         foreach ($subplugins as $shortname => $toolobj) {
-            $capability = 'ltool/'.$toolobj->shortname.':create'. $toolobj->shortname;
+            $capability = 'ltool/' . $toolobj->shortname . ':create' . $toolobj->shortname;
             if ($toolobj->contextlevel == 'system') {
                 if (has_capability($capability, $context)) {
                     if (get_config('ltool_' . $toolobj->shortname, 'sticky')) {
@@ -397,7 +392,7 @@ function local_learningtools_get_learningtools_info() {
     $content .= $contentinner;
     $content .= html_writer::end_tag('div');
             $content .= html_writer::start_tag('button', ["class" => "btn btn-primary",
-            'id' => 'tool-action-button', 'style' => "background:$fabbackiconcolor;"] );
+            'id' => 'tool-action-button', 'style' => "background:$fabbackiconcolor;"]);
     $content .= html_writer::start_tag('i', ['class' => $fabiconclass, 'style' => "color:$fabiconcolor;"]);
     $content .= html_writer::end_tag('i');
     $content .= html_writer::end_tag("button");
@@ -418,17 +413,21 @@ function local_learningtools_get_stickytool_status() {
     $stickystatus = false;
     if (!empty($subplugins)) {
         foreach ($subplugins as $shortname => $toolobj) {
-            $capability = 'ltool/'.$toolobj->shortname.':create'. $toolobj->shortname;
+            $capability = 'ltool/' . $toolobj->shortname . ':create' . $toolobj->shortname;
             if ($toolobj->contextlevel == 'system') {
                 if (has_capability($capability, context_system::instance())) {
-                    if (get_config('ltool_' . $toolobj->shortname, 'sticky') ||
-                        get_config('local_learningtools', 'showactive')) {
+                    if (
+                        get_config('ltool_' . $toolobj->shortname, 'sticky') ||
+                        get_config('local_learningtools', 'showactive')
+                    ) {
                         $stickystatus = true;
                     }
                 }
             } else {
-                if (get_config('ltool_' . $toolobj->shortname, 'sticky') ||
-                    get_config('local_learningtools', 'showactive')) {
+                if (
+                    get_config('ltool_' . $toolobj->shortname, 'sticky') ||
+                    get_config('local_learningtools', 'showactive')
+                ) {
                     $stickystatus = true;
                 }
             }
@@ -455,7 +454,7 @@ function local_learningtools_get_students_incourse($courseid) {
  * @param string $capability
  * @return object|bool
  */
-function local_learningtools_is_parentforchild(int $childuserid, string $capability='') {
+function local_learningtools_is_parentforchild(int $childuserid, string $capability = '') {
     global $USER;
     $usercontext = \context_user::instance($childuserid); // USER - child id.
     $usercontextroles = get_user_roles($usercontext, $USER->id); // Loggedin - parent.
@@ -531,11 +530,11 @@ function local_learningtools_get_eventlevel_courseid($context, $courseid) {
 function local_learningtools_add_learningtools_plugin($plugin) {
     global $DB;
     $strpluginname = get_string('pluginname', 'ltool_' . $plugin);
-    if (!$DB->record_exists('local_learningtools_products', ['shortname' => $plugin]) ) {
+    if (!$DB->record_exists('local_learningtools_products', ['shortname' => $plugin])) {
         $existrecords = $DB->get_records('local_learningtools_products', null);
         $maxrecord = $DB->get_record_sql('SELECT MAX(sort) AS value FROM {local_learningtools_products}', null);
         $sortval = !empty($existrecords) ? $maxrecord->value + 1 : 1;
-        $record = new stdClass;
+        $record = new stdClass();
         $record->shortname = $plugin;
         $record->name = $strpluginname;
         $record->status = 1;
@@ -552,7 +551,7 @@ function local_learningtools_add_learningtools_plugin($plugin) {
  */
 function local_learningtools_delete_ltool_table($plugin) {
     global $DB;
-    if ($DB->record_exists('local_learningtools_products', ['shortname' => $plugin]) ) {
+    if ($DB->record_exists('local_learningtools_products', ['shortname' => $plugin])) {
         $DB->delete_records('local_learningtools_products', ['shortname' => $plugin]);
     }
 }
@@ -565,7 +564,7 @@ function local_learningtools_delete_ltool_table($plugin) {
  */
 function local_learningtools_clean_mod_assign_userlistid($pageurl, $cm) {
     if (!empty($cm->id)) {
-        $data = new stdClass;
+        $data = new stdClass();
         $data->coursemodule = $cm->id;
         $modname = local_learningtools_get_module_name($data, true);
         if ($modname == 'assign') {
@@ -628,7 +627,13 @@ function local_learningtools_can_visible_tool_incourse() {
 function local_learningtools_extend_navigation_course($navigation, $course, $context) {
     if (isloggedin() && !isguestuser()) {
         $url = new moodle_url('/local/learningtools/ltool/note/view.php', ['id' => $course->id]);
-        $navigation->add(get_string('notes', 'local_learningtools'), $url, navigation_node::TYPE_SETTING, null, null,
-                new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools')));
+        $navigation->add(
+            get_string('notes', 'local_learningtools'),
+            $url,
+            navigation_node::TYPE_SETTING,
+            null,
+            'ltool_notes',
+            new pix_icon('i/learningtools', get_string('learningtools', 'local_learningtools'))
+        );
     }
 }

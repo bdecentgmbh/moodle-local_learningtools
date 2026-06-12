@@ -149,7 +149,7 @@ body.local-learningtools.scrolled #goto-top-link,
     color: #fff;
 }
 
-footer .btn-footer-popover {
+#page-footer .btn-footer-popover {
     right: 5rem;
 }
 
@@ -188,6 +188,14 @@ footer .btn-footer-popover {
     width: 100%;
 }
 
+/* Stack the filter label above its select. Specificity matches the generic
+   `.navitem` rule above so flex-direction/align-items take effect. */
+.ltool-navigation.tertiary-navigation.ltool-navigation .ltnote-sectionfilter,
+.ltool-navigation.tertiary-navigation.ltool-navigation .ltnote-activityfilter {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .ltool-navigation .ltnote-sectionfilter label,
 .ltool-navigation .ltnote-activityfilter label,
 .ltool-navigation .note-print-block label {
@@ -203,7 +211,9 @@ footer .btn-footer-popover {
 .ltool-navigation .ltnote-activityfilter select:focus {
     font-weight: bold;
     border: 0;
-    padding: 0;
+    /* Keep room on the right for the form-select caret so it does not overlap the text. */
+    padding: 0 1.75rem 0 0;
+    width: 100%;
     cursor: pointer;
 }
 

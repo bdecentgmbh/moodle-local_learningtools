@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_learningtools/teritary_navigation
+    @template local_learningtools/tertiary_navigation
 
     Example context (json):
     {
@@ -24,11 +24,12 @@
 }}
 
 <div class="ltool-navigation tertiary-navigation full-width-bottom-border">
-    <div class="row">
+    <div class="d-flex flex-wrap align-items-center">
         {{#generalnavselector}}
             <div class="navitem">
                 {{>core/tertiary_navigation_selector}}
             </div>
+            <div class="navitem-divider"></div>
         {{/generalnavselector}}
 
         {{> ltool_note/navigationheader}}

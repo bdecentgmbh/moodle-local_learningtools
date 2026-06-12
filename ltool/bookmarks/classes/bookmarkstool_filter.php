@@ -27,12 +27,11 @@ use context_user;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/local/learningtools/lib.php');
+require_once($CFG->dirroot . '/local/learningtools/lib.php');
 /**
  * List of the user bookmarks filter action.
  */
 class bookmarkstool_filter {
-
     /**
      * @var int
      */
@@ -225,7 +224,7 @@ class bookmarkstool_filter {
             foreach ($records as $row) {
                 $list = [];
                 $chaptertitle = '';
-                if ($row->itemtype == 'chapter'&& $dbman->table_exists('cdelement_chapter')) {
+                if ($row->itemtype == 'chapter' && $dbman->table_exists('cdelement_chapter')) {
                     if ($chapter = $DB->get_record('cdelement_chapter', ['id' => $row->itemid])) {
                         $chaptertitle = (!empty($chapter->title) ? " | " . $chapter->title : '');
                     }
@@ -313,7 +312,6 @@ class bookmarkstool_filter {
             if ($this->courseid && !$this->child) {
                 $context = \context_course::instance($this->courseid);
             } else if ($this->child) {
-
                 if ($this->teacher) {
                     $context = \context_course::instance($this->courseid);
                 } else {
@@ -339,14 +337,14 @@ class bookmarkstool_filter {
                 $buttonhtml = implode(' ', $buttons);
                 return $buttonhtml;
             }
-
         } else {
             if (has_capability('ltool/bookmarks:manageownbookmarks', $context)) {
                 $buttons = [];
                 $returnurl = new moodle_url('/local/learningtools/ltool/bookmarks/list.php');
                 $deleteparams = ['delete' => $row->id, 'sesskey' => sesskey()];
                 $deleteparams = array_merge($deleteparams, $this->urlparams);
-                $url = new moodle_url($returnurl, $deleteparams);;
+                $url = new moodle_url($returnurl, $deleteparams);
+                ;
                 $strdelete = get_string('delete');
                 $buttons[] = \html_writer::link($url, $OUTPUT->pix_icon('t/delete', $strdelete));
                 $buttonhtml = implode(' ', $buttons);
@@ -364,5 +362,4 @@ class bookmarkstool_filter {
     public function get_bookmark_viewinfo($row) {
         return local_learningtools_get_instance_tool_view_url($row);
     }
-
 }
