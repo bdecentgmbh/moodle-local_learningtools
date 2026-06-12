@@ -32,7 +32,6 @@ require_once($CFG->dirroot . '/local/learningtools/lib.php');
  * Tests for the configurable Learning Tools button position (FAB / drawer).
  */
 final class buttonposition_test extends \advanced_testcase {
-
     /**
      * Reset the database before each test.
      */

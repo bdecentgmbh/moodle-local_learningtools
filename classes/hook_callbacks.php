@@ -24,7 +24,6 @@ namespace local_learningtools;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hook_callbacks {
-
     /**
      * @var string|null Drawer HTML rendered during settings navigation.
      *
