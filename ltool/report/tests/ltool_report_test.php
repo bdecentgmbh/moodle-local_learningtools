@@ -35,10 +35,10 @@ require_once($CFG->dirroot . '/local/learningtools/ltool/report/lib.php');
  */
 final class ltool_report_test extends \advanced_testcase {
     /**
-     * The test page.
-     * @var \moodle_page
+     * The course.
+     * @var \stdClass
      */
-    public $page;
+    public $course;
 
     /**
      * The course context.
@@ -47,13 +47,13 @@ final class ltool_report_test extends \advanced_testcase {
     public $context;
 
     /**
-     * The course.
-     * @var \stdClass
+     * The url of the page a report is submitted from.
+     * @var string
      */
-    public $course;
+    public $pageurl;
 
     /**
-     * Create a course page and log in as admin.
+     * Create a course context and log in as admin.
      *
      * @return void
      */
@@ -63,14 +63,7 @@ final class ltool_report_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->course = $this->getDataGenerator()->create_course();
         $this->context = \context_course::instance($this->course->id);
-        $page = new \moodle_page();
-        $page->set_context($this->context);
-        $page->set_course($this->course);
-        $page->set_pagelayout('standard');
-        $page->set_pagetype('course-view');
-        $page->set_title('Course: Course 1');
-        $page->set_url(new \moodle_url('/course/view.php', ['id' => $this->course->id]));
-        $this->page = $page;
+        $this->pageurl = (new \moodle_url('/course/view.php', ['id' => $this->course->id]))->out(false);
     }
 
     /**
@@ -97,12 +90,12 @@ final class ltool_report_test extends \advanced_testcase {
         return [
             'user' => $userid ?? $USER->id,
             'course' => $this->course->id,
-            'pagetype' => $this->page->pagetype,
-            'pagetitle' => $this->page->title,
+            'pagetype' => 'course-view',
+            'pagetitle' => 'Course 1',
             'coursemodule' => 0,
             'contextlevel' => $this->context->contextlevel,
             'contextid' => $this->context->id,
-            'pageurl' => $this->page->url->out(false),
+            'pageurl' => $this->pageurl,
             'issuetype' => $issuetype,
             'description' => $description,
         ];
