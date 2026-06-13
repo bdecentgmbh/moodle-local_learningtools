@@ -273,6 +273,16 @@ final class ltool_report_test extends \advanced_testcase {
     }
 
     /**
+     * An empty description is rejected: description is a required field.
+     *
+     * @covers ::ltool_report_user_submit_report
+     */
+    public function test_submit_rejects_empty_description(): void {
+        $this->expectException(\moodle_exception::class);
+        ltool_report_user_submit_report($this->context->id, $this->get_report_info('technical', '   '));
+    }
+
+    /**
      * Only enabled issue types are offered.
      *
      * @covers ::ltool_report_get_enabled_issue_types

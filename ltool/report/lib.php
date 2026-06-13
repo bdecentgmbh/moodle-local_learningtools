@@ -143,6 +143,12 @@ function ltool_report_user_submit_report($contextid, $data) {
         throw new moodle_exception('issuetypedisabled', 'ltool_report');
     }
 
+    // Issue type and description are both required.
+    $description = clean_param(isset($data['description']) ? $data['description'] : '', PARAM_TEXT);
+    if (trim($description) === '') {
+        throw new moodle_exception('nodescription', 'ltool_report');
+    }
+
     $record = new stdClass();
     $record->userid = $USER->id;
     $record->course = $data['course'];
@@ -157,7 +163,7 @@ function ltool_report_user_submit_report($contextid, $data) {
     $record->pagetitle = $data['pagetitle'];
     $record->pageurl = $data['pageurl'];
     $record->issuetype = $issuetype;
-    $record->description = clean_param(isset($data['description']) ? $data['description'] : '', PARAM_TEXT);
+    $record->description = $description;
     $record->timecreated = time();
     $record->id = $DB->insert_record('ltool_report_data', $record);
 

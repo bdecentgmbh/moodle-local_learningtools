@@ -31,7 +31,7 @@
 <div class="ltreport-form">
     <div class="ltreport-step ltreport-step-form" data-step="form">
         <div class="mb-3 form-group">
-            <label class="form-label d-block" for="ltreport-issuetype">{{#str}}issuetype, ltool_report{{/str}}</label>
+            <label class="form-label d-block" for="ltreport-issuetype">{{#str}}issuetype, ltool_report{{/str}} <span class="text-danger" title="{{#str}}required{{/str}}">*</span></label>
             <select class="custom-select form-select" id="ltreport-issuetype" name="issuetype" required>
                 <option value="">{{#str}}selectissuetype, ltool_report{{/str}}</option>
                 {{#issuetypes}}
@@ -41,7 +41,7 @@
             <div class="ltreport-issuedesc form-text mt-2" aria-live="polite"></div>
         </div>
         <div class="mb-3 form-group">
-            <label class="form-label d-block" for="ltreport-description">{{#str}}description, ltool_report{{/str}}</label>
+            <label class="form-label d-block" for="ltreport-description">{{#str}}description, ltool_report{{/str}} <span class="text-danger" title="{{#str}}required{{/str}}">*</span></label>
             <textarea class="form-control" id="ltreport-description" name="description" rows="5"
                 placeholder="{{#str}}descriptionplaceholder, ltool_report{{/str}}" required></textarea>
         </div>

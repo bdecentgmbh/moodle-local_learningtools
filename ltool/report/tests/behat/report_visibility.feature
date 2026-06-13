@@ -43,6 +43,16 @@ Feature: Report learning tool lets users report issues from any page
     Then "#ltreport-description" "css_element" should be visible
 
   @javascript
+  Scenario: Description is required before continuing
+    Given I am on the "Course 1" course page logged in as student1
+    And I click on FAB button
+    And I click on "#ltreport-launcher" "css_element"
+    And I set the field "issuetype" to "Technical issue"
+    And I press "Continue"
+    Then I should see "Please describe the issue."
+    And "#ltreport-description" "css_element" should be visible
+
+  @javascript
   Scenario: The report form only offers the issue types
     Given I am on the "Course 1" course page logged in as student1
     And I click on FAB button
