@@ -25,6 +25,8 @@
         "reactionhovername": "Rate this page",
         "hasreaction": true,
         "launchericon": "fa-thumbs-up",
+        "iconbackcolor": "#e83e8c",
+        "iconcolor": "#ffffff",
         "contextid": 25,
         "pageurl": "https://moodle/course/view.php?id=2",
         "cancount": true,
@@ -55,7 +57,7 @@
                 id="ltlike-{{type}}" data-reaction="{{type}}"
                 aria-pressed="{{#isactive}}true{{/isactive}}{{^isactive}}false{{/isactive}}"
                 aria-label="{{label}}"
-                {{^superlike}}style="background:{{iconbackcolor}};"{{/superlike}}>
+                {{^superlike}}{{#iconbackcolor}}style="background:{{iconbackcolor}};"{{/iconbackcolor}}{{/superlike}}>
                 {{#superlike}}
                     <span class="ltlike-superlike-icon" aria-hidden="true">
                         <i class="fa fa-thumbs-up ltlike-thumb ltlike-thumb-back"></i>
@@ -66,7 +68,7 @@
                     </span>
                 {{/superlike}}
                 {{^superlike}}
-                    <i class="fa {{icon}}" style="color:{{iconcolor}};" aria-hidden="true"></i>
+                    <i class="fa {{icon}}"{{#iconcolor}} style="color:{{iconcolor}};"{{/iconcolor}} aria-hidden="true"></i>
                 {{/superlike}}
             </button>
             {{#cancount}}
