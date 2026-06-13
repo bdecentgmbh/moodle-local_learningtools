@@ -35,8 +35,11 @@ class helper {
     public static function render_drawer(): string {
         global $OUTPUT, $PAGE;
 
+        $tools = \local_learningtools_get_drawer_tools();
+        // The note editor only belongs in the drawer when the note tool is enabled and permitted.
+        $shownotes = isset($tools['note']);
         $toolbuttons = '';
-        foreach (\local_learningtools_get_drawer_tools() as $shortname => $toolobj) {
+        foreach ($tools as $shortname => $toolobj) {
             // Notes are shown expanded in their own region, not as a button.
             if ($shortname === 'note') {
                 continue;
@@ -50,6 +53,7 @@ class helper {
             'contextid' => $PAGE->context->id,
             'toolbuttons' => $toolbuttons,
             'hastools' => $toolbuttons !== '',
+            'shownotes' => $shownotes,
             'autosave' => (bool) get_config('local_learningtools', 'autosavenotes'),
         ]);
     }

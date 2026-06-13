@@ -103,7 +103,8 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
 
     // Render the drawer now (while the page header can still receive header actions) so tools
     // such as focus can register their <link> stylesheet in time. The hook outputs it later.
-    if (local_learningtools_is_drawer_mode()) {
+    // A single available tool is shown directly in the navbar, so no drawer is needed then.
+    if (local_learningtools_is_drawer_mode() && count(local_learningtools_get_drawer_tools()) > 1) {
         \local_learningtools\hook_callbacks::$drawerhtml = \local_learningtools\helper::render_drawer();
     }
 }
@@ -422,6 +423,15 @@ function local_learningtools_get_drawer_tools() {
 function local_learningtools_render_navbar_output(\renderer_base $renderer) {
     if (!local_learningtools_drawer_should_show()) {
         return '';
+    }
+    // When only one tool is available, show that tool directly (like the floating button does)
+    // instead of the generic drawer launcher - the drawer is not used.
+    $tools = local_learningtools_get_drawer_tools();
+    if (count($tools) === 1) {
+        $tool = reset($tools);
+        return $renderer->render_from_template('local_learningtools/navbar_single', [
+            'tool' => $tool->render_template(),
+        ]);
     }
     return $renderer->render_from_template('local_learningtools/navbar_icon', [
         'icon' => 'fa fa-magic',

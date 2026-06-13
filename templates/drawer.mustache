@@ -24,7 +24,9 @@
     {
         "contextid": 1,
         "toolbuttons": "<div class=\"ltbookmarksinfo\"></div>",
-        "hastools": true
+        "hastools": true,
+        "shownotes": true,
+        "autosave": false
     }
 }}
 {{< core/drawer}}
@@ -50,6 +52,7 @@
                     {{{toolbuttons}}}
                 </div>
             {{/hastools}}
+            {{#shownotes}}
             <div class="lt-drawer-notes px-2" data-region="lt-drawer-notes" data-contextid="{{contextid}}">
                 <div class="lt-drawer-notes-loading text-center p-3" data-region="lt-drawer-notes-loading">
                     {{#pix}}i/loading, core{{/pix}}
@@ -62,6 +65,7 @@
                 </button>
             </div>
             {{/autosave}}
+            {{/shownotes}}
         </div>
     {{/drawercontent}}
 {{/ core/drawer}}

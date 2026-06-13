@@ -1,0 +1,30 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_learningtools/navbar_single
+
+    Navbar launcher used when only one Learning Tool is available: the tool renders itself
+    directly (its own button + behaviour), so the drawer is not used.
+
+    Example context (json):
+    {
+        "tool": "<div class=\"ltbookmarksinfo\"><button id=\"ltbookmarks-action\"></button></div>"
+    }
+}}
+<div class="popover-region learningtools-navbar learningtools-navbar-single" data-region="learningtools-navbar">
+    {{{tool}}}
+</div>

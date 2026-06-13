@@ -396,3 +396,36 @@ body:has(.learningtools-action-info:not(.floating-button-left)) #page-footer .bt
     align-items: center;
     gap: 15px;
 }
+
+/* Single-tool navbar launcher: render the one available tool as a compact navbar icon. */
+.learningtools-navbar-single {
+    display: inline-flex;
+    align-items: center;
+}
+
+.learningtools-navbar-single [class$="info"] {
+    position: relative;
+    margin: 0;
+}
+
+.learningtools-navbar-single [class$="info"] > button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.learningtools-navbar-single [class$="info"] > button i {
+    font-size: 1.1rem;
+}
+
+/* The floating-button hover labels are not used in the navbar. */
+.learningtools-navbar-single [class$="info"] > p {
+    display: none;
+}
