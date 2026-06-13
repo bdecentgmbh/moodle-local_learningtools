@@ -1,0 +1,346 @@
+/* Learning Tools Like - inline reaction buttons. */
+.ltlikeinfo .ltlike-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+/*
+ * The launcher is only rendered as an actual control inside the floating action button; in the
+ * drawer (and any inline placement) the three reactions show directly, so hide it there.
+ */
+.ltlike-launcher {
+    display: none;
+}
+
+/*
+ * Inside the floating action button every tool is a single round button in a narrow vertical
+ * column. The like tool therefore collapses its three reactions behind one launcher button and
+ * reveals them as a horizontal flyout that grows towards the screen (left for the bottom-right
+ * FAB, right for the bottom-left FAB) on hover, tap or keyboard focus - never overflowing into
+ * the toggle.
+ */
+.learningtools-action-info .floating-button .ltlikeinfo {
+    position: relative;
+}
+
+.learningtools-action-info .floating-button .ltlike-launcher {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* The launcher replaces the old hover label, which otherwise sat over the buttons. */
+.learningtools-action-info .floating-button .ltlikeinfo > p,
+.learningtools-action-info .floating-button .ltlikeinfo:hover > p {
+    display: none;
+}
+
+/* A small dot marks that the user already has an active reaction. */
+.learningtools-action-info .floating-button .ltlike-launcher.active::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #5cb85c;
+    border: 2px solid #fff;
+}
+
+/* The reactions become a flyout bar anchored just to the left of the launcher. */
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-group {
+    position: absolute;
+    top: 0;
+    right: 100%;
+    left: auto;
+    margin-right: -2px;
+    padding: 6px 10px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border-radius: 30px;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.2);
+    transform-origin: right center;
+    transform: translateX(8px) scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 2;
+}
+
+.learningtools-action-info .floating-button .ltlikeinfo.ltlike-open .ltlike-group,
+.learningtools-action-info .floating-button .ltlikeinfo:focus-within .ltlike-group {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .learningtools-action-info .floating-button .ltlikeinfo:hover .ltlike-group {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: none;
+    }
+}
+
+/* Compact reaction items in the flyout: thumb on top, count beneath. */
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-group .ltlike-item {
+    flex-direction: column;
+    gap: 2px;
+}
+
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-group .ltlike-btn {
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    z-index: 1;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.2);
+}
+
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-group .ltlike-count {
+    font-size: 0.72rem;
+    line-height: 1;
+    color: #333;
+}
+
+/*
+ * The core floating-button rules style any nested <i>/<span> as a white icon or a corner badge.
+ * Re-assert the super-like composite icon here (higher specificity) so it keeps its gradient
+ * thumbs and sparkle stars inside the flyout.
+ */
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-superlike-icon {
+    position: relative;
+    display: inline-block;
+    width: 1.4em;
+    height: 1.4em;
+    font-size: 18px;
+    background: none;
+    top: auto;
+    right: auto;
+}
+
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-thumb {
+    position: absolute;
+    width: auto;
+    height: auto;
+    font-size: 18px;
+    line-height: 1;
+    background: linear-gradient(135deg, #ff5f6d, #ffc371, #6a82fb);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.learningtools-action-info .floating-button .ltlikeinfo .ltlike-star {
+    position: absolute;
+    width: auto;
+    height: auto;
+    font-size: 0.4em;
+    line-height: 1;
+    color: #ffd54a;
+    background: none;
+}
+
+/* Bottom-left FAB: the flyout grows to the right of the launcher instead. */
+.learningtools-action-info.floating-button-left .floating-button .ltlikeinfo .ltlike-group {
+    right: auto;
+    left: 100%;
+    margin-right: 0;
+    margin-left: -2px;
+    justify-content: flex-start;
+    transform-origin: left center;
+    transform: translateX(-8px) scale(0.95);
+}
+
+.learningtools-action-info.floating-button-left .floating-button .ltlikeinfo.ltlike-open .ltlike-group,
+.learningtools-action-info.floating-button-left .floating-button .ltlikeinfo:focus-within .ltlike-group {
+    transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .learningtools-action-info.floating-button-left .floating-button .ltlikeinfo:hover .ltlike-group {
+        transform: none;
+    }
+}
+
+.ltlikeinfo .ltlike-item {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    position: relative;
+}
+
+.ltlikeinfo .ltlike-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.ltlikeinfo .ltlike-btn:hover {
+    transform: scale(1.08);
+}
+
+.ltlikeinfo .ltlike-btn:focus-visible {
+    outline: 2px solid #0f6cbf;
+    outline-offset: 2px;
+}
+
+/* Active = the user's own reaction. */
+.ltlikeinfo .ltlike-btn.active {
+    box-shadow: 0 0 0 2px #0f6cbf inset;
+    transform: scale(1.05);
+}
+
+.ltlikeinfo .ltlike-item-dislike .ltlike-btn.active {
+    box-shadow: 0 0 0 2px #d9534f inset;
+}
+
+.ltlikeinfo .ltlike-item-like .ltlike-btn.active {
+    box-shadow: 0 0 0 2px #5cb85c inset;
+}
+
+.ltlikeinfo .ltlike-btn i {
+    font-size: 18px;
+}
+
+/* Count badge. */
+.ltlikeinfo .ltlike-count {
+    font-size: 0.8rem;
+    min-width: 1.2rem;
+    text-align: center;
+}
+
+.ltlikeinfo .ltlike-count-clickable {
+    cursor: pointer;
+    text-decoration: underline dotted;
+}
+
+.ltlikeinfo .ltlike-count-clickable:focus-visible {
+    outline: 2px solid #0f6cbf;
+}
+
+/* Super like: colourful composite icon with sparkle stars. */
+.ltlikeinfo .ltlike-superlike-icon {
+    position: relative;
+    display: inline-block;
+    width: 1.4em;
+    height: 1.4em;
+    font-size: 18px;
+}
+
+.ltlikeinfo .ltlike-thumb {
+    position: absolute;
+    background: linear-gradient(135deg, #ff5f6d, #ffc371, #6a82fb);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.ltlikeinfo .ltlike-thumb-back {
+    left: 0.28em;
+    top: 0.04em;
+    opacity: 0.55;
+    transform: scale(0.9);
+}
+
+.ltlikeinfo .ltlike-thumb-front {
+    left: 0;
+    top: 0.18em;
+}
+
+.ltlikeinfo .ltlike-star {
+    position: absolute;
+    font-size: 0.4em;
+    color: #ffd54a;
+}
+
+.ltlikeinfo .ltlike-star-1 {
+    top: -0.1em;
+    left: 0.9em;
+}
+
+.ltlikeinfo .ltlike-star-2 {
+    top: 0.6em;
+    left: 1.1em;
+}
+
+.ltlikeinfo .ltlike-star-3 {
+    top: -0.05em;
+    left: -0.15em;
+    font-size: 0.3em;
+}
+
+/* Twinkle/pop only when the super like is the active reaction. */
+.ltlikeinfo .ltlike-superlike .ltlike-btn.active .ltlike-star {
+    animation: ltlike-twinkle 0.9s ease-in-out 2;
+}
+
+.ltlikeinfo .ltlike-superlike .ltlike-btn.active .ltlike-superlike-icon {
+    animation: ltlike-pop 0.35s ease-out 1;
+}
+
+@keyframes ltlike-twinkle {
+    0%,
+    100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.25);
+    }
+}
+
+@keyframes ltlike-pop {
+    0% {
+        transform: scale(0.6);
+    }
+
+    60% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ltlikeinfo .ltlike-btn,
+    .ltlikeinfo .ltlike-superlike-icon,
+    .ltlikeinfo .ltlike-star {
+        animation: none;
+        transition: none;
+    }
+
+    .ltlikeinfo .ltlike-btn:hover,
+    .ltlikeinfo .ltlike-btn.active {
+        transform: none;
+    }
+}
+
+/* Manager user-list modal. */
+.ltlike-users .ltlike-users-group {
+    margin-bottom: 1rem;
+}
+
+.ltlike-users .ltlike-user-pic img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}

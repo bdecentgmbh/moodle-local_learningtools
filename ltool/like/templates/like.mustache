@@ -1,0 +1,87 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template ltool_like/like
+
+    Inline reaction button group rendered into the Learning Tools FAB and drawer.
+
+    Example context (json):
+    {
+        "ltoollike": true,
+        "reactionhovername": "Rate this page",
+        "hasreaction": true,
+        "launchericon": "fa-thumbs-up",
+        "iconbackcolor": "#e83e8c",
+        "iconcolor": "#ffffff",
+        "contextid": 25,
+        "pageurl": "https://moodle/course/view.php?id=2",
+        "cancount": true,
+        "canviewusers": true,
+        "reactions": [
+            {"type": "dislike", "icon": "fa-thumbs-down", "label": "Dislike this page",
+             "isactive": false, "superlike": false, "count": 2, "countlabel": "2 dislikes"},
+            {"type": "like", "icon": "fa-thumbs-up", "label": "Like this page",
+             "isactive": true, "superlike": false, "count": 7, "countlabel": "7 likes"},
+            {"type": "superlike", "icon": "fa-thumbs-up", "label": "Super like this page",
+             "isactive": false, "superlike": true, "count": 3, "countlabel": "3 super likes"}
+        ]
+    }
+}}
+{{#ltoollike}}
+<div class="ltlikeinfo" id="ltlikeinfo" data-tool="like"
+    data-contextid="{{contextid}}" data-pageurl="{{pageurl}}"
+    data-canviewusers="{{#canviewusers}}1{{/canviewusers}}{{^canviewusers}}0{{/canviewusers}}">
+    <button type="button" class="ltlike-launcher{{#hasreaction}} active{{/hasreaction}}"
+        id="ltlike-launcher" aria-haspopup="true" aria-expanded="false" aria-controls="ltlike-group"
+        aria-label="{{reactionhovername}}" title="{{reactionhovername}}">
+        <i class="fa {{launchericon}}" aria-hidden="true"></i>
+    </button>
+    <div class="ltlike-group" id="ltlike-group" role="group" aria-label="{{reactionhovername}}">
+        {{#reactions}}
+        <div class="ltlike-item ltlike-item-{{type}}{{#superlike}} ltlike-superlike{{/superlike}}">
+            <button type="button" class="ltlike-btn{{#isactive}} active{{/isactive}}"
+                id="ltlike-{{type}}" data-reaction="{{type}}"
+                aria-pressed="{{#isactive}}true{{/isactive}}{{^isactive}}false{{/isactive}}"
+                aria-label="{{label}}"
+                {{^superlike}}{{#iconbackcolor}}style="background:{{iconbackcolor}};"{{/iconbackcolor}}{{/superlike}}>
+                {{#superlike}}
+                    <span class="ltlike-superlike-icon" aria-hidden="true">
+                        <i class="fa fa-thumbs-up ltlike-thumb ltlike-thumb-back"></i>
+                        <i class="fa fa-thumbs-up ltlike-thumb ltlike-thumb-front"></i>
+                        <i class="fa fa-star ltlike-star ltlike-star-1"></i>
+                        <i class="fa fa-star ltlike-star ltlike-star-2"></i>
+                        <i class="fa fa-star ltlike-star ltlike-star-3"></i>
+                    </span>
+                {{/superlike}}
+                {{^superlike}}
+                    <i class="fa {{icon}}"{{#iconcolor}} style="color:{{iconcolor}};"{{/iconcolor}} aria-hidden="true"></i>
+                {{/superlike}}
+            </button>
+            {{#cancount}}
+            <span class="ltlike-count{{#canviewusers}} ltlike-count-clickable{{/canviewusers}}"
+                id="ltlike-count-{{type}}" data-reaction="{{type}}"
+                {{#canviewusers}}role="button" tabindex="0" aria-label="{{#str}}viewlikeusers, ltool_like{{/str}}"{{/canviewusers}}>
+                <span aria-hidden="true">{{count}}</span>
+                <span class="sr-only visually-hidden">{{countlabel}}</span>
+            </span>
+            {{/cancount}}
+        </div>
+        {{/reactions}}
+    </div>
+    <p>{{reactionhovername}}</p>
+</div>
+{{/ltoollike}}

@@ -15,17 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * Define plugin event observers.
  *
- * @package   local_learningtools
- * @copyright bdecent GmbH 2022
+ * @package   ltool_like
+ * @category  event
+ * @copyright 2026, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
-$plugin->version = 2026061300;
-$plugin->release = 'v1.4';
-$plugin->requires = 2025041400; // Moodle 5.0.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [500, 502];
+$observers = [
+    [
+        'eventname' => 'core\event\course_deleted',
+        'callback' => '\ltool_like\event_observer::like_coursedata_deleteaction',
+    ],
+    [
+        'eventname' => 'core\event\course_module_deleted',
+        'callback' => '\ltool_like\event_observer::like_moduledata_deleteaction',
+    ],
+];

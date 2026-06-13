@@ -15,17 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * tool plugin "Learning Tools Like" - Version file.
  *
- * @package   local_learningtools
- * @copyright bdecent GmbH 2022
+ * @package   ltool_like
+ * @copyright 2026, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
+$plugin->component = 'ltool_like';
 $plugin->version = 2026061300;
-$plugin->release = 'v1.4';
-$plugin->requires = 2025041400; // Moodle 5.0.
+$plugin->requires = 2025041400;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [500, 502];

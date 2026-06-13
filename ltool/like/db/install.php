@@ -15,17 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * Define install function.
  *
- * @package   local_learningtools
- * @copyright bdecent GmbH 2022
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    ltool_like
+ * @copyright  2026, bdecent gmbh bdecent.de
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
-$plugin->version = 2026061300;
-$plugin->release = 'v1.4';
-$plugin->requires = 2025041400; // Moodle 5.0.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [500, 502];
+/**
+ * ltool_like install function: register the tool with the parent plugin.
+ *
+ * @return void
+ */
+function xmldb_ltool_like_install() {
+    global $CFG;
+    require_once($CFG->dirroot . '/local/learningtools/lib.php');
+    local_learningtools_add_learningtools_plugin('like');
+}

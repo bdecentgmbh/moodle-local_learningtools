@@ -15,17 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Local plugin "Learning Tools" - Version file.
+ * Define plugin services.
  *
- * @package   local_learningtools
- * @copyright bdecent GmbH 2022
+ * @package   ltool_like
+ * @copyright 2026, bdecent gmbh bdecent.de
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_learningtools';
-$plugin->version = 2026061300;
-$plugin->release = 'v1.4';
-$plugin->requires = 2025041400; // Moodle 5.0.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->supported = [500, 502];
+$functions = [
+    'ltool_like_save_userlike' => [
+        'classname'   => 'ltool_like\external',
+        'methodname'  => 'save_userlike',
+        'description' => 'Save, switch or remove the user reaction for a page.',
+        'type'        => 'write',
+        'capabilities' => 'ltool/like:createlike',
+        'ajax'          => true,
+        'loginrequired' => true,
+    ],
+];
