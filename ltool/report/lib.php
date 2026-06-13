@@ -143,6 +143,12 @@ function ltool_report_user_submit_report($contextid, $data) {
         throw new moodle_exception('issuetypedisabled', 'ltool_report');
     }
 
+    // Issue type and description are both required.
+    $description = clean_param(isset($data['description']) ? $data['description'] : '', PARAM_TEXT);
+    if (trim($description) === '') {
+        throw new moodle_exception('nodescription', 'ltool_report');
+    }
+
     $record = new stdClass();
     $record->userid = $USER->id;
     $record->course = $data['course'];
@@ -157,7 +163,7 @@ function ltool_report_user_submit_report($contextid, $data) {
     $record->pagetitle = $data['pagetitle'];
     $record->pageurl = $data['pageurl'];
     $record->issuetype = $issuetype;
-    $record->description = clean_param(isset($data['description']) ? $data['description'] : '', PARAM_TEXT);
+    $record->description = $description;
     $record->timecreated = time();
     $record->id = $DB->insert_record('ltool_report_data', $record);
 
@@ -170,6 +176,8 @@ function ltool_report_user_submit_report($contextid, $data) {
     ])->trigger();
 
     $recipients = ltool_report_get_recipients($context, $issuetype);
+    // Always send the reporter a confirmation copy of their own report.
+    $recipients[$USER->id] = \core_user::get_user($USER->id);
     ltool_report_send_report_notifications($recipients, $record, $USER, $context);
 
     return [
@@ -270,6 +278,8 @@ function ltool_report_output_fragment_get_report_form($args) {
         $issuetypes[] = [
             'type' => $type,
             'label' => get_string('issuetype_' . $type, 'ltool_report'),
+            // Explains the issue type and who receives it; customisable via language packs.
+            'description' => get_string('issuetypedesc_' . $type, 'ltool_report'),
         ];
     }
     return $OUTPUT->render_from_template('ltool_report/report_form', ['issuetypes' => $issuetypes]);

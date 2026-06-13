@@ -220,9 +220,35 @@ final class ltool_report_test extends \advanced_testcase {
         $events = $this->filter_report_events($eventsink);
         $this->assertInstanceOf('\ltool_report\event\ltreport_submitted', reset($events));
 
+        // The configured role holder and the reporter (confirmation copy) are both notified.
         $messages = $messagesink->get_messages();
-        $this->assertCount(1, $messages);
-        $this->assertEquals($teacher->id, reset($messages)->useridto);
+        $this->assertCount(2, $messages);
+        $recipientids = array_map(function ($message) {
+            return $message->useridto;
+        }, $messages);
+        $this->assertContains($teacher->id, $recipientids);
+        $this->assertContains($student->id, $recipientids);
+    }
+
+    /**
+     * The reporter always receives a confirmation copy, even with no configured roles.
+     *
+     * @covers ::ltool_report_user_submit_report
+     */
+    public function test_submit_copies_reporter(): void {
+        $student = $this->getDataGenerator()->create_and_enrol($this->course, 'student');
+        $this->setUser($student);
+        $messagesink = $this->redirectMessages();
+
+        ltool_report_user_submit_report(
+            $this->context->id,
+            $this->get_report_info('question', 'How do I submit this?', $student->id)
+        );
+
+        $recipientids = array_map(function ($message) {
+            return $message->useridto;
+        }, $messagesink->get_messages());
+        $this->assertContains($student->id, $recipientids);
     }
 
     /**
@@ -244,6 +270,16 @@ final class ltool_report_test extends \advanced_testcase {
     public function test_submit_rejects_invalid_type(): void {
         $this->expectException(\moodle_exception::class);
         ltool_report_user_submit_report($this->context->id, $this->get_report_info('bogus', 'Broken.'));
+    }
+
+    /**
+     * An empty description is rejected: description is a required field.
+     *
+     * @covers ::ltool_report_user_submit_report
+     */
+    public function test_submit_rejects_empty_description(): void {
+        $this->expectException(\moodle_exception::class);
+        ltool_report_user_submit_report($this->context->id, $this->get_report_info('technical', '   '));
     }
 
     /**

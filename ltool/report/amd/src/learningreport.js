@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Report ltool: open the issue-report modal and submit it.
+ * Report ltool: open the issue-report modal, review, then submit it.
  *
  * @module     ltool_report/learningreport
  * @copyright  2026, bdecent gmbh bdecent.de
@@ -45,25 +45,29 @@ define([
     };
 
     /**
-     * Validate and submit the report form via the external service.
+     * Enable or disable the modal's action buttons (used to lock during submit).
+     *
+     * @param {jQuery} root The modal root.
+     * @param {Boolean} locked Whether the buttons should be disabled.
+     */
+    var lockButtons = function(root, locked) {
+        root.find('[data-action="save"], .ltreport-back').prop('disabled', locked);
+    };
+
+    /**
+     * Send the report via the external service, locking the buttons first.
      *
      * @param {Modal} modal The report modal.
+     * @param {jQuery} root The modal root.
      * @param {Number} contextid The page context id.
      * @param {Object} params The page identity data.
      */
-    var submitReport = function(modal, contextid, params) {
-        var root = modal.getRoot();
-        var issuetype = root.find('[name="issuetype"]').val();
-        var description = root.find('[name="description"]').val();
-        if (!issuetype) {
-            warn('selectissuetype');
-            return;
-        }
-        if (!description || !description.trim()) {
-            warn('nodescription');
-            return;
-        }
-        var formdata = Object.assign({}, params, {issuetype: issuetype, description: description});
+    var sendReport = function(modal, root, contextid, params) {
+        lockButtons(root, true);
+        var formdata = Object.assign({}, params, {
+            issuetype: root.find('[name="issuetype"]').val(),
+            description: root.find('[name="description"]').val()
+        });
         Ajax.call([{
             methodname: 'ltool_report_submit_report',
             args: {contextid: contextid, formdata: JSON.stringify(formdata)},
@@ -71,7 +75,10 @@ define([
                 Notification.addNotification({message: response.message, type: response.notificationtype});
                 modal.hide();
             },
-            fail: Notification.exception
+            fail: function(ex) {
+                lockButtons(root, false);
+                Notification.exception(ex);
+            }
         }]);
     };
 
@@ -84,21 +91,67 @@ define([
     var openModal = function(contextid, params) {
         Str.get_strings([
             {key: 'submitreport', component: 'ltool_report'},
-            {key: 'submit', component: 'ltool_report'}
+            {key: 'continuereport', component: 'ltool_report'},
+            {key: 'confirmsend', component: 'ltool_report'}
         ]).then(function(strings) {
             return ModalSaveCancel.create({
                 title: strings[0],
                 body: Fragment.loadFragment('ltool_report', 'get_report_form', contextid, {contextid: contextid}),
                 large: false
             }).then(function(modal) {
+                var root = modal.getRoot();
+                var step = 'form';
+                var submitting = false;
                 modal.setSaveButtonText(strings[1]);
                 modal.show();
-                modal.getRoot().on(ModalEvents.hidden, function() {
+
+                root.on(ModalEvents.hidden, function() {
                     modal.destroy();
                 });
-                modal.getRoot().on(ModalEvents.save, function(e) {
+
+                // Show the selected issue type's description on the form.
+                root.on('change', '[name="issuetype"]', function() {
+                    var option = this.options[this.selectedIndex];
+                    root.find('.ltreport-issuedesc').text(option ? (option.getAttribute('data-description') || '') : '');
+                });
+
+                // Return from the review step to the form.
+                root.on('click', '.ltreport-back', function() {
+                    step = 'form';
+                    root.find('.ltreport-step-review').attr('hidden', 'hidden');
+                    root.find('.ltreport-step-form').removeAttr('hidden');
+                    modal.setSaveButtonText(strings[1]);
+                });
+
+                root.on(ModalEvents.save, function(e) {
                     e.preventDefault();
-                    submitReport(modal, contextid, params);
+                    if (step === 'form') {
+                        var issuetype = root.find('[name="issuetype"]').val();
+                        var description = root.find('[name="description"]').val();
+                        if (!issuetype) {
+                            warn('selectissuetype');
+                            return;
+                        }
+                        if (!description || !description.trim()) {
+                            warn('nodescription');
+                            return;
+                        }
+                        // Populate and show the read-only review step.
+                        root.find('.ltreport-review-type').text(root.find('[name="issuetype"] option:selected').text());
+                        root.find('.ltreport-review-description').text(description);
+                        root.find('.ltreport-review-link').text(params.pageurl).attr('href', params.pageurl);
+                        root.find('.ltreport-step-form').attr('hidden', 'hidden');
+                        root.find('.ltreport-step-review').removeAttr('hidden');
+                        step = 'review';
+                        modal.setSaveButtonText(strings[2]);
+                        return;
+                    }
+                    // Review step: confirm and send, locking immediately against a double submit.
+                    if (submitting) {
+                        return;
+                    }
+                    submitting = true;
+                    sendReport(modal, root, contextid, params);
                 });
                 return modal;
             });

@@ -17,29 +17,45 @@
 {{!
     @template ltool_report/report_form
 
-    The issue report form shown inside the Report modal. Only enabled issue types are listed.
+    The issue report form (step 1) and read-only review (step 2) shown inside the Report modal.
+    Only enabled issue types are listed, each with a description explaining who receives it.
 
     Example context (json):
     {
         "issuetypes": [
-            {"type": "technical", "label": "Technical issue"},
-            {"type": "question", "label": "General question"}
+            {"type": "technical", "label": "Technical issue", "description": "Sent to the support team."},
+            {"type": "question", "label": "General question", "description": "Sent to your teachers."}
         ]
     }
 }}
-<form class="ltreport-form">
-    <div class="mb-3 form-group">
-        <label class="form-label d-block" for="ltreport-issuetype">{{#str}}issuetype, ltool_report{{/str}}</label>
-        <select class="custom-select form-select" id="ltreport-issuetype" name="issuetype" required>
-            <option value="">{{#str}}selectissuetype, ltool_report{{/str}}</option>
-            {{#issuetypes}}
-            <option value="{{type}}">{{label}}</option>
-            {{/issuetypes}}
-        </select>
+<div class="ltreport-form">
+    <div class="ltreport-step ltreport-step-form" data-step="form">
+        <div class="mb-3 form-group">
+            <label class="form-label d-block" for="ltreport-issuetype">{{#str}}issuetype, ltool_report{{/str}} <span class="text-danger" title="{{#str}}required{{/str}}">*</span></label>
+            <select class="custom-select form-select" id="ltreport-issuetype" name="issuetype" required>
+                <option value="">{{#str}}selectissuetype, ltool_report{{/str}}</option>
+                {{#issuetypes}}
+                <option value="{{type}}" data-description="{{description}}">{{label}}</option>
+                {{/issuetypes}}
+            </select>
+            <div class="ltreport-issuedesc form-text mt-2" aria-live="polite"></div>
+        </div>
+        <div class="mb-3 form-group">
+            <label class="form-label d-block" for="ltreport-description">{{#str}}description, ltool_report{{/str}} <span class="text-danger" title="{{#str}}required{{/str}}">*</span></label>
+            <textarea class="form-control" id="ltreport-description" name="description" rows="5"
+                placeholder="{{#str}}descriptionplaceholder, ltool_report{{/str}}" required></textarea>
+        </div>
     </div>
-    <div class="mb-3 form-group">
-        <label class="form-label d-block" for="ltreport-description">{{#str}}description, ltool_report{{/str}}</label>
-        <textarea class="form-control" id="ltreport-description" name="description" rows="5"
-            placeholder="{{#str}}descriptionplaceholder, ltool_report{{/str}}" required></textarea>
+    <div class="ltreport-step ltreport-step-review" data-step="review" hidden>
+        <p>{{#str}}reviewintro, ltool_report{{/str}}</p>
+        <dl class="row mb-2">
+            <dt class="col-sm-3">{{#str}}issuetype, ltool_report{{/str}}</dt>
+            <dd class="col-sm-9 ltreport-review-type"></dd>
+            <dt class="col-sm-3">{{#str}}description, ltool_report{{/str}}</dt>
+            <dd class="col-sm-9 ltreport-review-description ltreport-prewrap"></dd>
+            <dt class="col-sm-3">{{#str}}reportedpage, ltool_report{{/str}}</dt>
+            <dd class="col-sm-9"><a class="ltreport-review-link" href="#" target="_blank" rel="noopener noreferrer"></a></dd>
+        </dl>
+        <button type="button" class="btn btn-secondary ltreport-back">{{#str}}back, ltool_report{{/str}}</button>
     </div>
-</form>
+</div>

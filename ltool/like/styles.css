@@ -199,18 +199,31 @@
     outline-offset: 2px;
 }
 
-/* Active = the user's own reaction. */
+/*
+ * The launcher follows the admin's configured colours (set inline); the three reactions use
+ * fixed, semantic colours so dislike / like / super like stay individually recognisable.
+ */
+.ltlikeinfo .ltlike-item-dislike .ltlike-btn {
+    background: #d9534f;
+}
+
+.ltlikeinfo .ltlike-item-like .ltlike-btn {
+    background: #5cb85c;
+}
+
+.ltlikeinfo .ltlike-superlike .ltlike-btn {
+    background: #2f3a4a;
+}
+
+.ltlikeinfo .ltlike-item-dislike .ltlike-btn > i,
+.ltlikeinfo .ltlike-item-like .ltlike-btn > i {
+    color: #fff;
+}
+
+/* Active = the user's own reaction: a contrasting ring that reads on any coloured button. */
 .ltlikeinfo .ltlike-btn.active {
-    box-shadow: 0 0 0 2px #0f6cbf inset;
+    box-shadow: 0 0 0 2px #fff inset, 0 0 0 4px rgba(0, 0, 0, 0.35);
     transform: scale(1.05);
-}
-
-.ltlikeinfo .ltlike-item-dislike .ltlike-btn.active {
-    box-shadow: 0 0 0 2px #d9534f inset;
-}
-
-.ltlikeinfo .ltlike-item-like .ltlike-btn.active {
-    box-shadow: 0 0 0 2px #5cb85c inset;
 }
 
 .ltlikeinfo .ltlike-btn i {
