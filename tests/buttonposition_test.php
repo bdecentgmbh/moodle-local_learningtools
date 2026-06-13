@@ -191,4 +191,26 @@ final class buttonposition_test extends \advanced_testcase {
         set_config('autosavenotes', 1, 'local_learningtools');
         $this->assertStringNotContainsString('lt-drawer-save-note', helper::render_drawer());
     }
+
+    /**
+     * Disabling the note tool removes the note editor region (and its save button) from the drawer.
+     *
+     * @covers \local_learningtools\helper::render_drawer
+     */
+    public function test_render_drawer_hides_notes_when_note_tool_disabled(): void {
+        global $PAGE, $DB;
+        set_config('buttonposition', 'drawer', 'local_learningtools');
+        $this->setAdminUser();
+        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_url('/');
+
+        // The editor region is present while the note tool is enabled.
+        $this->assertStringContainsString('data-region="lt-drawer-notes"', helper::render_drawer());
+
+        // Disable the note tool: its editor region and save button disappear from the drawer.
+        $DB->set_field('local_learningtools_products', 'status', 0, ['shortname' => 'note']);
+        $html = helper::render_drawer();
+        $this->assertStringNotContainsString('data-region="lt-drawer-notes"', $html);
+        $this->assertStringNotContainsString('lt-drawer-save-note', $html);
+    }
 }
