@@ -47,8 +47,9 @@
     data-canviewusers="{{#canviewusers}}1{{/canviewusers}}{{^canviewusers}}0{{/canviewusers}}">
     <button type="button" class="ltlike-launcher{{#hasreaction}} active{{/hasreaction}}"
         id="ltlike-launcher" aria-haspopup="true" aria-expanded="false" aria-controls="ltlike-group"
-        aria-label="{{reactionhovername}}" title="{{reactionhovername}}">
-        <i class="fa {{launchericon}}" aria-hidden="true"></i>
+        aria-label="{{reactionhovername}}" title="{{reactionhovername}}"
+        {{#iconbackcolor}}style="background:{{iconbackcolor}};"{{/iconbackcolor}}>
+        <i class="fa {{launchericon}}"{{#iconcolor}} style="color:{{iconcolor}};"{{/iconcolor}} aria-hidden="true"></i>
     </button>
     <div class="ltlike-group" id="ltlike-group" role="group" aria-label="{{reactionhovername}}">
         {{#reactions}}
@@ -56,8 +57,7 @@
             <button type="button" class="ltlike-btn{{#isactive}} active{{/isactive}}"
                 id="ltlike-{{type}}" data-reaction="{{type}}"
                 aria-pressed="{{#isactive}}true{{/isactive}}{{^isactive}}false{{/isactive}}"
-                aria-label="{{label}}"
-                {{^superlike}}{{#iconbackcolor}}style="background:{{iconbackcolor}};"{{/iconbackcolor}}{{/superlike}}>
+                aria-label="{{label}}">
                 {{#superlike}}
                     <span class="ltlike-superlike-icon" aria-hidden="true">
                         <i class="fa fa-thumbs-up ltlike-thumb ltlike-thumb-back"></i>
@@ -68,7 +68,7 @@
                     </span>
                 {{/superlike}}
                 {{^superlike}}
-                    <i class="fa {{icon}}"{{#iconcolor}} style="color:{{iconcolor}};"{{/iconcolor}} aria-hidden="true"></i>
+                    <i class="fa {{icon}}" aria-hidden="true"></i>
                 {{/superlike}}
             </button>
             {{#cancount}}
