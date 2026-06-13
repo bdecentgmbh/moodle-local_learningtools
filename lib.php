@@ -59,22 +59,35 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
     global $PAGE, $CFG;
     $context = context_system::instance();
 
-    $ltoolsjs = [];
-    // Content of fab button html.
-    $learningtoolsinfo = local_learningtools_get_learningtools_info();
-    $fabbuttonhtml = !empty($learningtoolsinfo) ? json_encode($learningtoolsinfo) : false;
-    if ($fabbuttonhtml === false) {
-        return;
+    if (local_learningtools_is_drawer_mode()) {
+        // Drawer launcher: no floating button is injected, but the per-tool JS is still
+        // required so the drawer buttons and the lazy-loaded notes editor work.
+        if (!local_learningtools_drawer_should_show()) {
+            return;
+        }
+        // The tool JS (bookmarks, notes) reads window.ltools, so it must be present here too.
+        $PAGE->requires->data_for_js('ltools', [
+            'disappertimenotify' => get_config('local_learningtools', 'notificationdisapper'),
+        ]);
+    } else {
+        $ltoolsjs = [];
+        // Content of fab button html.
+        $learningtoolsinfo = local_learningtools_get_learningtools_info();
+        $fabbuttonhtml = !empty($learningtoolsinfo) ? json_encode($learningtoolsinfo) : false;
+        if ($fabbuttonhtml === false) {
+            return;
+        }
+        $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
+        $PAGE->requires->data_for_js('ltools', $ltoolsjs);
+        $PAGE->requires->data_for_js('fabbuttonhtml', $fabbuttonhtml, true);
+        $loggedin = false;
+        if (isloggedin() && !isguestuser()) {
+            $loggedin = true;
+        }
+        $viewcapability = ['loggedin' => $loggedin];
+        $PAGE->requires->js_call_amd('local_learningtools/learningtoolsinfo', 'init', $viewcapability);
     }
-    $ltoolsjs['disappertimenotify'] = get_config('local_learningtools', 'notificationdisapper');
-    $PAGE->requires->data_for_js('ltools', $ltoolsjs);
-    $PAGE->requires->data_for_js('fabbuttonhtml', $fabbuttonhtml, true);
-    $loggedin = false;
-    if (isloggedin() && !isguestuser()) {
-        $loggedin = true;
-    }
-    $viewcapability = ['loggedin' => $loggedin];
-    $PAGE->requires->js_call_amd('local_learningtools/learningtoolsinfo', 'init', $viewcapability);
+
     // List of subplugins.
     // Load available subplugins javascript.
     $subplugins = local_learningtools_get_subplugins();
@@ -86,6 +99,12 @@ function local_learningtools_extend_settings_navigation($settingnav, $context) {
         if (method_exists($plugin, 'required_load_data')) {
             $plugin->required_load_data();
         }
+    }
+
+    // Render the drawer now (while the page header can still receive header actions) so tools
+    // such as focus can register their <link> stylesheet in time. The hook outputs it later.
+    if (local_learningtools_is_drawer_mode()) {
+        \local_learningtools\hook_callbacks::$drawerhtml = \local_learningtools\helper::render_drawer();
     }
 }
 
@@ -302,26 +321,138 @@ function local_learningtools_get_subplugins() {
 }
 
 /**
- * Display fab button html.
- * @return string fab button html content.
+ * The supported Learning Tools launcher positions.
+ *
+ * @return string[] List of valid position keys.
  */
-function local_learningtools_get_learningtools_info() {
-    global $PAGE, $SITE, $USER;
-    $content = '';
+function local_learningtools_get_button_positions() {
+    return ['bottomright', 'bottomleft', 'drawer'];
+}
+
+/**
+ * Get the configured Learning Tools launcher position.
+ *
+ * Falls back to the bottom-right floating button (the historical default) when the
+ * setting is unset or holds an unexpected value.
+ *
+ * @return string One of bottomright|bottomleft|drawer.
+ */
+function local_learningtools_get_button_position() {
+    $position = get_config('local_learningtools', 'buttonposition');
+    if (!in_array($position, local_learningtools_get_button_positions(), true)) {
+        return 'bottomright';
+    }
+    return $position;
+}
+
+/**
+ * Map a launcher position to the CSS modifier class on the floating button container.
+ *
+ * @param string $position One of bottomright|bottomleft|drawer.
+ * @return string The container modifier class ('' when no modifier is needed).
+ */
+function local_learningtools_get_fab_container_class($position) {
+    return ($position === 'bottomleft') ? 'floating-button-left' : '';
+}
+
+/**
+ * Whether the launcher is configured to use the navbar icon + drawer.
+ *
+ * @param string|null $position Position to test; reads the setting when null.
+ * @return bool True when the drawer launcher should be used.
+ */
+function local_learningtools_is_drawer_mode($position = null) {
+    if ($position === null) {
+        $position = local_learningtools_get_button_position();
+    }
+    return $position === 'drawer';
+}
+
+/**
+ * Whether the Learning Tools drawer should be shown to the current user on this page.
+ *
+ * The drawer obeys the same rules as the floating button: drawer mode must be selected, the
+ * user must be a logged-in non-guest, the tools must be visible on this page, and at least one
+ * tool must be usable by the user.
+ *
+ * @return bool True when the navbar icon + drawer should be rendered.
+ */
+function local_learningtools_drawer_should_show() {
+    if (!local_learningtools_is_drawer_mode()) {
+        return false;
+    }
+    if (!isloggedin() || isguestuser()) {
+        return false;
+    }
+    if (!local_learningtools_tools_visible_on_page()) {
+        return false;
+    }
+    return !empty(local_learningtools_get_drawer_tools());
+}
+
+/**
+ * Get the subplugin tools the current user may use, in their configured sort order.
+ *
+ * Applies the same per-tool capability gate as the floating button
+ * (ltool/<short>:create<short> against the system context for system-level tools).
+ *
+ * @return array Tool objects keyed by shortname.
+ */
+function local_learningtools_get_drawer_tools() {
+    $tools = [];
+    $context = context_system::instance();
+    foreach (local_learningtools_get_subplugins() as $shortname => $toolobj) {
+        $capability = 'ltool/' . $shortname . ':create' . $shortname;
+        if ($toolobj->contextlevel == 'system' && !has_capability($capability, $context)) {
+            continue;
+        }
+        $tools[$shortname] = $toolobj;
+    }
+    return $tools;
+}
+
+/**
+ * Render the Learning Tools navbar icon when the drawer launcher is enabled.
+ *
+ * Core calls this for every plugin via core_renderer::navbar_plugin_output().
+ *
+ * @param \renderer_base $renderer The core renderer.
+ * @return string The navbar icon HTML, or '' when the drawer is not in use.
+ */
+function local_learningtools_render_navbar_output(\renderer_base $renderer) {
+    if (!local_learningtools_drawer_should_show()) {
+        return '';
+    }
+    return $renderer->render_from_template('local_learningtools/navbar_icon', [
+        'icon' => 'fa fa-magic',
+    ]);
+}
+
+/**
+ * Whether the Learning Tools launcher should be shown on the current page.
+ *
+ * Honors the admin visibility scope (everywhere / only courses / specific categories)
+ * and the "disable on these module types" setting. Shared by the floating button and
+ * the navbar drawer so both obey the same rules.
+ *
+ * @return bool True when the tools may be shown on this page.
+ */
+function local_learningtools_tools_visible_on_page() {
+    global $PAGE, $SITE;
     // Visiblity of learningtools.
     $fabvisiablestatus = get_config('local_learningtools', 'fabbuttonvisible');
     if ($fabvisiablestatus == 'allcourses') {
         if (empty($PAGE->course->id) || ($PAGE->course->id == $SITE->id)) {
-            return '';
+            return false;
         }
     } else if ($fabvisiablestatus == 'specificcate') {
         if (isset($PAGE->course->category) && !empty($PAGE->course->category)) {
             $visiblecategories = explode(",", get_config('local_learningtools', 'visiblecategories'));
             if (!in_array($PAGE->course->category, $visiblecategories)) {
-                return '';
+                return false;
             }
         } else {
-            return '';
+            return false;
         }
     }
 
@@ -331,10 +462,29 @@ function local_learningtools_get_learningtools_info() {
         if (isset($PAGE->cm->module) && !empty($PAGE->cm->module)) {
             $visiblemods = explode(",", get_config('local_learningtools', 'disablemod'));
             if (in_array($PAGE->cm->module, $visiblemods)) {
-                return '';
+                return false;
             }
         }
     }
+    return true;
+}
+
+/**
+ * Display fab button html.
+ * @return string fab button html content.
+ */
+function local_learningtools_get_learningtools_info() {
+    global $PAGE, $SITE, $USER;
+    $content = '';
+    // In drawer mode the launcher is a navbar icon + drawer, so no floating button is rendered.
+    if (local_learningtools_is_drawer_mode()) {
+        return '';
+    }
+    // Visibility of learningtools (scope + disabled modules).
+    if (!local_learningtools_tools_visible_on_page()) {
+        return '';
+    }
+
     $contentinner = '';
     // Get list of ltool sub plugins.
     $subplugins = local_learningtools_get_subplugins();
@@ -386,7 +536,8 @@ function local_learningtools_get_learningtools_info() {
     }
     $fabbackiconcolor = get_config('local_learningtools', 'fabiconbackcolor');
     $fabiconcolor = get_config('local_learningtools', 'fabiconcolor');
-    $content .= html_writer::start_tag('div', ['class' => 'learningtools-action-info']);
+    $positionclass = local_learningtools_get_fab_container_class(local_learningtools_get_button_position());
+    $content .= html_writer::start_tag('div', ['class' => trim('learningtools-action-info ' . $positionclass)]);
     $content .= html_writer::start_tag('div', ['class' => "floating-button $stickyclass"]);
     $content .= html_writer::start_tag('div', ['class' => 'list-learningtools']);
     $content .= $contentinner;

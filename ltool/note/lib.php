@@ -131,10 +131,13 @@ function ltool_note_output_fragment_get_note_form($args) {
     $editorhtml .= \html_writer::start_tag('div', ['class' => 'ltoolusernotes']);
     $editorhtml .= \html_writer::start_tag('form', ['method' => 'post', 'action' => $args['pageurl'], 'class' => 'mform']);
 
+    // The editor height follows the textarea rows; callers (e.g. the drawer) can request a
+    // more compact editor by passing a smaller "rows" value.
+    $rows = isset($args['rows']) ? (int) $args['rows'] : 20;
     $editorhtml .= \html_writer::tag(
         'textarea',
         '',
-        ['id' => $editorid, 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => 20, 'cols' => 100]
+        ['id' => $editorid, 'name' => 'ltnoteeditor', 'class' => 'form-group', 'rows' => $rows, 'cols' => 100]
     );
 
     $editorhtml .= \html_writer::tag('input', '', [
@@ -283,6 +286,8 @@ function ltool_note_get_contextuser_notes($args) {
     }
     $template['records'] = $reports;
     $template['usernotes'] = true;
+    // Only group notes under collapsible date headings when they span more than one day.
+    $template['grouped'] = count($listrecords) > 1;
     return $OUTPUT->render_from_template('ltool_note/usernotes', $template);
 }
 

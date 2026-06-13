@@ -31,6 +31,12 @@ body.local-learningtools.scrolled #goto-top-link,
     transition: 0.2s;
 }
 
+/* Bottom-left position variant. */
+.learningtools-action-info.floating-button-left .floating-button {
+    right: auto;
+    left: 10px;
+}
+
 .learningtools-action-info .floating-button > button {
     width: 50px;
     height: 50px;
@@ -142,6 +148,12 @@ body.local-learningtools.scrolled #goto-top-link,
     margin-top: 13px;
 }
 
+/* For the bottom-left button the hover labels must sit to the right of the icons. */
+.learningtools-action-info.floating-button-left .floating-button > div > div p {
+    right: auto;
+    left: 60px;
+}
+
 .learningtools-action-info .floating-button > div > div button i,
 .learningtools-action-info .floating-button .list-learningtools + button i {
     font-size: 26px;
@@ -149,14 +161,170 @@ body.local-learningtools.scrolled #goto-top-link,
     color: #fff;
 }
 
-#page-footer .btn-footer-popover {
+/* Shift the footer popover icon left only when the bottom-right floating button is shown
+   (not for the bottom-left button or the navbar drawer). */
+body:has(.learningtools-action-info:not(.floating-button-left)) #page-footer .btn-footer-popover {
     right: 5rem;
 }
 
-.jsenabled #page.drawers.show-drawer-right .learningtools-action-info .floating-button {
+.jsenabled #page.drawers.show-drawer-right .learningtools-action-info:not(.floating-button-left) .floating-button {
     bottom: 80px;
     right: calc(315px + 2rem);
     transition: 0.2s;
+}
+
+/* Learning Tools drawer launcher. */
+.learningtools-drawer-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.learningtools-drawer-app .lt-drawer-heading {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/*
+ * Messaging-style layout: the recent notes scroll in the middle while the editor and
+ * its save action stay pinned to the bottom as a compact compose box.
+ */
+.learningtools-drawer-app .lt-drawer-notes {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.learningtools-drawer-app .lt-drawer-notes .list-context-existnotes {
+    order: 1;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.learningtools-drawer-app .lt-drawer-notes .ltoolusernotes {
+    order: 2;
+    flex: 0 0 auto;
+    margin-top: 0.5rem;
+}
+
+/* The editor spans the full drawer width (the drawer padding provides the small even gutter). */
+.learningtools-drawer-app .lt-drawer-notes .ltoolusernotes,
+.learningtools-drawer-app .lt-drawer-notes .ltoolusernotes form,
+.learningtools-drawer-app .lt-drawer-notes .ltoolusernotes .tox-tinymce {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Hide the TinyMCE menu bar and status bar so the compact editor leaves room to type. */
+.learningtools-drawer-app .lt-drawer-notes .tox-menubar,
+.learningtools-drawer-app .lt-drawer-notes .tox-statusbar {
+    display: none;
+}
+
+.learningtools-drawer-app .lt-drawer-notes .tox-sidebar-wrap,
+.learningtools-drawer-app .lt-drawer-notes .tox-edit-area {
+    min-height: 110px;
+}
+
+/*
+ * Note list items, shared by the drawer and the "Take notes" modal (.list-context-existnotes).
+ * Show each note's date with its edit/delete actions on one row, keep that row tight to the
+ * note text above it, and space consecutive notes apart so a date reads as belonging to the
+ * note above rather than the note below.
+ */
+.list-context-existnotes .content-block .title-block,
+.list-context-existnotes .content-block .action-block {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.list-context-existnotes .content-block .action-block {
+    margin-left: 0.5rem;
+    gap: 0.5rem;
+}
+
+.list-context-existnotes .card-body {
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+.list-context-existnotes .card-body:last-child {
+    margin-bottom: 0;
+}
+
+.list-context-existnotes .content-block .desc-block {
+    margin-bottom: 0.25rem;
+}
+
+.list-context-existnotes .content-block .desc-block > :last-child {
+    margin-bottom: 0;
+}
+
+.learningtools-drawer-app .lt-drawer-note-actions {
+    flex: 0 0 auto;
+    background: #fff;
+}
+
+.learningtools-drawer-app .lt-drawer-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.learningtools-drawer-app .lt-drawer-tools > div {
+    position: relative;
+}
+
+/* Colours come from each tool's own settings via inline styles; only the shape is set here. */
+.learningtools-drawer-app .lt-drawer-tools button {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 8px;
+    box-shadow: 2px 5px 5px rgb(0 0 0 / 10%);
+}
+
+.learningtools-drawer-app .lt-drawer-tools button i {
+    font-size: 20px;
+}
+
+/* Hover labels are not used inside the drawer. */
+.learningtools-drawer-app .lt-drawer-tools p {
+    display: none;
+}
+
+/* Reflect tool state on the buttons, like the floating button does: the bookmark badge
+   only shows once the page is bookmarked, and the note count once notes exist. */
+.learningtools-drawer-app .lt-drawer-tools div.ltbookmarksinfo button i + span,
+.learningtools-drawer-app .lt-drawer-tools div.ltnoteinfo button span {
+    display: none;
+}
+
+.learningtools-drawer-app .lt-drawer-tools div.ltbookmarksinfo button i.marked + span,
+.learningtools-drawer-app .lt-drawer-tools div.ltnoteinfo button span.ticked {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: block;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 9px;
+    text-align: center;
+    color: #fff;
+    background: #2e9f7f;
+    border-radius: 50%;
+}
+
+.learningtools-drawer-app .lt-drawer-notes-loading {
+    color: #6c757d;
 }
 
 .ltool-navigation.tertiary-navigation.full-width-bottom-border {

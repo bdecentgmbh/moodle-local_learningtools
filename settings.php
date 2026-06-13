@@ -44,6 +44,27 @@ if ($hassiteconfig) {
             0
         ));
 
+        // Position of the learning tools launcher (floating button or navbar drawer).
+        $name = "local_learningtools/buttonposition";
+        $title = get_string('buttonposition', 'local_learningtools');
+        $desc = get_string('buttonposition_desc', 'local_learningtools');
+        $choices = [
+            'bottomright' => get_string('buttonposition:bottomright', 'local_learningtools'),
+            'bottomleft' => get_string('buttonposition:bottomleft', 'local_learningtools'),
+            'drawer' => get_string('buttonposition:drawer', 'local_learningtools'),
+        ];
+        $setting = new admin_setting_configselect($name, $title, $desc, 'bottomright', $choices);
+        $page->add($setting);
+
+        // Automatically save notes (drawer): no save button, saves on blur / drawer close.
+        $setting = new admin_setting_configcheckbox(
+            'local_learningtools/autosavenotes',
+            get_string('autosavenotes', 'local_learningtools'),
+            get_string('autosavenotes_desc', 'local_learningtools'),
+            0
+        );
+        $page->add($setting);
+
         // Visiability of fab button.
         $name = "local_learningtools/fabbuttonvisible";
         $title = get_string('visiblelearningtools', 'local_learningtools');

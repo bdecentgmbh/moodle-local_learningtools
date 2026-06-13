@@ -115,6 +115,34 @@ final class ltool_note_test extends \advanced_testcase {
     }
 
     /**
+     * Notes are only grouped under collapsible date headings when they span more than one day.
+     * @covers ::ltool_note_get_contextuser_notes
+     * @return void
+     */
+    public function test_notes_grouped_only_across_multiple_days(): void {
+        global $DB, $PAGE;
+        $PAGE->set_url('/');
+
+        // Two notes created on the same day must render flat (no date heading).
+        $data = $this->create_note();
+        ltool_note_user_save_notes($this->context->id, $data);
+        ltool_note_user_save_notes($this->context->id, $data);
+        $args = [
+            'contextid' => $data['contextid'],
+            'pagetype' => $data['pagetype'],
+            'user' => $data['user'],
+            'pageurl' => $data['pageurl'],
+        ];
+        $this->assertStringNotContainsString('card-header', ltool_note_get_contextuser_notes($args));
+
+        // Move one note to the previous day: the notes now span two days and must be grouped.
+        $first = $DB->get_records('ltool_note_data', ['contextid' => $this->context->id], 'id ASC', '*', 0, 1);
+        $first = reset($first);
+        $DB->set_field('ltool_note_data', 'timecreated', $first->timecreated - DAYSECS - 100, ['id' => $first->id]);
+        $this->assertStringContainsString('card-header', ltool_note_get_contextuser_notes($args));
+    }
+
+    /**
      * Case to test the external method to create/delete notes.
      * @covers \ltool_note\external::save_usernote
      * @runInSeparateProcess

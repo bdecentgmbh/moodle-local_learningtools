@@ -1,0 +1,72 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_learningtools/drawer
+
+    The Learning Tools right-hand drawer. Reuses the core/drawer panel; shows the Notes
+    tool expanded (lazy loaded) and the other tools as buttons.
+
+    Example context (json):
+    {
+        "contextid": 1,
+        "toolbuttons": "<div class=\"ltbookmarksinfo\"></div>",
+        "hastools": true
+    }
+}}
+{{< core/drawer}}
+    {{$tabindex}}-1{{/tabindex}}
+    {{$role}}dialog{{/role}}
+    {{$drawerattributes}}aria-modal="true" aria-labelledby="learningtools-drawer-header"{{/drawerattributes}}
+    {{$drawercontent}}
+        <div id="learningtools-drawer" class="learningtools-drawer-app" data-region="learningtools-drawer"
+            data-contextid="{{contextid}}" data-autosave="{{#autosave}}1{{/autosave}}{{^autosave}}0{{/autosave}}"
+            role="region" tabindex="0">
+            <div class="closewidget text-end pe-2">
+                <a class="text-dark btn-link" data-action="closedrawer" href="#"
+                    title="{{#cleanstr}}closebuttontitle{{/cleanstr}}"
+                    aria-label="{{#cleanstr}}closebuttontitle{{/cleanstr}}">
+                    {{#pix}}i/window_close, core{{/pix}}
+                </a>
+            </div>
+            <h2 id="learningtools-drawer-header" class="lt-drawer-heading px-2 d-none d-md-block">
+                {{#str}}learningtoolsdrawer, local_learningtools{{/str}}
+            </h2>
+            {{#hastools}}
+                <div class="lt-drawer-tools list-learningtools px-2">
+                    {{{toolbuttons}}}
+                </div>
+            {{/hastools}}
+            <div class="lt-drawer-notes px-2" data-region="lt-drawer-notes" data-contextid="{{contextid}}">
+                <div class="lt-drawer-notes-loading text-center p-3" data-region="lt-drawer-notes-loading">
+                    {{#pix}}i/loading, core{{/pix}}
+                </div>
+            </div>
+            {{^autosave}}
+            <div class="lt-drawer-note-actions text-end px-2 pb-2 mt-2">
+                <button type="button" class="btn btn-primary" data-action="lt-drawer-save-note">
+                    {{#str}}savechanges, core{{/str}}
+                </button>
+            </div>
+            {{/autosave}}
+        </div>
+    {{/drawercontent}}
+{{/ core/drawer}}
+{{#js}}
+require(['local_learningtools/drawertoggle'], function(Toggle) {
+    Toggle.init();
+});
+{{/js}}

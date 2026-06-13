@@ -57,4 +57,15 @@ class behat_learningtool extends behat_base {
     public function click_fab_button(): void {
         $this->execute("behat_general::i_click_on", ['#tool-action-button', 'css_element']);
     }
+
+    /**
+     * Open the Learning Tools navbar drawer and wait for it to become visible.
+     *
+     * @Given I open the learning tools drawer
+     */
+    public function i_open_the_learning_tools_drawer(): void {
+        $this->execute("behat_general::i_click_on", ['#learningtools-drawer-toggle', 'css_element']);
+        $this->execute("behat_general::wait_until_the_page_is_ready");
+        $this->execute("behat_general::should_be_visible", ['#learningtools-drawer', 'css_element']);
+    }
 }
