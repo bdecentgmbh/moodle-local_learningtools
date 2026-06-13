@@ -213,4 +213,41 @@ final class buttonposition_test extends \advanced_testcase {
         $this->assertStringNotContainsString('data-region="lt-drawer-notes"', $html);
         $this->assertStringNotContainsString('lt-drawer-save-note', $html);
     }
+
+    /**
+     * With several tools available the navbar shows the generic drawer toggle.
+     *
+     * @covers ::local_learningtools_render_navbar_output
+     */
+    public function test_navbar_multiple_tools_render_the_drawer_toggle(): void {
+        global $PAGE;
+        set_config('buttonposition', 'drawer', 'local_learningtools');
+        $this->setAdminUser();
+        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_url('/');
+
+        $output = local_learningtools_render_navbar_output($PAGE->get_renderer('core'));
+        $this->assertStringContainsString('learningtools-drawer-toggle', $output);
+    }
+
+    /**
+     * With only one tool available the navbar renders that tool directly, not the drawer toggle.
+     *
+     * @covers ::local_learningtools_render_navbar_output
+     */
+    public function test_navbar_single_tool_renders_the_tool_directly(): void {
+        global $PAGE, $DB;
+        set_config('buttonposition', 'drawer', 'local_learningtools');
+        $this->setAdminUser();
+        $PAGE->set_context(\context_system::instance());
+        $PAGE->set_url('/');
+
+        // Leave only the bookmarks tool enabled.
+        $DB->set_field_select('local_learningtools_products', 'status', 0, 'shortname <> ?', ['bookmarks']);
+
+        $output = local_learningtools_render_navbar_output($PAGE->get_renderer('core'));
+        $this->assertStringContainsString('learningtools-navbar-single', $output);
+        $this->assertStringContainsString('ltbookmarks', $output);
+        $this->assertStringNotContainsString('learningtools-drawer-toggle', $output);
+    }
 }
