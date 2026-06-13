@@ -170,6 +170,8 @@ function ltool_report_user_submit_report($contextid, $data) {
     ])->trigger();
 
     $recipients = ltool_report_get_recipients($context, $issuetype);
+    // Always send the reporter a confirmation copy of their own report.
+    $recipients[$USER->id] = \core_user::get_user($USER->id);
     ltool_report_send_report_notifications($recipients, $record, $USER, $context);
 
     return [
@@ -270,6 +272,8 @@ function ltool_report_output_fragment_get_report_form($args) {
         $issuetypes[] = [
             'type' => $type,
             'label' => get_string('issuetype_' . $type, 'ltool_report'),
+            // Explains the issue type and who receives it; customisable via language packs.
+            'description' => get_string('issuetypedesc_' . $type, 'ltool_report'),
         ];
     }
     return $OUTPUT->render_from_template('ltool_report/report_form', ['issuetypes' => $issuetypes]);

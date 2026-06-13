@@ -1,0 +1,9 @@
+/* Learning Tools Report. */
+.ltreport-form .ltreport-prewrap {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.ltreport-form .ltreport-issuedesc:empty {
+    display: none;
+}
